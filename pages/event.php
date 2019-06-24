@@ -165,7 +165,7 @@ if(isset($_POST['task-delete'])){
                     <hr>
                     <p><?php echo $taskdesc; ?></p>
                     <form method="post">
-                      <input type="hidden" name="task-delete" value="">
+                      <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
                       <input type="submit" value="Delete" class="btn btn-danger">
                     </form>
                   </div>
@@ -219,10 +219,20 @@ if(isset($_POST['task-delete'])){
                     <hr>
                     <p><?php echo $taskdesc; ?></p>
                     <small>Created <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
-                    <form method="post">
-                      <input type="hidden" name="task-delete" value="">
-                      <input type="submit" value="Delete" class="btn btn-danger">
-                    </form>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <form method="post">
+                          <input type="hidden" name="task-begin" value="<?php echo $taskid; ?>">
+                          <input type="submit" value="Begin" class="btn btn-primary">
+                        </form>
+                      </div>
+                      <div class="col-sm-6">
+                        <form method="post">
+                          <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
+                          <input type="submit" value="Delete" class="btn btn-danger">
+                        </form>
+                      </div>
+                    </div>
                   </div>
 
                   <?php
@@ -234,6 +244,61 @@ if(isset($_POST['task-delete'])){
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal">
             Create Task
           </button>
+        </div>
+      </div>
+
+      <div class="row pt-5">
+        <div class="col-sm-12">
+        <h3 class="band-blue">Complete Tasks</h3>
+
+        <div class="d-flex justify-content-start flex-wrap">
+          <?php
+
+              require('../php/connect.php');
+
+              $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team' AND status='complete'";
+              $result = mysqli_query($link, $query);
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              }
+
+              if(mysqli_num_rows($result) == 0){
+                echo "No Completed Tasks";
+              }
+              else{
+                while($resultArray = mysqli_fetch_array($result)){
+
+                  $taskname = $resultArray['name'];
+                  $taskid = $resultArray['id'];
+                  $taskdesc = $resultArray['description'];
+                  $taskcreator = $resultArray['creator'];
+                  $taskdate = $resultArray['date'];
+
+                  $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
+                  $result2 = mysqli_query($link, $query2);
+                  if (!$result2){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  list($firstname,$lastname) = mysqli_fetch_array($result2);
+
+                  ?>
+                  
+                  <div class="taskcard">
+                    <h5><?php echo $taskname; ?></h5>
+                    <hr>
+                    <p><?php echo $taskdesc; ?></p>
+                    <small>Completed <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
+                    <form method="post">
+                      <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                  </div>
+
+                  <?php
+                }
+              }
+            ?>
+        </div><br>
         </div>
       </div>
 
