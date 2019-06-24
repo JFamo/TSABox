@@ -190,23 +190,53 @@ if(isset($_SESSION['username'])){
       </div>
     </nav>
 
-    <div class="container" id="content">
-      <div class="text-center">
-        <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch
-        Modal Login Form</a>
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">Login</button>
+    <div class="modal fade" id="loginModal" role="dialog">
+      <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Login</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+        <form name="loginForm" method="POST" action="?">
+
+            Enter your username: <br>
+              <input class="input1 form-control" type="text" name="user" required/>
+              <a href="#" style="font-size:10px; padding-bottom:5px;" data-container="body" data-toggle="popover" data-placement="top" data-content="Ask your adviser to lookup or reset your username from the 'My Chapter' page.">Forgot Your Username?</a>
+              <br>
+            Enter your password: <br>
+              <input class="input1 form-control" type="password" name="pass" required/>
+              <a href="#" style="font-size:10px; padding-bottom:5px;" data-container="body" data-html=true data-toggle="popover" data-placement="top" data-content='<form method="post" action="../php/send_reset.php">
+              <p>Enter Email Address for Password Reset</p>
+              Email:<input type="email" name="email" required>
+              Username:<input type="text" name="username" required>
+              <input class="btn btn-primary btn-sm" type="submit" name="submit_email">
+              </form>'>Forgot Your Password?</a>
+              <br></br>
+
+          <input class="btn btn-primary btn-lg" type="submit" value="Login"/>
+
+        </form>
+        </div>
       </div>
     </div>
+    </div>
+
+  <br></br>
+    OR
 
     <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header text-center">
-            <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+            <h4 class="modal-title w-100 font-weight-bold">Create Account</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body mx-3">
+          <div class="modal-body mx-4">
             <div class="md-form mb-5">
               <i class="fas fa-envelope prefix grey-text"></i>
               <input type="email" id="defaultForm-email" class="form-control validate">
@@ -216,20 +246,30 @@ if(isset($_SESSION['username'])){
             <div class="md-form mb-4">
               <i class="fas fa-lock prefix grey-text"></i>
               <input type="password" id="defaultForm-pass" class="form-control validate">
-              <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+              <label data-error="wrong" data-success="right" for="defaultForm-pass">Create password</label>
+            </div>
+
+            <div class="md-form mb-4">
+              <i class="fas fa-lock prefix grey-text"></i>
+              <input type="password" id="defaultForm-pass" class="form-control validate">
+              <label data-error="wrong" data-success="right" for="defaultForm-pass">Confirm password</label>
             </div>
 
           </div>
           <div class="modal-footer d-flex justify-content-center">
-            <button class="btn btn-default">Login</button>
+            <button class="btn btn-default">Create an Account</button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="text-center">
-      <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Login</a>
+      <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Create an Account</a>
     </div>
+
+
+
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -238,6 +278,9 @@ if(isset($_SESSION['username'])){
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
   </body>
+
+
+
 
   <footer>
     <div class="bg-blue color-white py-3">
