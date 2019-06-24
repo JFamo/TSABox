@@ -1,3 +1,161 @@
+<?php
+//Basic function to sanitize input data
+function validate($data){
+  $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    $data = str_replace('\\', '', $data);
+    $data = str_replace('/', '', $data);
+    $data = str_replace("'", '', $data);
+    $data = str_replace(";", '', $data);
+    $data = str_replace("(", '', $data);
+    $data = str_replace(")", '', $data);
+    return $data;
+}
+
+//Function to randomly generate a unique chapter code
+function createChapterCode(){
+  return substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 5)), 0, 5);
+}
+
+//Function to check if chapter code is unique
+function isCodeUnique($code){
+  require('php/connect.php');
+  $query= "SELECT id FROM chapters WHERE code='$code'";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  $count = mysqli_num_rows($result);
+  if($count == 0){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+session_start();
+
+//Handle user login
+if(isset($_POST['login-username']) and isset($_POST['login-password'])){
+  $username = $_POST['login-username'];
+  $password = $_POST['login-password'];
+  $username = validate($username);
+  $password = validate($password);
+  
+  require('php/connect.php');
+  
+  $query= "SELECT username FROM users WHERE username='$username'";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  $count = mysqli_num_rows($result);
+  if($count == 1){
+    $query2 = "SELECT password, firstname, lastname FROM users WHERE username='$username'";
+    $result2 = mysqli_query($link, $query2);
+    if (!$result2){
+      die('Error: ' . mysqli_error($link));
+    }
+    list($passwordValue, $firstnameValue, $lastnameValue) = mysqli_fetch_array($result2);
+    if(password_verify($password, $passwordValue)){
+      $_SESSION['username'] = $username;
+      $_SESSION['firstname'] = $firstnameValue;
+      $_SESSION['lastname'] = $lastnameValue;
+    }
+  }
+  else{
+    $fmsg = "Invalid Login Credentials";
+  }
+}
+
+//Register new users
+if(isset($_POST['register-username']) and isset($_POST['register-password']) and (isset($_POST['organization-name']) or isset($_POST['organization-code']))){
+  $username = $_POST['register-username'];
+  $password = $_POST['register-password'];
+  $orgname = $_POST['organization-name'];
+  $orgcode = $_POST['organization-code'];
+  $orgaction = $_POST['organization-action'];
+  $username = validate($username);
+  $password = validate($password);
+  $password = password_hash($password, PASSWORD_DEFAULT);
+  
+  require('php/connect.php');
+  
+  $query= "SELECT id FROM users WHERE username='$username'";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  $count = mysqli_num_rows($result);
+  if($count == 0){
+    //Check that specified organization code exists if joining
+    $orgwithcodecount = 0;
+    if($orgaction == "join"){
+      $query= "SELECT id FROM organizations WHERE code='$orgcode'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      list($orgid) = mysqli_fetch_array($result);
+      $orgwithcodecount = mysqli_num_rows($result);
+    }
+    if($orgwithcodecount == 1 || $orgaction == "create"){
+      //User Creation
+      $query2 = "INSERT INTO users (username, password, firstname, lastname) VALUES ('$username', '$password', '$firstname', '$lastname')";
+      $result2 = mysqli_query($link, $query2);
+      $userid = mysqli_insert_id($link);
+      if (!$result2){
+        die('Error: ' . mysqli_error($link));
+      }
+      //Organization Creation
+      if($orgaction == "create"){
+        //Generate organization code
+        $newOrgCode = createOrgCode();
+        while(!isCodeUnique($newOrgCode)){
+          $newOrgCode = createOrgCode();
+        }
+        //Actually perform creation query
+        $query2 = "INSERT INTO organizations (name, code) VALUES ('$orgname', '$newOrgCode')";
+        $result2 = mysqli_query($link, $query2);
+        $orgid = mysqli_insert_id($link);
+        if (!$result2){
+          die('Error: ' . mysqli_error($link));
+        }
+      }
+      //Organization Join
+      $query2 = "INSERT INTO user_organization_mapping (organization, user) VALUES ('$orgid', '$userid')";
+      $result2 = mysqli_query($link, $query2);
+      if (!$result2){
+        die('Error: ' . mysqli_error($link));
+      }
+      //Add Rank for Owner
+      if($orgaction == "create"){
+        //Actually perform creation query
+        $query2 = "INSERT INTO user_ranks (user, scope, rank) VALUES ('$userid', 'organization', 'owner')";
+        $result2 = mysqli_query($link, $query2);
+        if (!$result2){
+          die('Error: ' . mysqli_error($link));
+        }
+      }
+      $fmsg = "Successfully Registered!";
+    }
+    else{
+      $fmsg = "Invalid Organization Code!";
+    }
+  }
+  else{
+    $fmsg = "This Username is Taken!";
+  }
+}
+
+//Authenticate session and force redirect on real session
+if(isset($_SESSION['username'])){
+  header('Location: pages/main.php');
+}else{
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -67,3 +225,7 @@
     <script src="js/scripts.js"></script>
   </body>
 </html>
+
+<?php 
+}
+?>
