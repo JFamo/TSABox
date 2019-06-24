@@ -15,10 +15,7 @@ function validate($data){
 
 session_start();
 
-//Authenticate session and force redirect on real session
-if(!isset($_SESSION['username'])){
-  header('Location: ../index.php');
-}else{
+
 ?>
 
 <!doctype html>
@@ -87,5 +84,5 @@ if(!isset($_SESSION['username'])){
 </html>
 
 <?php 
-}
+
 ?>

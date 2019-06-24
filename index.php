@@ -64,26 +64,31 @@ if(isset($_POST['login-username']) and isset($_POST['login-password'])){
       $_SESSION['firstname'] = $firstnameValue;
       $_SESSION['lastname'] = $lastnameValue;
     }
+    else{
+      $fmsg = "Invalid Password";
+    }
   }
   else{
-    $fmsg = "Invalid Login Credentials";
+    $fmsg = "Invalid Username";
   }
 }
 
 //Register new users
-if(isset($_POST['register-username']) and isset($_POST['register-password']) and (isset($_POST['organization-name']) or isset($_POST['organization-code']))){
+if(isset($_POST['register-username']) and isset($_POST['register-password']) and (isset($_POST['register-code']))){
+
   $username = $_POST['register-username'];
   $password = $_POST['register-password'];
-  $orgname = $_POST['organization-name'];
-  $orgcode = $_POST['organization-code'];
-  $orgaction = $_POST['organization-action'];
+  $firstname = $_POST['register-firstname'];
+  $lastname = $_POST['register-lastname'];
+  $orgcode = $_POST['register-code'];
+
   $username = validate($username);
   $password = validate($password);
   $password = password_hash($password, PASSWORD_DEFAULT);
   
   require('php/connect.php');
   
-  $query= "SELECT id FROM users WHERE username='$username'";
+  $query= "SELECT username FROM users WHERE username='$username'";
   $result = mysqli_query($link, $query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
@@ -92,52 +97,26 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
   if($count == 0){
     //Check that specified organization code exists if joining
     $orgwithcodecount = 0;
-    if($orgaction == "join"){
-      $query= "SELECT id FROM organizations WHERE code='$orgcode'";
-      $result = mysqli_query($link, $query);
-      if (!$result){
-        die('Error: ' . mysqli_error($link));
-      }
-      list($orgid) = mysqli_fetch_array($result);
-      $orgwithcodecount = mysqli_num_rows($result);
+    $query= "SELECT id FROM chapters WHERE code='$orgcode'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
     }
-    if($orgwithcodecount == 1 || $orgaction == "create"){
+    list($orgid) = mysqli_fetch_array($result);
+    $orgwithcodecount = mysqli_num_rows($result);
+
+    if($orgwithcodecount == 1){
       //User Creation
       $query2 = "INSERT INTO users (username, password, firstname, lastname) VALUES ('$username', '$password', '$firstname', '$lastname')";
       $result2 = mysqli_query($link, $query2);
-      $userid = mysqli_insert_id($link);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
       }
-      //Organization Creation
-      if($orgaction == "create"){
-        //Generate organization code
-        $newOrgCode = createOrgCode();
-        while(!isCodeUnique($newOrgCode)){
-          $newOrgCode = createOrgCode();
-        }
-        //Actually perform creation query
-        $query2 = "INSERT INTO organizations (name, code) VALUES ('$orgname', '$newOrgCode')";
-        $result2 = mysqli_query($link, $query2);
-        $orgid = mysqli_insert_id($link);
-        if (!$result2){
-          die('Error: ' . mysqli_error($link));
-        }
-      }
       //Organization Join
-      $query2 = "INSERT INTO user_organization_mapping (organization, user) VALUES ('$orgid', '$userid')";
+      $query2 = "INSERT INTO user_chapter_mapping (username, chapter) VALUES ('$username', '$orgid')";
       $result2 = mysqli_query($link, $query2);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
-      }
-      //Add Rank for Owner
-      if($orgaction == "create"){
-        //Actually perform creation query
-        $query2 = "INSERT INTO user_ranks (user, scope, rank) VALUES ('$userid', 'organization', 'owner')";
-        $result2 = mysqli_query($link, $query2);
-        if (!$result2){
-          die('Error: ' . mysqli_error($link));
-        }
       }
       $fmsg = "Successfully Registered!";
     }
@@ -199,77 +178,69 @@ if(isset($_SESSION['username'])){
               <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-
-        <form name="loginForm" method="POST" action="?">
-
-            Enter your username: <br>
-              <input class="input1 form-control" type="text" name="user" required/>
-              <a href="#" style="font-size:10px; padding-bottom:5px;" data-container="body" data-toggle="popover" data-placement="top" data-content="Ask your adviser to lookup or reset your username from the 'My Chapter' page.">Forgot Your Username?</a>
-              <br>
-            Enter your password: <br>
-              <input class="input1 form-control" type="password" name="pass" required/>
-              <a href="#" style="font-size:10px; padding-bottom:5px;" data-container="body" data-html=true data-toggle="popover" data-placement="top" data-content='<form method="post" action="../php/send_reset.php">
-              <p>Enter Email Address for Password Reset</p>
-              Email:<input type="email" name="email" required>
-              Username:<input type="text" name="username" required>
-              <input class="btn btn-primary btn-sm" type="submit" name="submit_email">
-              </form>'>Forgot Your Password?</a>
-              <br></br>
-
-          <input class="btn btn-primary btn-lg" type="submit" value="Login"/>
-
-        </form>
-        </div>
-      </div>
-    </div>
-    </div>
-
-  <br></br>
-    OR
-
-    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header text-center">
-            <h4 class="modal-title w-100 font-weight-bold">Create Account</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body mx-4">
-            <div class="md-form mb-5">
-              <i class="fas fa-envelope prefix grey-text"></i>
-              <input type="email" id="defaultForm-email" class="form-control validate">
-              <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
-            </div>
-
-            <div class="md-form mb-4">
-              <i class="fas fa-lock prefix grey-text"></i>
-              <input type="password" id="defaultForm-pass" class="form-control validate">
-              <label data-error="wrong" data-success="right" for="defaultForm-pass">Create password</label>
-            </div>
-
-            <div class="md-form mb-4">
-              <i class="fas fa-lock prefix grey-text"></i>
-              <input type="password" id="defaultForm-pass" class="form-control validate">
-              <label data-error="wrong" data-success="right" for="defaultForm-pass">Confirm password</label>
-            </div>
-
-          </div>
-          <div class="modal-footer d-flex justify-content-center">
-            <button class="btn btn-default">Create an Account</button>
+              <form method="POST" class="pt-4">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="login-username">Username</label>
+                  <input type="text" class="form-control" id="login-username" name="login-username" placeholder="Username">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="login-password">Password</label>
+                  <input type="password" class="form-control" id="login-password" name="login-password" placeholder="Password">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="text-center">
-      <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Create an Account</a>
+  <br>
+  <?php echo $fmsg; ?>
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">Register</button>
+    <div class="modal fade" id="registerModal" role="dialog">
+      <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Register</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form method="POST" class="pt-4">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="register-username">Username</label>
+                  <input type="text" class="form-control" id="register-username" name="register-username" placeholder="Username">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="register-password">Password</label>
+                  <input type="password" class="form-control" id="register-password" name="register-password" placeholder="Password">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="register-firstname">First Name</label>
+                  <input type="text" class="form-control" id="register-firstname" name="register-firstname" placeholder="John">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="register-lastname">Last Name</label>
+                  <input type="text" class="form-control" id="register-lastname" name="register-lastname" placeholder="Doe">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="register-code">Chapter Code</label>
+                  <input type="text" class="form-control" id="register-code" name="register-code" placeholder="Code">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-
-
-
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
