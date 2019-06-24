@@ -15,8 +15,38 @@ function validate($data){
 
 session_start();
 
+$username = $_SESSION['username'];
 $rank = 'officer';
-$officerPerm = 'dab';
+$username = 'Nate Mich';
+$chapter = '1';
+require('../php/connect.php');
+
+  //file details
+  $fileName = $_FILES['userfile']['name'];
+  $tmpName = $_FILES['userfile']['tmp_name'];
+  $fileSize = $_FILES['userfile']['size'];
+  $fileType = $_FILES['userfile']['type'];
+  //file data manipulation
+  $fp = fopen($tmpName, 'r');
+  $content = fread($fp, filesize($tmpName));
+  $content = addslashes($content);
+  fclose($fp);
+  if(!get_magic_quotes_gpc()){
+    $fileName = addslashes($fileName);
+  }
+  //file viewality
+  $view = $_POST['view'];
+  //get poster
+  $poster = $_SESSION['username'];
+  require('../php/connect.php');
+  $query = "INSERT INTO minutes (name, size, type, content, date, view, poster) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster')";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  
+  mysqli_close($link);
+  $fmsg =  "File ".$fileName." Uploaded Successfully!";
 
 ?>
 
@@ -117,7 +147,9 @@ $officerPerm = 'dab';
         </div>
     </div>
   </div>
+</div>
 </center>
+<br>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
