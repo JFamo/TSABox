@@ -1,0 +1,31 @@
+.color-red{
+	color:#CF0C0C;
+}
+.color-blue{
+	color:#24368A;
+}
+.color-white{
+	color:white;
+}
+.bg-red{
+	background-color:#CF0C0C;
+}
+.bg-blue{
+	background-color:#24368A;
+}
+.bg-white{
+	background-color:white;
+}
+
+.header{
+
+}
+
+.nopadding{
+	padding:0 0 0 0;
+}
+
+footer{
+	padding-top:1rem;
+	padding-bottom:1rem;
+}
