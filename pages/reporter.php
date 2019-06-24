@@ -104,25 +104,35 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
   </div>
 </nav>
 
-<!-- Actual Reporter Stuff -->
-<div class = "container"
-<form method="POST">
-  
-  <div class="row justify-content-center" style="padding-top:1rem; padding-bottom: 1rem;">
-
+<!-- Title -->
+<div class="container">
+  <div class="row justify-content-center" style="padding-bottom: 1rem; padding-top: 1rem;">
     <div class="col-sm-6">
-      <div class="form-group">
-        <label for="announcementTitle"> <h1>New Announcement</h1> </label>
-        <textarea class="form-control" name="announcementTitle" placeholder="Title" rows="1"></textarea>
-      </div>
-      <div class="form-group">
-        <textarea class="form-control" name="announcementText" placeholder="Text" rows="3"></textarea>
-      </div>
-      <button type="submit">Submit</button>
+      <h1> Reporter </h1>
     </div>
-
   </div>
+</div> 
+
+<!-- Reporter reporting new announcement -->
+<div class = "container">
+  <form method="POST">
+    
+    <div class="row justify-content-center" style="padding-top:1rem; padding-bottom: 1rem;">
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="announcementTitle"> <h3>New Announcement</h3> </label>
+          <textarea class="form-control" name="announcementTitle" placeholder="Title" rows="1"></textarea>
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" name="announcementText" placeholder="Text" rows="3"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+      </div>
+
+      </div>
   </form>
+</div>
 
 <!-- Retrieving form data from database -->
   <?php
@@ -148,24 +158,26 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
         ?>
 
         <!-- Displaying retrieved data-->
-        <div class="row justify-content-center" style="padding-top: 1rem; padding-bottom: 1rem;">
-          <div class="col-sm-6">
-            <div class="contentcard">
-              <p> 
-                  <h1> <?php
-                  echo $title;
-                  ?> </h1>
-              </p>
-              <p>
-                <?php
-                  echo $content;
-                ?>
-              </p>
-              <p> 
-                <small> <?php
-                echo " - " . $username . " on " . $date;
-                ?> </small>
-              </p> 
+        <div class="container">
+          <div class="row justify-content-center" style="padding-top: 1rem; padding-bottom: 1rem;">
+            <div class="col-sm-6">
+              <div class="contentcard">
+                <p> 
+                    <h2> <?php
+                    echo $title;
+                    ?> </h2>
+                </p>
+                <p>
+                  <?php
+                    echo $content;
+                  ?>
+                </p>
+                <p> 
+                  <small> <?php
+                  echo " - " . $username . " on " . $date;
+                  ?> </small>
+                </p> 
+              </div>
             </div>
           </div>
         </div>
