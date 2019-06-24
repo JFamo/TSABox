@@ -28,7 +28,6 @@ session_start();
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../bootstrap-4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i|Ubuntu:400,400i,700,700i&display=swap" rel="stylesheet">
 
     <title>TSABox</title>
   </head>
@@ -77,6 +76,11 @@ session_start();
           <a class="dropdown-item" href="social.php">Find Friends</a>
         </div>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="../php/logout.php">
+          Logout
+        </a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -90,8 +94,8 @@ session_start();
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../js/popper.min.js"></script>
     <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
     <script src="../js/scripts.js"></script>
   </body>
