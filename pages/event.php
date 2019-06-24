@@ -134,22 +134,23 @@ if(isset($_POST['task-delete'])){
       </h1>
       <small>Manage your team tasks, files, and communication</small>
 
-      <div class="row py-5">
+      <div class="row pt-5">
         <div class="col-sm-12">
         <h3 class="band-red">Tasks in Progress</h3>
+
         <div class="d-flex justify-content-start flex-wrap">
           <?php
 
               require('../php/connect.php');
 
-              $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team'";
+              $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team' AND status='progress'";
               $result = mysqli_query($link, $query);
               if (!$result){
                 die('Error: ' . mysqli_error($link));
               }
 
               if(mysqli_num_rows($result) == 0){
-                echo "You have no tasks!";
+                echo "No Tasks in Progress";
               }
               else{
                 while($resultArray = mysqli_fetch_array($result)){
@@ -173,13 +174,69 @@ if(isset($_POST['task-delete'])){
                 }
               }
             ?>
-          
         </div>
+        </div>
+      </div>
+
+      <div class="row pt-5">
+        <div class="col-sm-12">
+        <h3 class="band-grey">Backlog</h3>
+
+        <div class="d-flex justify-content-start flex-wrap">
+          <?php
+
+              require('../php/connect.php');
+
+              $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team' AND status='backlog'";
+              $result = mysqli_query($link, $query);
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              }
+
+              if(mysqli_num_rows($result) == 0){
+                echo "No Backlogged Tasks";
+              }
+              else{
+                while($resultArray = mysqli_fetch_array($result)){
+
+                  $taskname = $resultArray['name'];
+                  $taskid = $resultArray['id'];
+                  $taskdesc = $resultArray['description'];
+                  $taskcreator = $resultArray['creator'];
+                  $taskdate = $resultArray['date'];
+
+                  $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
+                  $result2 = mysqli_query($link, $query2);
+                  if (!$result2){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  list($firstname,$lastname) = mysqli_fetch_array($result2);
+
+                  ?>
+                  
+                  <div class="taskcard">
+                    <h5><?php echo $taskname; ?></h5>
+                    <hr>
+                    <p><?php echo $taskdesc; ?></p>
+                    <small>Created <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
+                    <form method="post">
+                      <input type="hidden" name="task-delete" value="">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                  </div>
+
+                  <?php
+                }
+              }
+            ?>
+        </div><br>
+
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal">
             Create Task
           </button>
         </div>
       </div>
+
     </div>
 
     <!-- Task Modal -->
