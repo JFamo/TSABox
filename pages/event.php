@@ -18,6 +18,23 @@ session_start();
 $username = $_SESSION['username'];
 $team = $_SESSION['team'];
 
+if(isset($_POST['task-name'])){
+
+  $taskname = validate($_POST['task-name']);
+  $taskdesc = validate($_POST['task-description']);
+  $taskweight = validate($_POST['task-weight']);
+
+  require('../php/connect.php');
+  $query = "INSERT INTO tasks (name, description, team, creator, weight) VALUES ('$taskname', '$taskdesc', '$team', '$username', '$taskweight')";
+  $result = mysqli_query($link,$query);
+  if (!$result){
+      die('Error: ' . mysqli_error($link));
+  }
+  mysqli_close($link);
+
+}
+
+
 ?>
 
 <!doctype html>
@@ -103,6 +120,54 @@ $team = $_SESSION['team'];
       ?>
       </h1>
       <small>Manage your team tasks, files, and communication</small>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal">
+            Create Task
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal fade" id="taskModal" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Create Task</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" class="pt-4">
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="task-name">Task Name</label>
+                  <input type="text" maxlength="50" class="form-control" id="task-name" name="task-name" placeholder="Name">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="task-name">Task Description</label>
+                  <textarea class="form-control" maxlength="500" id="task-description" name="task-description" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <small>
+                  Task weight is a number that tracks how important this task is to the project. A task with weight 4 is twice as important as one with weight 2.
+                  </small>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="task-weight">Task Weight</label>
+                  <input type="number" value="1" min="0" max="100" name="task-weight">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Create Task</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Optional JavaScript -->
