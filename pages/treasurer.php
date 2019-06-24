@@ -16,21 +16,17 @@ function validate($data){
 function getChapterBalance()
 {
   $returnValue = 0;
-  $chapter = $_SESSION['chapter'];
+  $chapter = 1; //$_SESSION['chapter'];
   require('../php/connect.php');
-  $transQ = "SELECT personto, personfrom, description, amount, date FROM transactions WHERE chapter='$chapter'";
+  $transQ = "SELECT chapter, amount FROM chapter_transactions WHERE chapter='$chapter'";
   $transR = mysqli_query($link, $transQ);
   if (!$transR){
     die('Error: ' . mysqli_error($link));
   }
   while($row = mysqli_fetch_array($transR)){
-    if($row['personto'] == 'Chapter'){
       $returnValue += $row['amount'];
-    }
-    if($row['personfrom'] == 'Chapter'){
-      $returnValue -= $row['amount'];
-    }
   }
+
   return $returnValue;
 }
 
@@ -109,16 +105,44 @@ session_start();
   <div class="container">
     <div class="row">
       <div class = "col-sm-12">
-        <p>Balance</p>
+        <p>Chapter balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
+        </p>
+        <p>Individual Balances: </p>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm=6">
-        
-      </div>
-      <div class="col-sm=6">
-       
-      </div>
+
+    <?php
+
+          //SECOND THING - TRANSACTIONS
+
+          require('../php/connect.php');
+
+          $query="SELECT * FROM user_balance WHERE chapter=1";
+
+          $result = mysqli_query($link, $query);
+
+          if (!$result){
+            die('Error: ' . mysqli_error($link));
+          }   
+
+          if(mysqli_num_rows($result) == 0){
+            echo "No Transactions Found!<br>";
+          }
+          else{
+            while(list($user, $amount) = mysqli_fetch_array($result)){
+              ?>
+              <div class="row">
+                <div class = "col-sm-9">
+                <p><?php echo "User : ".$user ?></p>
+                <div class = "col-sm-3">
+                <p><?php echo "$".$amount ?></p>
+              </div>
+              
+              <?php
+            }
+          }
+          ?>
+              
     </div>
   </div>
 
@@ -145,7 +169,3 @@ session_start();
   </footer>
 
 </html>
-
-<?php 
-
-?>
