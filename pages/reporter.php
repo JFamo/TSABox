@@ -15,6 +15,23 @@ function validate($data){
 
 session_start();
 
+$username = $_SESSION['username'];
+
+//Inputting form data into database
+if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
+
+  //Accept POST variables, reassign for query
+  $announcementTitle = addslashes($_POST['announcementTitle']);
+  $announcementText = addslashes($_POST['announcementText']);
+
+  require('../php/connect.php');
+   $query = "INSERT INTO announcements (title, content, username, date) VALUES ('$announcementTitle', '$announcementText', '$username', NOW())";
+  $result = mysqli_query($link,$query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+}
+
 
 ?>
 
@@ -31,7 +48,9 @@ session_start();
 
     <title>TSABox</title>
   </head>
-  <body>
+
+  <body>    
+    <!-- Nav Bar -->
     <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
         <a class="navbar-brand" href="index.html">
           <div class="row">
@@ -85,22 +104,90 @@ session_start();
   </div>
 </nav>
 
-    <div class="container" id="content">
-      <div class="text-center">
-        <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch
-        Modal Login Form</a>
+<!-- Actual Reporter Stuff -->
+<div class = "container"
+<form method="POST">
+  
+  <div class="row justify-content-center" style="padding-top:1rem; padding-bottom: 1rem;">
+
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="announcementTitle"> <h1>New Announcement</h1> </label>
+        <textarea class="form-control" name="announcementTitle" placeholder="Title" rows="1"></textarea>
       </div>
+      <div class="form-group">
+        <textarea class="form-control" name="announcementText" placeholder="Text" rows="3"></textarea>
+      </div>
+      <button type="submit">Submit</button>
     </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../js/jquery-3.3.1.slim.min.js"></script>
-    <script src="../js/popper.min.js"></script>
-    <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
-    <script src="../js/scripts.js"></script>
+  </div>
+  </form>
+
+<!-- Retrieving form data from database -->
+  <?php
+    require('../php/connect.php');
+
+    $query="SELECT * FROM announcements WHERE username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) ORDER BY date DESC";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+
+    if(mysqli_num_rows($result) == 0){
+                       //This error case should be changed
+      echo "No Matching Results Found!<br>";
+    }
+    else{
+      while($resultArray = mysqli_fetch_array($result)){
+
+        $title = $resultArray['title'];
+        $content = $resultArray['content'];
+        $username = $resultArray['username'];
+        $date = $resultArray['date'];
+        ?>
+
+        <!-- Displaying retrieved data-->
+        <div class="row justify-content-center" style="padding-top: 1rem; padding-bottom: 1rem;">
+          <div class="col-sm-6">
+            <div class="contentcard">
+              <p> 
+                  <h1> <?php
+                  echo $title;
+                  ?> </h1>
+              </p>
+              <p>
+                <?php
+                  echo $content;
+                ?>
+              </p>
+              <p> 
+                <small> <?php
+                echo " - " . $username . " on " . $date;
+                ?> </small>
+              </p> 
+            </div>
+          </div>
+        </div>
+
+        <?php
+        }
+    }    
+  mysqli_close($link);
+  ?>
+
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="../js/jquery-3.3.1.slim.min.js"></script>
+  <script src="../js/popper.min.js"></script>
+  <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
+  <script src="../js/scripts.js"></script>
+
   </body>
 
-  <footer>
+  <footer style = "position: relative;">
     <div class="bg-blue color-white py-3">
         <center>
         <p>
@@ -114,7 +201,5 @@ session_start();
   </footer>
 
 </html>
-
-<?php 
-
+<?php
 ?>
