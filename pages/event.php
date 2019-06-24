@@ -34,6 +34,19 @@ if(isset($_POST['task-name'])){
 
 }
 
+if(isset($_POST['task-delete'])){
+
+  $taskdelete = validate($_POST['task-delete']);
+
+  require('../php/connect.php');
+  $query = "DELETE FROM tasks WHERE id='$taskdelete'";
+  $result = mysqli_query($link,$query);
+  if (!$result){
+      die('Error: ' . mysqli_error($link));
+  }
+  mysqli_close($link);
+
+}
 
 ?>
 
@@ -121,8 +134,47 @@ if(isset($_POST['task-name'])){
       </h1>
       <small>Manage your team tasks, files, and communication</small>
 
-      <div class="row">
+      <div class="row py-5">
         <div class="col-sm-12">
+        <h3 class="band-red">Tasks in Progress</h3>
+        <div class="d-flex justify-content-start flex-wrap">
+          <?php
+
+              require('../php/connect.php');
+
+              $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team'";
+              $result = mysqli_query($link, $query);
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              }
+
+              if(mysqli_num_rows($result) == 0){
+                echo "You have no tasks!";
+              }
+              else{
+                while($resultArray = mysqli_fetch_array($result)){
+
+                  $taskname = $resultArray['name'];
+                  $taskid = $resultArray['id'];
+                  $taskdesc = $resultArray['description'];
+                  ?>
+                  
+                  <div class="taskcard">
+                    <h5><?php echo $taskname; ?></h5>
+                    <hr>
+                    <p><?php echo $taskdesc; ?></p>
+                    <form method="post">
+                      <input type="hidden" name="task-delete" value="">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                  </div>
+
+                  <?php
+                }
+              }
+            ?>
+          
+        </div>
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal">
             Create Task
           </button>
@@ -178,7 +230,7 @@ if(isset($_POST['task-name'])){
     <script src="../js/scripts.js"></script>
   </body>
 
-  <footer>
+  <footer style="position:relative;">
     <div class="bg-blue color-white py-3">
         <center>
         <p>

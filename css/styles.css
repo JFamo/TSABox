@@ -10,7 +10,17 @@
 .bg-red{
 	background-color:#CF0C0C;
 }
+.band-red{
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	color:white;
+	background-color:#CF0C0C;
+}
 .bg-blue{
+	background-color:#24368A;
+}
+.band-blue{
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	color:white;
 	background-color:#24368A;
 }
 .bg-white{
@@ -54,6 +64,7 @@ h1{
 
 #content{
 	padding-top:1rem;
+	padding-bottom:1rem;
 }
 
 .contentcard{
@@ -70,4 +81,18 @@ h1{
 }
 .nobtn:hover{
 	color:#24368A;
+}
+
+.taskcard{
+	background-color:#EEEEEE;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	margin:0.5rem 0.5rem 0.5rem 0.5rem;
+	width:20%;
+	transition: all .2s ease-in-out;
+}
+
+.taskcard:hover{
+	transform: scale(1.05);
 }
