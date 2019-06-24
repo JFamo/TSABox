@@ -1,0 +1,35 @@
+.color-red{
+	color:#CF0C0C;
+}
+.color-blue{
+	color:#24368A;
+}
+.color-white{
+	color:white;
+}
+.bg-red{
+	background-color:#CF0C0C;
+}
+.bg-blue{
+	background-color:#24368A;
+}
+.bg-white{
+	background-color:white;
+}
+
+.header{
+	border-bottom:3px solid #CF0C0C;
+}
+
+.nopadding{
+	padding:0 0 0 0;
+}
+
+footer{
+	border-top:3px solid #CF0C0C;
+	position: fixed;
+  	
+  	bottom: 0;
+  	right:0;
+  	left:0;
+}
