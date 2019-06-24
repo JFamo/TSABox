@@ -227,7 +227,9 @@ if(isset($_SESSION['username'])){
       </div>
     </div>
 
-    
+    <div class="text-center">
+      <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Login</a>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
