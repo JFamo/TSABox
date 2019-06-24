@@ -1,4 +1,7 @@
 <?php
+
+
+
 //Basic function to sanitize input data
 function validate($data){
   $data = trim($data);
@@ -31,7 +34,13 @@ function getChapterBalance()
 }
 
 session_start();
-
+$rank = "adviser";
+$username = $_SESSION['username'];
+/*
+$rank = $_SESSION['rank'];
+$fullname = $_SESSION['fullname'];
+$chapter = $_SESSION['chapter'];
+*/
 
 ?>
 
@@ -101,8 +110,9 @@ session_start();
     </ul>
   </div>
 </nav>
-
+<?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
   <div class="container">
+
     <div class="row">
       <div class = "col-sm-12">
         <p>Chapter balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
@@ -113,11 +123,11 @@ session_start();
 
     <?php
 
-          //SECOND THING - TRANSACTIONS
+          //User Balances
 
           require('../php/connect.php');
 
-          $query="SELECT * FROM user_balance WHERE chapter=1";
+          $query="SELECT * FROM user_balance WHERE chapter=1"; //chapter=$chapter
 
           $result = mysqli_query($link, $query);
 
@@ -143,10 +153,102 @@ session_start();
               <?php
             }
           }
+        }
           ?>
               
     </div>
   </div>
+
+
+
+<div class="adminDataSection">
+          <p class="userDashSectionHeader" style="padding-left:0px;">Transact</p>
+          <form method="post" enctype="multipart/form-data" class="fileForm">
+            <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+            <div class="form-row">
+              <div class="col-4">
+                <small>$ Amount</small>
+                <input name="amount" type="number" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>">
+              </div>
+              <div class="col-4">
+                  <small>From</small><br>
+              <!--Give each user as an option-->
+              <select id="personfrom" name="personfrom">
+                <option value="income">Income</option>
+                <option value="chapter">Chapter</option>
+                <?php
+
+                require('../php/connect.php');
+
+                $query="SELECT username FROM user_chapter_mapping WHERE chapter=1 ORDER BY username ASC";
+
+                $result = mysqli_query($link, $query);
+
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                } 
+
+                while(list($username) = mysqli_fetch_array($result)){
+                  //if($personrank != "admin"){ ???
+                  ?>
+
+                  <option><?php echo $username ?></option>
+                  
+                  <?php
+                  }
+                //}
+                    
+                mysqli_close($link);
+
+                ?>
+              </select>
+              </div>
+              <div class="col-4">
+                <small>To</small><br>
+                <!--Give each user as an option-->
+              <select id="personto" name="personto">
+                <option value="expense">Expense</option>
+                <option value="chapter">Chapter</option>
+                <?php
+
+                require('../php/connect.php');
+
+                $query="SELECT id, fullname, rank FROM users WHERE chapter=1 ORDER BY fullname ASC";
+
+                $result = mysqli_query($link, $query);
+
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                } 
+
+                while(list($id, $personname, $personrank) = mysqli_fetch_array($result)){
+                  if($personrank != "admin"){
+                  ?>
+
+                  <option value="<?php echo $id ?>"><?php echo $personname ?></option>
+                  
+                  <?php
+                  }
+                }
+                    
+                mysqli_close($link);
+
+                ?>
+              </select>
+              </div>
+            </div>
+            <div class="form-row">
+                <div class="col-8">
+                  <small>Description</small>
+                  <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>">
+                </div>
+                <div class="col-4">
+                  <input name="transact" type="submit" class="btn btn-primary" id="transact" value="Transact">
+                </div>
+              </div>
+          </form>
+        </div>
+
 
 
     <!-- Optional JavaScript -->
