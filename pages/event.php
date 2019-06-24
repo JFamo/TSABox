@@ -16,25 +16,7 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
-
-//Go to event page for a certain team
-if(isset($_POST['select-event'])){
-
-  $selectevent = addslashes($_POST['select-event']);
-  $selectevent = validate($selectevent);
-
-  require('../php/connect.php');
-  $query = "SELECT id FROM teams WHERE event='$selectevent' AND id IN (SELECT team FROM user_team_mapping WHERE username='$username')";
-  $result = mysqli_query($link,$query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-  list($teamid) = mysqli_fetch_array($result);
-  $_SESSION['team'] = $teamid;
-  header('Location: event.php');
-  mysqli_close($link);
-}
-
+$team = $_SESSION['team'];
 
 ?>
 
@@ -81,7 +63,7 @@ if(isset($_POST['select-event'])){
           EventBox
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item active" href="#">My Events</a>
+          <a class="dropdown-item" href="myevents.php">My Events</a>
           <a class="dropdown-item" href="rules.php">Rules</a>
           <a class="dropdown-item" href="selection.php">Event Selection</a>
           <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
@@ -106,49 +88,21 @@ if(isset($_POST['select-event'])){
 </nav>
 
     <div class="container" id="content">
-      <h1>My Events</h1>
-      <small>Manage your teams and event tasks</small>
+      <h1>
+      <?php
 
-      <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
-        <div class="col-sm-12">
-          <div class="contentcard">
-            <p>Click an event to view tasks, files, and team communication</p>
-            <br>
-            <div class="row">
-            <?php
+        require('../php/connect.php');
 
-              require('../php/connect.php');
-
-              $query="SELECT name, id FROM events WHERE id IN (SELECT event FROM teams WHERE id IN (SELECT team FROM user_team_mapping WHERE username='$username'))";
-              $result = mysqli_query($link, $query);
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              }
-
-              if(mysqli_num_rows($result) == 0){
-                echo "You are not in any events!";
-              }
-              else{
-                $eventnumber = 1;
-                while($resultArray = mysqli_fetch_array($result)){
-
-                  $eventname = $resultArray['name'];
-                  $eventid = $resultArray['id'];
-                  echo "<div class='col-sm-4'>";
-                  echo "<h3><form method='POST'><input type='hidden' name='select-event' value='" . $eventid . "'><input class='nobtn' type='submit' value='" . $eventname . "'></form></h3></div>";
-
-                  if($eventnumber == 3){
-                    echo "</div><br><div class='row'>";
-                  }
-
-                $eventnumber += 1;
-                }
-              }
-            ?>
-            </div>
-          </div>
-        </div>
-      </div>
+        $query="SELECT name FROM events WHERE id IN (SELECT event FROM teams WHERE id='$team')";
+        $result = mysqli_query($link, $query);
+        if (!$result){
+          die('Error: ' . mysqli_error($link));
+        }
+        list($eventname) = mysqli_fetch_array($result);
+        echo $eventname;
+      ?>
+      </h1>
+      <small>Manage your team tasks, files, and communication</small>
     </div>
 
     <!-- Optional JavaScript -->
