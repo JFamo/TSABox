@@ -42,6 +42,66 @@ $fullname = $_SESSION['fullname'];
 $chapter = $_SESSION['chapter'];
 */
 
+//handling transactions
+if(isset($_POST['amount'])){
+
+  //variables assignment
+  $personfrom = $_POST['personfrom'];
+  $personto = $_POST['personto'];
+  $amount = $_POST['amount'];
+  $description = addslashes($_POST['description']);
+
+  require('../php/connect.php');
+
+  
+
+  //make the transaction
+  $query = "INSERT INTO transactions (personto, personfrom, description, amount, date, chapter) VALUES ('$personto', '$personfrom', '$description', '$amount', now(), 1)";
+
+  $result = mysqli_query($link, $query);
+
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+  //update balances
+  if($personto != "expense" && $personto != "chapter"){
+
+    $query2 = "UPDATE users SET balance=balance+'$amount' WHERE id='$personto' AND chapter='$chapter'";
+
+    $result2 = mysqli_query($link, $query2);
+
+    if (!$result2){
+      die('Error: ' . mysqli_error($link));
+    }
+
+  }
+  if($personfrom != "income" && $personfrom != "chapter"){
+
+    $query3 = "UPDATE users SET balance=balance-'$amount' WHERE id='$personfrom' AND chapter='$chapter'";
+
+    $result3 = mysqli_query($link, $query3);
+
+    if (!$result3){
+      die('Error: ' . mysqli_error($link));
+    }
+
+  }
+  /*
+  $activityForm = "Transacted " . $amount . " from " . $personfrom . " to " . $personto;
+    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('$fullname', '$activityForm', now(), '$chapter')";
+
+    if (!mysqli_query($link, $sql)){
+      die('Error: ' . mysqli_error($link));
+    }
+  */
+  mysqli_close($link);
+
+  $fmsg =  "Transaction of ".$amount." Completed Successfully!";
+
+}
+
+
 ?>
 
 <!doctype html>
@@ -159,9 +219,9 @@ $chapter = $_SESSION['chapter'];
     </div>
   </div>
 
+      <!-- transaction stuff -->
 
-
-<div class="adminDataSection">
+        <div class="adminDataSection">
           <p class="userDashSectionHeader" style="padding-left:0px;">Transact</p>
           <form method="post" enctype="multipart/form-data" class="fileForm">
             <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
@@ -213,7 +273,7 @@ $chapter = $_SESSION['chapter'];
 
                 require('../php/connect.php');
 
-                $query="SELECT id, fullname, rank FROM users WHERE chapter=1 ORDER BY fullname ASC";
+                $query="SELECT username FROM user_chapter_mapping WHERE chapter=1 ORDER BY username ASC";
 
                 $result = mysqli_query($link, $query);
 
@@ -221,15 +281,15 @@ $chapter = $_SESSION['chapter'];
                   die('Error: ' . mysqli_error($link));
                 } 
 
-                while(list($id, $personname, $personrank) = mysqli_fetch_array($result)){
-                  if($personrank != "admin"){
+                while(list($username) = mysqli_fetch_array($result)){
+                  //if($personrank != "admin"){ ???
                   ?>
 
-                  <option value="<?php echo $id ?>"><?php echo $personname ?></option>
+                  <option><?php echo $username ?></option>
                   
                   <?php
                   }
-                }
+                //}
                     
                 mysqli_close($link);
 
