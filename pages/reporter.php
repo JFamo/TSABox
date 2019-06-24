@@ -105,36 +105,40 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 </nav>
 
 <!-- Title -->
-<div class="container">
-  <div class="row justify-content-center" style="padding-bottom: 1rem; padding-top: 1rem;">
-    <div class="col-sm-6">
-      <h1> Reporter </h1>
-    </div>
-  </div>
-</div> 
-
-<!-- Reporter reporting new announcement -->
-<div class = "container">
-  <form method="POST">
-    
-    <div class="row justify-content-center" style="padding-top:1rem; padding-bottom: 1rem;">
-
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="announcementTitle"> <h3>New Announcement</h3> </label>
-          <textarea class="form-control" name="announcementTitle" placeholder="Title" rows="1"></textarea>
-        </div>
-        <div class="form-group">
-          <textarea class="form-control" name="announcementText" placeholder="Text" rows="3"></textarea>
-        </div>
-        <button type="submit">Submit</button>
-      </div>
-
-      </div>
-  </form>
+<div class="container" id="content">
+  <h1> Reporter </h1>
+  <small> View announcements by the Reporter </small>
 </div>
 
-<!-- Retrieving form data from database -->
+
+<?php
+  //Check if user is legible to post announcements
+  if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
+  ?>  
+  <!-- Reporter reporting new announcement -->
+  <div class = "container" id="content">
+    <form method="POST">
+      
+      <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="announcementTitle"> <h3>New Announcement</h3> </label>
+            <textarea class="form-control" name="announcementTitle" maxlength=100 placeholder="Title (100 char max)" rows="1"></textarea>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" name="announcementText" maxlength=1000 placeholder="Text (1000 char max)" rows="3"></textarea>
+          </div>
+          <button type="submit">Submit</button>
+        </div>
+
+        </div>
+    </form>
+  </div>
+<?php }
+?>
+
+<!-- Retrieving announcements from database -->
   <?php
     require('../php/connect.php');
 
@@ -145,7 +149,6 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
     }
 
     if(mysqli_num_rows($result) == 0){
-                       //This error case should be changed
       echo "No Matching Results Found!<br>";
     }
     else{
@@ -157,10 +160,10 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
         $date = $resultArray['date'];
         ?>
 
-        <!-- Displaying retrieved data-->
-        <div class="container">
-          <div class="row justify-content-center" style="padding-top: 1rem; padding-bottom: 1rem;">
-            <div class="col-sm-6">
+        <!-- Displaying retrieved announcements-->
+        <div class="container" id="content">
+          <div class="row" style="padding-top: 1rem; padding-bottom: 1rem;">
+            <div class="col-sm-12">
               <div class="contentcard">
                 <p> 
                     <h2> <?php
