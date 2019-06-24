@@ -174,7 +174,7 @@ if(isset($_SESSION['username'])){
         <a class="navbar-brand" href="index.html">
           <div class="row">
             <div class="col nopadding">
-                <img src="images/logoColor.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
+                <img src="images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
             </div>
             <div class="col nopadding">
                 <p>TSABOX</p>
