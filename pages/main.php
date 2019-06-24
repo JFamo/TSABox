@@ -39,7 +39,7 @@ session_start();
             <div class="col nopadding">
                 <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
             </div>
-  <a class="navbar-brand" href="#">Navbar</a>
+  <a class="navbar-brand" href="#">TSABox</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
