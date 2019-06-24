@@ -37,7 +37,9 @@ function isCodeUnique($code){
 
 session_start();
 
+
 //Handle user login
+$fmsg="";
 if(isset($_POST['login-username']) and isset($_POST['login-password'])){
   $username = $_POST['login-username'];
   $password = $_POST['login-password'];
