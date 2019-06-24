@@ -26,7 +26,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../bootstrap-4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i|Ubuntu:400,400i,700,700i&display=swap" rel="stylesheet">
 
@@ -47,30 +47,34 @@ session_start();
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
+          OfficerBox
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="president.php">President</a>
+          <a class="dropdown-item" href="vice.php">Vice President</a>
+          <a class="dropdown-item" href="secretary.php">Secretary</a>
+          <a class="dropdown-item" href="treasurer.php">Treasurer</a>
+          <a class="dropdown-item" href="reporter.php">Reporter</a>
+          <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
         </div>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
+          EventBox
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="myevents.php">My Events</a>
+          <a class="dropdown-item" href="rules.php">Rules</a>
+          <a class="dropdown-item" href="selection.php">Event Selection</a>
+          <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
         </div>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
+          SocialBox
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="profile.php">My Profile</a>
+          <a class="dropdown-item" href="chapter.php">My Chapter</a>
+          <a class="dropdown-item" href="social.php">Find Friends</a>
         </div>
       </li>
     </ul>
@@ -88,7 +92,7 @@ session_start();
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
     <script src="../js/scripts.js"></script>
   </body>
 
@@ -96,7 +100,7 @@ session_start();
     <div class="bg-blue color-white py-3">
         <center>
         <p>
-          For more information, visit <a href="pages/about.html" style="color:white;">The About Page</a>.
+          For more information, visit <a href="about.php" style="color:white;">The About Page</a>.
         </p>
         <p>
           Made by Team T1285, 2018-2019, All Rights Reserved
