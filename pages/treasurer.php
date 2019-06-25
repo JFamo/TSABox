@@ -154,7 +154,7 @@ if(isset($_POST['transact'])){
   }
   
   $activityForm = "Transacted " . $amount . " from " . $personfrom . " to " . $personto;
-    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('username', '$activityForm', now(), $chapter)";
+    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('username', '$activityForm', now(), '$chapter')";
 
     if (!mysqli_query($link, $sql)){
       die('Error: ' . mysqli_error($link));
@@ -260,7 +260,7 @@ if(isset($_POST['transact'])){
 
                 require('../php/connect.php');
 
-                $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+                $query="SELECT username FROM user_chapter_mapping WHERE chapter='$chapter' ORDER BY username ASC";
 
                 $result = mysqli_query($link, $query);
 
@@ -291,7 +291,7 @@ if(isset($_POST['transact'])){
 
                 require('../php/connect.php');
 
-                $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+                $query="SELECT username FROM user_chapter_mapping WHERE chapter='$chapter' ORDER BY username ASC";
 
                 $result = mysqli_query($link, $query);
 
@@ -413,7 +413,7 @@ if(isset($_POST['transact'])){
       <?php
           require('../php/connect.php');
 
-          $query="SELECT personto, personfrom, description, amount, date FROM transactions WHERE chapter=$chapter"; 
+          $query="SELECT personto, personfrom, description, amount, date FROM transactions WHERE chapter='$chapter'"; 
 
           $result = mysqli_query($link, $query);
 
