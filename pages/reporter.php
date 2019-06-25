@@ -21,8 +21,8 @@ $username = $_SESSION['username'];
 if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
   //Accept POST variables, reassign for query
-  $announcementTitle = addslashes($_POST['announcementTitle']);
-  $announcementText = addslashes($_POST['announcementText']);
+  $announcementTitle = validate($_POST['announcementTitle']);
+  $announcementText = validate($_POST['announcementText']);
 
   require('../php/connect.php');
    $query = "INSERT INTO announcements (title, content, username, date) VALUES ('$announcementTitle', '$announcementText', '$username', NOW())";
@@ -112,6 +112,7 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
 
 <?php
+$_SESSION['rank'] = "officer";
   //Check if user is legible to post announcements
   if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
   ?>  
@@ -149,7 +150,11 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
     }
 
     if(mysqli_num_rows($result) == 0){
-      echo "No Matching Results Found!<br>";
+      ?>
+      <div class="container" id="content">
+        <?php echo "There are no announcements! <br>"; ?>
+      </div>
+      <?php
     }
     else{
       while($resultArray = mysqli_fetch_array($result)){
@@ -162,25 +167,23 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
         <!-- Displaying retrieved announcements-->
         <div class="container" id="content">
-          <div class="row" style="padding-top: 1rem; padding-bottom: 1rem;">
-            <div class="col-sm-12">
-              <div class="contentcard">
-                <p> 
+          <div class="row" style="padding-top: 1rem; padding-bottom: 1rem; overflow: auto;">
+            <div class="col-sm-12">              
+                <div class="d-flex"> 
                     <h2> <?php
                     echo $title;
                     ?> </h2>
-                </p>
-                <p>
+                </div>
+                <div class="d-flex">
                   <?php
                     echo $content;
                   ?>
-                </p>
-                <p> 
+                </div>
+                <div class="d-flex" style="padding-top: 0.5rem;"> 
                   <small> <?php
                   echo " - " . $username . " on " . $date;
                   ?> </small>
-                </p> 
-              </div>
+                </div>               
             </div>
           </div>
         </div>
