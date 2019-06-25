@@ -350,7 +350,7 @@ if(isset($_POST['transact'])){
               ?>
               <div class="row">
                 <div class = "col-sm-9">
-                <p><?php echo "User : ".$user ?></p>
+                <p>User: <?php echo getFullName($user) ?></p>
               </div>
                 <div class = "col-sm-3">
                 <p><?php echo "$".$amount ?></p>
