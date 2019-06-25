@@ -116,14 +116,14 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
           if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
             ?>  
             <!-- Reporter reporting new announcement -->
-            <div class = "container" id="content">
+            <div class = "container contentcard" id="content">
+            <h3 style="border-bottom:2px solid #CF0C0C">New Announcement</h3>
               <form method="POST">
 
                 <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
 
                   <div class="col-sm-12">
                     <div class="form-group">
-                      <label for="announcementTitle"> <h3>New Announcement</h3> </label>
                       <textarea class="form-control" name="announcementTitle" maxlength=100 placeholder="Title (100 char max)" rows="1"></textarea>
                     </div>
                     <div class="form-group">
