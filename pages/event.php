@@ -158,16 +158,46 @@ if(isset($_POST['task-delete'])){
                   $taskname = $resultArray['name'];
                   $taskid = $resultArray['id'];
                   $taskdesc = $resultArray['description'];
+                  $taskcreator = $resultArray['creator'];
+                  $taskdate = $resultArray['date'];
+                  $taskweight = $resultArray['weight'];
+
+                  $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
+                  $result2 = mysqli_query($link, $query2);
+                  if (!$result2){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  list($firstname,$lastname) = mysqli_fetch_array($result2);
+
                   ?>
                   
                   <div class="taskcard">
-                    <h5><?php echo $taskname; ?></h5>
+                    <div class="row">
+                      <div class="col-8">
+                        <h5><?php echo $taskname; ?></h5>
+                      </div>
+                      <div class="col-4">
+                        <h3><?php echo $taskweight; ?></h3>
+                      </div>
+                    </div>
                     <hr>
                     <p><?php echo $taskdesc; ?></p>
-                    <form method="post">
-                      <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
-                      <input type="submit" value="Delete" class="btn btn-danger">
-                    </form>
+                    <small>Started <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
+                    <hr>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <form method="post">
+                          <input type="hidden" name="task-complete" value="<?php echo $taskid; ?>">
+                          <input type="submit" value="Complete" class="btn btn-link">
+                        </form>
+                      </div>
+                      <div class="col-sm-6">
+                        <form method="post">
+                          <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
+                          <input type="submit" value="Delete" class="btn btn-danger">
+                        </form>
+                      </div>
+                    </div>
                   </div>
 
                   <?php
@@ -204,6 +234,7 @@ if(isset($_POST['task-delete'])){
                   $taskdesc = $resultArray['description'];
                   $taskcreator = $resultArray['creator'];
                   $taskdate = $resultArray['date'];
+                  $taskweight = $resultArray['weight'];
 
                   $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
                   $result2 = mysqli_query($link, $query2);
@@ -215,15 +246,23 @@ if(isset($_POST['task-delete'])){
                   ?>
                   
                   <div class="taskcard">
-                    <h5><?php echo $taskname; ?></h5>
+                    <div class="row">
+                      <div class="col-8">
+                        <h5><?php echo $taskname; ?></h5>
+                      </div>
+                      <div class="col-4">
+                        <h3><?php echo $taskweight; ?></h3>
+                      </div>
+                    </div>
                     <hr>
                     <p><?php echo $taskdesc; ?></p>
                     <small>Created <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
+                    <hr>
                     <div class="row">
                       <div class="col-sm-6">
                         <form method="post">
                           <input type="hidden" name="task-begin" value="<?php echo $taskid; ?>">
-                          <input type="submit" value="Begin" class="btn btn-primary">
+                          <input type="submit" value="Begin" class="btn btn-link">
                         </form>
                       </div>
                       <div class="col-sm-6">
@@ -273,6 +312,7 @@ if(isset($_POST['task-delete'])){
                   $taskdesc = $resultArray['description'];
                   $taskcreator = $resultArray['creator'];
                   $taskdate = $resultArray['date'];
+                  $taskweight = $resultArray['weight'];
 
                   $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
                   $result2 = mysqli_query($link, $query2);
@@ -284,10 +324,18 @@ if(isset($_POST['task-delete'])){
                   ?>
                   
                   <div class="taskcard">
-                    <h5><?php echo $taskname; ?></h5>
+                    <div class="row">
+                      <div class="col-8">
+                        <h5><?php echo $taskname; ?></h5>
+                      </div>
+                      <div class="col-4">
+                        <h3><?php echo $taskweight; ?></h3>
+                      </div>
+                    </div>
                     <hr>
                     <p><?php echo $taskdesc; ?></p>
                     <small>Completed <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
+                    <hr>
                     <form method="post">
                       <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
                       <input type="submit" value="Delete" class="btn btn-danger">
