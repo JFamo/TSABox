@@ -10,11 +10,26 @@
 .bg-red{
 	background-color:#CF0C0C;
 }
+.band-red{
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	color:white;
+	background-color:#CF0C0C;
+}
 .bg-blue{
+	background-color:#24368A;
+}
+.band-blue{
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	color:white;
 	background-color:#24368A;
 }
 .bg-white{
 	background-color:white;
+}
+.band-grey{
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	color:black;
+	background-color:#EEEEEE;
 }
 
 .header{
@@ -50,4 +65,50 @@ h1{
 @font-face {
     font-family: 'Ubuntu';
     src: url('../fonts/Ubuntu/Ubuntu-Regular.ttf'); 
+}
+
+#content{
+	padding-top:1rem;
+	padding-bottom:1rem;
+}
+
+.contentcard{
+	background-color:#EEEEEE;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+.nobtn{
+	border:0 !important;
+	background-color:rgba(0,0,0,0) !important;
+	cursor:pointer !important;
+}
+.nobtn:hover{
+	color:#24368A;
+}
+
+.taskcard{
+	background-color:#EEEEEE;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+	padding:0.5rem 0.5rem 0.5rem 0.5rem;
+	margin:0.5rem 0.5rem 0.5rem 0.5rem;
+	width:20%;
+	transition: all .2s ease-in-out;
+}
+
+.taskcard:hover{
+	transform: scale(1.05);
+}
+
+@media only screen and (max-width: 990px) {
+  .taskcard{
+  	width:45%;
+  }
+}
+@media only screen and (max-width: 350px) {
+  .taskcard{
+  	width:90%;
+  }
 }

@@ -65,6 +65,14 @@ if(isset($_POST['login-username']) and isset($_POST['login-password'])){
       $_SESSION['username'] = $username;
       $_SESSION['firstname'] = $firstnameValue;
       $_SESSION['lastname'] = $lastnameValue;
+
+      $query3= "SELECT rank FROM ranks WHERE username='$username'";
+      $result3 = mysqli_query($link, $query3);
+      if (!$result3){
+        die('Error: ' . mysqli_error($link));
+      }
+      list($userrank) = mysqli_fetch_array($result3);
+      $_SESSION['rank'] = $userrank;
     }
     else{
       $fmsg = "Invalid Password";
@@ -116,6 +124,12 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
       }
       //Organization Join
       $query2 = "INSERT INTO user_chapter_mapping (username, chapter) VALUES ('$username', '$orgid')";
+      $result2 = mysqli_query($link, $query2);
+      if (!$result2){
+        die('Error: ' . mysqli_error($link));
+      }
+      //Set Rank
+      $query2 = "INSERT INTO ranks (username, rank) VALUES ('$username', 'member')";
       $result2 = mysqli_query($link, $query2);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
@@ -243,42 +257,6 @@ if(isset($_SESSION['username'])){
         </div>
       </div>
     </div>
-  
-    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="defaultForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
-        </div>
-
-        <div class="md-form mb-4">
-          <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="defaultForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
-        </div>
-
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-default">Login</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="text-center">
-  <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch
-    Modal Login Form</a>
-</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
