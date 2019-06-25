@@ -260,7 +260,7 @@ if(isset($_POST['transact'])){
 
                 require('../php/connect.php');
 
-                $query="SELECT username FROM user_chapter_mapping WHERE chapter=1 ORDER BY username ASC";
+                $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
 
                 $result = mysqli_query($link, $query);
 
@@ -269,14 +269,12 @@ if(isset($_POST['transact'])){
                 } 
 
                 while(list($username) = mysqli_fetch_array($result)){
-                  //if($personrank != "admin"){ ???
                   ?>
 
                   <option><?php echo $username ?></option>
                   
                   <?php
                   }
-                //}
                     
                 mysqli_close($link);
 
@@ -293,7 +291,7 @@ if(isset($_POST['transact'])){
 
                 require('../php/connect.php');
 
-                $query="SELECT username FROM user_chapter_mapping WHERE chapter=1 ORDER BY username ASC";
+                $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
 
                 $result = mysqli_query($link, $query);
 
@@ -415,7 +413,7 @@ if(isset($_POST['transact'])){
       <?php
           require('../php/connect.php');
 
-          $query="SELECT personto, personfrom, description, amount, date FROM transactions WHERE chapter=1"; //chapter=$chapter
+          $query="SELECT personto, personfrom, description, amount, date FROM transactions WHERE chapter=$chapter"; 
 
           $result = mysqli_query($link, $query);
 
