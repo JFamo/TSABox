@@ -18,15 +18,24 @@ session_start();
 $username = $_SESSION['username'];
 $rank = $_SESSION['rank'];
 
-//Handler to create a new task
+require('../php/connect.php');
+
+$query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
+$result = mysqli_query($link, $query);
+if (!$result){
+  die('Error: ' . mysqli_error($link));
+}
+list($chapter) = mysqli_fetch_array($result);
+
+//Handler to create a new goal
 if(isset($_POST['task-name'])){
 
   $taskname = validate($_POST['task-name']);
   $taskdesc = validate($_POST['task-description']);
-  $taskweight = validate($_POST['task-weight']);
+  $taskofficer = validate($_POST['task-officer']);
 
   require('../php/connect.php');
-  $query = "INSERT INTO tasks (name, description, team, creator, weight) VALUES ('$taskname', '$taskdesc', '$team', '$username', '$taskweight')";
+  $query = "INSERT INTO officergoals (name, description, chapter, creator, officer) VALUES ('$taskname', '$taskdesc', '$chapter', '$username', '$taskofficer')";
   $result = mysqli_query($link,$query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
@@ -40,35 +49,11 @@ if(isset($_POST['task-delete'])){
   $taskdelete = validate($_POST['task-delete']);
 
   require('../php/connect.php');
-  $query = "DELETE FROM tasks WHERE id='$taskdelete'";
+  $query = "DELETE FROM officergoals WHERE id='$taskdelete'";
   $result = mysqli_query($link,$query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
   }
-  mysqli_close($link);
-
-}
-
-//Handler to begin a task
-if(isset($_POST['task-begin'])){
-
-  require('../php/connect.php');
-
-  $taskid = $_POST['task-begin'];
-
-  $sql = "UPDATE tasks SET status='progress' WHERE id='$taskid'";
-  if (!mysqli_query($link, $sql)){
-    die('Error: ' . mysqli_error($link));
-  }
-  $sql = "UPDATE tasks SET creator='$username' WHERE id='$taskid'";
-  if (!mysqli_query($link, $sql)){
-    die('Error: ' . mysqli_error($link));
-  }
-  $sql = "UPDATE tasks SET date=NOW() WHERE id='$taskid'";
-  if (!mysqli_query($link, $sql)){
-    die('Error: ' . mysqli_error($link));
-  }
-
   mysqli_close($link);
 
 }
@@ -80,15 +65,15 @@ if(isset($_POST['task-complete'])){
 
   $taskid = $_POST['task-complete'];
 
-  $sql = "UPDATE tasks SET status='complete' WHERE id='$taskid'";
+  $sql = "UPDATE officergoals SET status='complete' WHERE id='$taskid'";
   if (!mysqli_query($link, $sql)){
     die('Error: ' . mysqli_error($link));
   }
-  $sql = "UPDATE tasks SET creator='$username' WHERE id='$taskid'";
+  $sql = "UPDATE officergoals SET creator='$username' WHERE id='$taskid'";
   if (!mysqli_query($link, $sql)){
     die('Error: ' . mysqli_error($link));
   }
-  $sql = "UPDATE tasks SET date=NOW() WHERE id='$taskid'";
+  $sql = "UPDATE officergoals SET date=NOW() WHERE id='$taskid'";
   if (!mysqli_query($link, $sql)){
     die('Error: ' . mysqli_error($link));
   }
@@ -117,22 +102,12 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
 
   }
 
-  //file viewality
-  $view = $_POST['view'];
-
   //get poster
   $poster = $username;
 
   require('../php/connect.php');
 
-  $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
-  $result = mysqli_query($link, $query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-  list($chapter) = mysqli_fetch_array($result);
-
-  $query = "INSERT INTO officerfiles (name, size, type, content, date, view, poster, chapter) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster', '$chapter')";
+  $query = "INSERT INTO officerfiles (name, size, type, content, date, poster, chapter) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$poster', '$chapter')";
 
   $result = mysqli_query($link, $query);
 
@@ -153,7 +128,7 @@ if(isset($_POST['deleteFileID'])){
 
   require('../php/connect.php');
 
-  $query = "DELETE FROM teamfiles WHERE id = '$fileid'";
+  $query = "DELETE FROM officerfiles WHERE id = '$fileid'";
 
   $result = mysqli_query($link, $query);
 
@@ -198,7 +173,7 @@ if(isset($_POST['deleteFileID'])){
                 OfficerBox
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="president.php">President</a>
+                <a class="dropdown-item active" href="#">President</a>
                 <a class="dropdown-item" href="vice.php">Vice President</a>
                 <a class="dropdown-item" href="secretary.php">Secretary</a>
                 <a class="dropdown-item" href="treasurer.php">Treasurer</a>
@@ -247,7 +222,7 @@ if(isset($_POST['deleteFileID'])){
 
                 require('../php/connect.php');
 
-                $query="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM ranks WHERE rank='officer')";
+                $query="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM ranks WHERE rank='officer' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter='$chapter'))";
                 $result = mysqli_query($link, $query);
                 if (!$result){
                   die('Error: ' . mysqli_error($link));
@@ -273,7 +248,7 @@ if(isset($_POST['deleteFileID'])){
 
                   require('../php/connect.php');
 
-                  $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team' AND status='progress'";
+                  $query="SELECT id, name, description, creator, date, officer FROM officergoals WHERE chapter='$chapter' AND status='progress'";
                   $result = mysqli_query($link, $query);
                   if (!$result){
                     die('Error: ' . mysqli_error($link));
@@ -290,7 +265,7 @@ if(isset($_POST['deleteFileID'])){
                       $taskdesc = $resultArray['description'];
                       $taskcreator = $resultArray['creator'];
                       $taskdate = $resultArray['date'];
-                      $taskweight = $resultArray['weight'];
+                      $taskofficer = $resultArray['officer'];
 
                       $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
                       $result2 = mysqli_query($link, $query2);
@@ -303,16 +278,14 @@ if(isset($_POST['deleteFileID'])){
 
                       <div class="taskcard">
                         <div class="row">
-                          <div class="col-8">
+                          <div class="col-12">
                             <h5><?php echo $taskname; ?></h5>
-                          </div>
-                          <div class="col-4">
-                            <h3><?php echo $taskweight; ?></h3>
+                            <h6><?php echo $taskofficer; ?></h6>
                           </div>
                         </div>
                         <hr>
                         <p><?php echo $taskdesc; ?></p>
-                        <small>Started <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
+                        <small>Created <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
                         <hr>
                         <div class="row">
                           <div class="col-sm-6">
@@ -335,84 +308,12 @@ if(isset($_POST['deleteFileID'])){
                   }
                   ?>
                 </div>
-              </div>
-            </div>
 
-            <div class="row pt-5">
-              <div class="col-sm-12">
-                <h3 class="band-grey">Backlog</h3>
-
-                <div class="d-flex justify-content-start flex-wrap">
-                  <?php
-
-                  require('../php/connect.php');
-
-                  $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team' AND status='backlog'";
-                  $result = mysqli_query($link, $query);
-                  if (!$result){
-                    die('Error: ' . mysqli_error($link));
-                  }
-
-                  if(mysqli_num_rows($result) == 0){
-                    echo "No Backlogged Tasks";
-                  }
-                  else{
-                    while($resultArray = mysqli_fetch_array($result)){
-
-                      $taskname = $resultArray['name'];
-                      $taskid = $resultArray['id'];
-                      $taskdesc = $resultArray['description'];
-                      $taskcreator = $resultArray['creator'];
-                      $taskdate = $resultArray['date'];
-                      $taskweight = $resultArray['weight'];
-
-                      $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
-                      $result2 = mysqli_query($link, $query2);
-                      if (!$result2){
-                        die('Error: ' . mysqli_error($link));
-                      }
-                      list($firstname,$lastname) = mysqli_fetch_array($result2);
-
-                      ?>
-
-                      <div class="taskcard">
-                        <div class="row">
-                          <div class="col-8">
-                            <h5><?php echo $taskname; ?></h5>
-                          </div>
-                          <div class="col-4">
-                            <h3><?php echo $taskweight; ?></h3>
-                          </div>
-                        </div>
-                        <hr>
-                        <p><?php echo $taskdesc; ?></p>
-                        <small>Created <?php echo $taskdate; ?> by <?php echo $firstname . " " . $lastname; ?></small>
-                        <hr>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <form method="post">
-                              <input type="hidden" name="task-begin" value="<?php echo $taskid; ?>">
-                              <input type="submit" value="Begin" class="btn btn-link">
-                            </form>
-                          </div>
-                          <div class="col-sm-6">
-                            <form method="post">
-                              <input type="hidden" name="task-delete" value="<?php echo $taskid; ?>">
-                              <input type="submit" value="Delete" class="btn btn-danger">
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-
-                      <?php
-                    }
-                  }
-                  ?>
-                </div><br>
-
+                <br>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#taskModal">
                   Create Task
                 </button>
+
               </div>
             </div>
 
@@ -425,7 +326,7 @@ if(isset($_POST['deleteFileID'])){
 
                   require('../php/connect.php');
 
-                  $query="SELECT id, name, description, creator, date, weight FROM tasks WHERE team='$team' AND status='complete'";
+                  $query="SELECT id, name, description, creator, date, officer FROM officergoals WHERE chapter='$chapter' AND status='complete'";
                   $result = mysqli_query($link, $query);
                   if (!$result){
                     die('Error: ' . mysqli_error($link));
@@ -442,7 +343,7 @@ if(isset($_POST['deleteFileID'])){
                       $taskdesc = $resultArray['description'];
                       $taskcreator = $resultArray['creator'];
                       $taskdate = $resultArray['date'];
-                      $taskweight = $resultArray['weight'];
+                      $taskofficer = $resultArray['officer'];
 
                       $query2="SELECT firstname, lastname FROM users WHERE username='$taskcreator'";
                       $result2 = mysqli_query($link, $query2);
@@ -455,11 +356,9 @@ if(isset($_POST['deleteFileID'])){
 
                       <div class="taskcard">
                         <div class="row">
-                          <div class="col-8">
+                          <div class="col-12">
                             <h5><?php echo $taskname; ?></h5>
-                          </div>
-                          <div class="col-4">
-                            <h3><?php echo $taskweight; ?></h3>
+                            <h6><?php echo $taskofficer; ?></h6>
                           </div>
                         </div>
                         <hr>
@@ -482,23 +381,18 @@ if(isset($_POST['deleteFileID'])){
 
             <div class="row pt-5">
               <div class="col-sm-12">
-                <h3 class="band-blue">Files</h3>
+                <h3 class="band-red">Files</h3>
                 <form class="pb-3" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
                   <div class="form-control">
                     <h5>Upload Files</h5>
-                    <div class="col-4">
+                    <div class="row">
+                    <div class="col-8">
                       <input style="font-size:16px;" name="userfile" type="file" id="userfile">
                     </div>
                     <div class="col-4">
-                      <small>Who Can View :</small>
-                      <select id="view" name="view" class="form-control form-control-sm">
-                        <option value="all">All</option>
-                        <option value="officer">Officers Only</option>
-                      </select>
-                    </div>
-                    <div class="col-4">
                       <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                    </div>
                     </div>
                   </div>
                 </form>
@@ -508,7 +402,7 @@ if(isset($_POST['deleteFileID'])){
 
                   <?php
                   require('../php/connect.php');
-                  $query="SELECT id, name, date, view, poster FROM teamfiles WHERE team='$team'";
+                  $query="SELECT id, name, date, poster FROM officerfiles WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')";
                   $result = mysqli_query($link, $query);
                   if (!$result){
                     die('Error: ' . mysqli_error($link));
@@ -518,52 +412,29 @@ if(isset($_POST['deleteFileID'])){
                     echo "No Files Found!<br>";
                   }
                   else{
-              //FOR MEMBERS - check if all available files are hidden
-                    if($rank == "member"){
-                      $viewLevel = "all";
-                      $query2="SELECT id, view FROM teamfiles WHERE view='$viewLevel' AND team='$team'";
-                      $result2 = mysqli_query($link, $query2);
-                      if (!$result2){
-                        die('Error: ' . mysqli_error($link));
-                      }
-                      if(mysqli_num_rows($result2) == 0){
-                        $doMemberSkip = 1;
-                      }
-                    }
-                    if($doMemberSkip == 1){
-                      echo "No Files Found!<br>";
-                    }
-                    else{
-                      while(list($id, $name, $date, $view, $poster) = mysqli_fetch_array($result)){
-                        if(($view == "officer" && ($rank == "officer" || $rank == "admin" || $rank == "adviser")) || ($view == "all")){
-                          ?>
-                          <tr>
-                            <td><a class="text-primary" href="../php/download_teamfiles.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
-                            <?php
-                            if($view == "officer"){ ?>
-                            <td><p style="float:left;">Private</p></td>
-                            <?php } ?>
-                            <td><p style="float:right;"><?php echo "".$date ?></p></td>
-                            <?php
-                            $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
-                            $result3 = mysqli_query($link, $query3);
-                            if (!$result3){
-                              die('Error: ' . mysqli_error($link));
-                            }
-                            list($firstname,$lastname) = mysqli_fetch_array($result3);
-                            ?>
-                            <td><p style="float:right;"><?php echo "".$firstname." ".$lastname ?></p></td>
-                            <td>
-                              <form method="post" id="deleteFileForm">
-                                <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
-                                <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
-                                <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
-                              </form>
-                            </td>
-                          </tr>
+                    while(list($id, $name, $date, $poster) = mysqli_fetch_array($result)){
+                        ?>
+                        <tr>
+                          <td><a class="text-primary" href="../php/download_officerfiles.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
+                          <td><p style="float:right;"><?php echo "".$date ?></p></td>
                           <?php
-                        }
-                      }
+                          $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
+                          $result3 = mysqli_query($link, $query3);
+                          if (!$result3){
+                            die('Error: ' . mysqli_error($link));
+                          }
+                          list($firstname,$lastname) = mysqli_fetch_array($result3);
+                          ?>
+                          <td><p style="float:right;"><?php echo "".$firstname." ".$lastname ?></p></td>
+                          <td>
+                            <form method="post" id="deleteFileForm">
+                              <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
+                              <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
+                              <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
+                            </form>
+                          </td>
+                        </tr>
+                        <?php
                     }
                   }
 
@@ -580,9 +451,9 @@ if(isset($_POST['deleteFileID'])){
                 <script src="../js/Chart.js"></script>
                 <canvas id="chartjs-4" class="chartjs" width="962" height="481" style="display: block; height: 385px; width: 770px;"></canvas>
 
-                <script>new Chart(document.getElementById("chartjs-4"),{"type":"doughnut","data":{"labels":["In Progress","Complete","Backlog"],"datasets":[{"label":"Event Weight","data":[<?php
+                <script>new Chart(document.getElementById("chartjs-4"),{"type":"doughnut","data":{"labels":["In Progress","Complete"],"datasets":[{"label":"Tasks","data":[<?php
                 require('../php/connect.php');
-                $query = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='progress'";
+                $query = "SELECT COUNT(id) FROM officergoals WHERE chapter='$chapter' AND status='progress'";
                 $result = mysqli_query($link,$query);
                 if (!$result){
                   die('Error: ' . mysqli_error($link));
@@ -591,23 +462,14 @@ if(isset($_POST['deleteFileID'])){
                 echo $progress_weight;
                 ?>,<?php
                 require('../php/connect.php');
-                $query = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='complete'";
+                $query = "SELECT COUNT(id) FROM officergoals WHERE chapter='$chapter' AND status='complete'";
                 $result = mysqli_query($link,$query);
                 if (!$result){
                   die('Error: ' . mysqli_error($link));
                 }
                 list($progress_weight) = mysqli_fetch_array($result);
                 echo $progress_weight;
-                ?>,<?php
-                require('../php/connect.php');
-                $query = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='backlog'";
-                $result = mysqli_query($link,$query);
-                if (!$result){
-                  die('Error: ' . mysqli_error($link));
-                }
-                list($progress_weight) = mysqli_fetch_array($result);
-                echo $progress_weight;
-                ?>],"backgroundColor":["rgb(255, 99, 132)","rgb(54, 162, 235)","rgb(255, 205, 86)"]}]}});</script>
+                ?>],"backgroundColor":["rgb(255, 99, 132)","rgb(54, 162, 235)"]}]}});</script>
 
                 <?php 
                 mysqli_close($link);
@@ -631,7 +493,7 @@ if(isset($_POST['deleteFileID'])){
                     <div class="form-row">
                       <div class="form-group col-md-12">
                         <label for="task-name">Task Name</label>
-                        <input type="text" maxlength="50" class="form-control" id="task-name" name="task-name" placeholder="Name">
+                        <input type="text" maxlength="50" class="form-control" id="task-name" name="task-name" placeholder="Name" required>
                       </div>
                     </div>
                     <div class="form-row">
@@ -641,14 +503,20 @@ if(isset($_POST['deleteFileID'])){
                       </div>
                     </div>
                     <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <small>
-                          Task weight is a number that tracks how important this task is to the project. A task with weight 4 is twice as important as one with weight 2.
-                        </small>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="task-weight">Task Weight</label>
-                        <input type="number" value="1" min="0" max="100" name="task-weight">
+                      <div class="form-group col-md-12">
+                        <label for="task-name">Assigned Officer</label>
+                        <select name="task-officer" class="form-control">
+                          <option value="President">President</option>
+                          <option value="Vice President">Vice President</option>
+                          <option value="Secretary">Secretary</option>
+                          <option value="Treasurer">Treasurer</option>
+                          <option value="Reporter">Reporter</option>
+                          <option value="Sergeant at Arms">Sergeant at Arms</option>
+                          <option value="Parliamentarian">Parliamentarian</option>
+                          <option value="Historian">Historian</option>
+                          <option value="Committee Chair">Committee Chair</option>
+                          <option value="Other/All">Other/All</option>
+                        </select>
                       </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Create Task</button>
