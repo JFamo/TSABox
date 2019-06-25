@@ -139,26 +139,34 @@ if(isset($_POST['deleteFileID'])){
   <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
     <div class="col-sm-12"> 
         <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
+          <div class="contentcard">
+            <h3 style="border-bottom:2px solid #CF0C0C">Upload</h3>
             <form method="post" enctype="multipart/form-data">
               <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-              <div class="form-control">
-                <div class="col-12">
-                  <input style="font-size:16px;" name="userfile" type="file" id="userfile">
-                </div>
-                <div class="col-6">
+              <div class="form-control" style="border:0;">
+                <div class="row py-3">
+                  <div class="col-sm-6">
+                    <input style="font-size:16px;" name="userfile" type="file" id="userfile">
+                  </div>
+                  <div class="col-sm-6">
                     <small>Who Can View :</small>
-                <select id="view" name="view" class="form-control form-control-sm">
-                  <option value="all">All</option>
-                  <option value="officer">Officers Only</option>
-                </select>
+                    <select id="view" name="view" class="form-control form-control-sm">
+                      <option value="all">All</option>
+                      <option value="officer">Officers Only</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="col-12">
-                <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                <div class="row">
+                  <div class="col-12">
+                    <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                  </div>
                 </div>
               </div>
             </form>
+          </div>
         <?php } ?>
         <br>
+            <h3 style="border-bottom:2px solid #CF0C0C">Browse</h3>
           <table class="minutesTable">
 
           <?php
@@ -227,7 +235,7 @@ if(isset($_POST['deleteFileID'])){
           mysqli_close($link);
           ?>
 
-          </table>  
+          </table>
         </div>
 </div>
 </div>
