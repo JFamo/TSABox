@@ -17,6 +17,15 @@ session_start();
 
 $username = $_SESSION['username'];
 
+require('../php/connect.php');
+
+$query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
+$result = mysqli_query($link, $query);
+if (!$result){
+  die('Error: ' . mysqli_error($link));
+}
+list($chapter) = mysqli_fetch_array($result);
+
 //Go to event page for a certain team
 if(isset($_POST['select-event'])){
 
@@ -159,7 +168,7 @@ if(isset($_POST['select-event'])){
 
               require('../php/connect.php');
 
-              $query="SELECT teams FROM limits WHERE event IN (SELECT id FROM events WHERE level IN (SELECT level FROM chapters WHERE id IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')))";
+              $query="SELECT min, max, teams FROM limits WHERE event IN (SELECT id FROM events WHERE level IN (SELECT level FROM chapters WHERE id='$chapter'))";
               $result = mysqli_query($link, $query);
               if (!$result){
                 die('Error: ' . mysqli_error($link));
@@ -169,10 +178,12 @@ if(isset($_POST['select-event'])){
               }
               else{
                 while($resultArray = mysqli_fetch_array($result)){
-
                   $teams = $resultArray['teams'];
-                  echo $teams;
-
+                  $min = $resultArray['min'];
+                  $max = $resultArray['max'];
+                  for($team = 0; $team < $teams; $team++){
+                    
+                  }
                 }
               }
             ?>
