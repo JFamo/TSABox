@@ -16,6 +16,7 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
 $team = $_SESSION['team'];
 
 //Handler to create a new task
@@ -93,6 +94,67 @@ if(isset($_POST['task-complete'])){
     die('Error: ' . mysqli_error($link));
   }
     
+  mysqli_close($link);
+
+}
+
+if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
+
+  //file details
+  $fileName = $_FILES['userfile']['name'];
+  $tmpName = $_FILES['userfile']['tmp_name'];
+  $fileSize = $_FILES['userfile']['size'];
+  $fileType = $_FILES['userfile']['type'];
+
+  //file data manipulation
+  $fp = fopen($tmpName, 'r');
+  $content = fread($fp, filesize($tmpName));
+  $content = addslashes($content);
+  fclose($fp);
+
+  if(!get_magic_quotes_gpc()){
+
+    $fileName = addslashes($fileName);
+
+  }
+
+  //file viewality
+  $view = $_POST['view'];
+
+  //get poster
+  $poster = $username;
+
+  require('../php/connect.php');
+
+  $query = "INSERT INTO teamfiles (name, size, type, content, date, view, poster, team) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster', '$team')";
+
+  $result = mysqli_query($link, $query);
+
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+  mysqli_close($link);
+
+}
+
+//file deletion
+if(isset($_POST['deleteFileID'])){
+
+  //file details
+  $fileid = $_POST['deleteFileID'];
+  $filename = $_POST['deleteFileName'];
+
+  require('../php/connect.php');
+
+  $query = "DELETE FROM teamfiles WHERE id = '$fileid'";
+
+  $result = mysqli_query($link, $query);
+
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
   mysqli_close($link);
 
 }
@@ -181,7 +243,8 @@ if(isset($_POST['task-complete'])){
         echo $eventname;
       ?>
       </h1>
-      <small>Manage your team tasks, files, and communication</small>
+      <small>Manage your team tasks, files, and communication</small><br>
+      <a href="myevents.php">Return to My Events</a>
 
       <div class="row pt-5">
         <div class="col-sm-12">
@@ -398,6 +461,30 @@ if(isset($_POST['task-complete'])){
         </div><br>
         </div>
       </div>
+
+      <div class="row pt-5">
+        <div class="col-sm-12">
+          <h3 class="band-blue">Files</h3>
+            <form method="post" enctype="multipart/form-data">
+              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+              <div class="form-control">
+                <div class="col-4">
+                  <input style="font-size:16px;" name="userfile" type="file" id="userfile">
+                </div>
+                <div class="col-4">
+                    <small>Who Can View :</small>
+                <select id="view" name="view" class="form-control form-control-sm">
+                  <option value="all">All</option>
+                  <option value="officer">Officers Only</option>
+                </select>
+                </div>
+                <div class="col-4">
+                <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
 
     </div>
 

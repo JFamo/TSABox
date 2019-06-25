@@ -65,6 +65,14 @@ if(isset($_POST['login-username']) and isset($_POST['login-password'])){
       $_SESSION['username'] = $username;
       $_SESSION['firstname'] = $firstnameValue;
       $_SESSION['lastname'] = $lastnameValue;
+
+      $query3= "SELECT rank FROM ranks WHERE username='$username'";
+      $result3 = mysqli_query($link, $query3);
+      if (!$result3){
+        die('Error: ' . mysqli_error($link));
+      }
+      list($userrank) = mysqli_fetch_array($result3);
+      $_SESSION['rank'] = $userrank;
     }
     else{
       $fmsg = "Invalid Password";
@@ -116,6 +124,12 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
       }
       //Organization Join
       $query2 = "INSERT INTO user_chapter_mapping (username, chapter) VALUES ('$username', '$orgid')";
+      $result2 = mysqli_query($link, $query2);
+      if (!$result2){
+        die('Error: ' . mysqli_error($link));
+      }
+      //Set Rank
+      $query2 = "INSERT INTO ranks (username, rank) VALUES ('$username', 'member')";
       $result2 = mysqli_query($link, $query2);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
