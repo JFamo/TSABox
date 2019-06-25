@@ -154,7 +154,7 @@ if(isset($_POST['transact'])){
   }
   
   $activityForm = "Transacted " . $amount . " from " . $personfrom . " to " . $personto;
-    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('username', '$activityForm', now(), 1)";
+    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('username', '$activityForm', now(), $chapter)";
 
     if (!mysqli_query($link, $sql)){
       die('Error: ' . mysqli_error($link));
