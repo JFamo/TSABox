@@ -125,7 +125,14 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
 
   require('../php/connect.php');
 
-  $query = "INSERT INTO teamfiles (name, size, type, content, date, view, poster, team) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster', '$team')";
+  $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  list($chapter) = mysqli_fetch_array($result);
+
+  $query = "INSERT INTO officerfiles (name, size, type, content, date, view, poster, chapter) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster', '$chapter')";
 
   $result = mysqli_query($link, $query);
 
@@ -229,30 +236,18 @@ if(isset($_POST['deleteFileID'])){
 
           <div class="container" id="content">
             <h1>
-              <?php
-
-              require('../php/connect.php');
-
-              $query="SELECT name FROM events WHERE id IN (SELECT event FROM teams WHERE id='$team')";
-              $result = mysqli_query($link, $query);
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              }
-              list($eventname) = mysqli_fetch_array($result);
-              echo $eventname;
-              ?>
+              President
             </h1>
-            <small>Manage your team tasks, files, and communication</small><br>
-            <a href="myevents.php">Return to My Events</a>
+            <small>Manage your officer team's plan of work</small><br>
 
             <div class="row pt-5">
               <div class="col-sm-12">
-                <h3 class="band-blue">My Team</h3>
+                <h3 class="band-blue">The Officer Team</h3>
                 <?php
 
                 require('../php/connect.php');
 
-                $query="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$team')";
+                $query="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM ranks WHERE rank='officer')";
                 $result = mysqli_query($link, $query);
                 if (!$result){
                   die('Error: ' . mysqli_error($link));
