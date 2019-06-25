@@ -243,12 +243,9 @@ if(isset($_POST['transact'])){
 
     <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
     <!-- transaction stuff -->
-    <br><br>
-    <div class = "container">
-      <div class = "row">
-        <h3>Transact</h3>
-      </div>
-      <form method="post" enctype="multipart/form-data" class="form-control">
+    <div class = "container mt-5 contentcard">
+      <h3 style="border-bottom:2px solid #CF0C0C">Transact</h3>
+      <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
         <div class="form-row">
           <div class="col-4">
@@ -333,11 +330,8 @@ if(isset($_POST['transact'])){
       </form>
     </div>
 
-
-    <div class = "container">
-      <div class="row" style="padding-top: 1rem;">
-        <h3>Balances </h3>
-      </div>
+    <div class = "container pt-5">
+      <h3 style="border-bottom:2px solid #CF0C0C">Balances</h3>
       <div class="row">
         <div class = "col-sm-9">
           <p>Chapter Balance:</p>
@@ -408,12 +402,8 @@ if(isset($_POST['transact'])){
     ?>
     </div>
 
-    <br><br>
-
-    <div class= "container">
-      <div class = "row">
-        <h3> Transaction History </h3>
-      </div>
+    <div class= "container pt-5">
+      <h3 style="border-bottom:2px solid #CF0C0C">Transaction History</h3>
       <?php
       require('../php/connect.php');
 
