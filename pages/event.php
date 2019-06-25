@@ -118,15 +118,12 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
 
   }
 
-  //file viewality
-  $view = $_POST['view'];
-
   //get poster
   $poster = $username;
 
   require('../php/connect.php');
 
-  $query = "INSERT INTO teamfiles (name, size, type, content, date, view, poster, team) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster', '$team')";
+  $query = "INSERT INTO teamfiles (name, size, type, content, date, poster, team) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$poster', '$team')";
 
   $result = mysqli_query($link, $query);
 
@@ -493,18 +490,13 @@ if(isset($_POST['deleteFileID'])){
                   <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
                   <div class="form-control">
                     <h5>Upload Files</h5>
-                    <div class="col-4">
+                    <div class="row">
+                    <div class="col-8">
                       <input style="font-size:16px;" name="userfile" type="file" id="userfile">
                     </div>
                     <div class="col-4">
-                      <small>Who Can View :</small>
-                      <select id="view" name="view" class="form-control form-control-sm">
-                        <option value="all">All</option>
-                        <option value="officer">Officers Only</option>
-                      </select>
-                    </div>
-                    <div class="col-4">
                       <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                    </div>
                     </div>
                   </div>
                 </form>
@@ -514,62 +506,38 @@ if(isset($_POST['deleteFileID'])){
 
                   <?php
                   require('../php/connect.php');
-                  $query="SELECT id, name, date, view, poster FROM teamfiles WHERE team='$team'";
+                  $query="SELECT id, name, date, poster FROM teamfiles WHERE team='$team'";
                   $result = mysqli_query($link, $query);
                   if (!$result){
                     die('Error: ' . mysqli_error($link));
                   }
-                  $doMemberSkip = 0;
                   if(mysqli_num_rows($result) == 0){
                     echo "No Files Found!<br>";
                   }
                   else{
-              //FOR MEMBERS - check if all available files are hidden
-                    if($rank == "member"){
-                      $viewLevel = "all";
-                      $query2="SELECT id, view FROM teamfiles WHERE view='$viewLevel' AND team='$team'";
-                      $result2 = mysqli_query($link, $query2);
-                      if (!$result2){
-                        die('Error: ' . mysqli_error($link));
-                      }
-                      if(mysqli_num_rows($result2) == 0){
-                        $doMemberSkip = 1;
-                      }
-                    }
-                    if($doMemberSkip == 1){
-                      echo "No Files Found!<br>";
-                    }
-                    else{
-                      while(list($id, $name, $date, $view, $poster) = mysqli_fetch_array($result)){
-                        if(($view == "officer" && ($rank == "officer" || $rank == "admin" || $rank == "adviser")) || ($view == "all")){
-                          ?>
-                          <tr>
-                            <td><a class="text-primary" href="../php/download_teamfiles.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
-                            <?php
-                            if($view == "officer"){ ?>
-                            <td><p style="float:left;">Private</p></td>
-                            <?php } ?>
-                            <td><p style="float:right;"><?php echo "".$date ?></p></td>
-                            <?php
-                            $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
-                            $result3 = mysqli_query($link, $query3);
-                            if (!$result3){
-                              die('Error: ' . mysqli_error($link));
-                            }
-                            list($firstname,$lastname) = mysqli_fetch_array($result3);
-                            ?>
-                            <td><p style="float:right;"><?php echo "".$firstname." ".$lastname ?></p></td>
-                            <td>
-                              <form method="post" id="deleteFileForm">
-                                <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
-                                <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
-                                <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
-                              </form>
-                            </td>
-                          </tr>
-                          <?php
+                    while(list($id, $name, $date, $poster) = mysqli_fetch_array($result)){
+                      ?>
+                      <tr>
+                        <td><a class="text-primary" href="../php/download_teamfiles.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
+                        <td><p style="float:right;"><?php echo "".$date ?></p></td>
+                        <?php
+                        $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
+                        $result3 = mysqli_query($link, $query3);
+                        if (!$result3){
+                          die('Error: ' . mysqli_error($link));
                         }
-                      }
+                        list($firstname,$lastname) = mysqli_fetch_array($result3);
+                        ?>
+                        <td><p style="float:right;"><?php echo "".$firstname." ".$lastname ?></p></td>
+                        <td>
+                          <form method="post" id="deleteFileForm">
+                            <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
+                            <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
+                            <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
+                          </form>
+                        </td>
+                      </tr>
+                      <?php
                     }
                   }
 
