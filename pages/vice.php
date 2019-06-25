@@ -285,18 +285,18 @@ $rank = $_SESSION['rank'];
     <script src="../js/scripts.js"></script>
   </body>
 
-  <footer style="position:relative;">
-    <div class="bg-blue color-white py-3">
-        <center>
-        <p>
-          For more information, visit <a href="about.php" style="color:white;">The About Page</a>.
-        </p>
-        <p>
-          Made by Team T1285, 2018-2019, All Rights Reserved
-        </p>
-        </center>
-    </div>
-  </footer>
+  <footer <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>style="position:relative;"<?php } ?>>
+          <div class="bg-blue color-white py-3">
+            <center>
+              <p>
+                For more information, visit <a href="about.php" style="color:white;">The About Page</a>.
+              </p>
+              <p>
+                Made by Team T1285, 2018-2019, All Rights Reserved
+              </p>
+            </center>
+          </div>
+        </footer>
 
 </html>
 

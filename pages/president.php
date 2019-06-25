@@ -215,6 +215,8 @@ if(isset($_POST['deleteFileID'])){
             </h1>
             <small>Manage your officer team's plan of work</small><br>
 
+           <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
+
             <div class="row pt-5">
               <div class="col-sm-12">
                 <h3 class="band-blue">The Officer Team</h3>
@@ -524,6 +526,13 @@ if(isset($_POST['deleteFileID'])){
                 </div>
               </div>
             </div>
+
+<?php }else{ ?>
+
+  <p>Only officers can view this page!</p>
+
+<?php } ?>
+
           </div>
 
           <!-- Optional JavaScript -->
@@ -534,7 +543,7 @@ if(isset($_POST['deleteFileID'])){
           <script src="../js/scripts.js"></script>
         </body>
 
-        <footer style="position:relative;">
+        <footer <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>style="position:relative;"<?php } ?>>
           <div class="bg-blue color-white py-3">
             <center>
               <p>
