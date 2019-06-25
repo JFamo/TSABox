@@ -46,7 +46,7 @@ if(isset($_POST['newBio'])){
   }
   list($bio) = mysqli_fetch_array($result);
   if($bio==""){
-      $query1 = "INSERT INTO `bio` (`user`, `content`) VALUES ('$username', '$newBio')";
+      $query1 = "INSERT INTO `bio` (`username`, `content`) VALUES ('$username', '$newBio')";
       $result2 = mysqli_query($link, $query1);
 
       if (!$result2){
@@ -179,7 +179,7 @@ if(isset($_POST['newBio'])){
         <div class="col-sm-12">
           <div class="form-group">
             <label for="bio"> <h3>Change Bio</h3> </label>
-            <textarea class="form-control" name="newBio" maxlength=200 placeholder="Title (200 char max)" rows="1"></textarea>
+            <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1"></textarea>
           </div>
           <button type="submit">Submit</button>
         </div>
