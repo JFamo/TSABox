@@ -465,9 +465,10 @@ if(isset($_POST['deleteFileID'])){
       <div class="row pt-5">
         <div class="col-sm-12">
           <h3 class="band-blue">Files</h3>
-            <form method="post" enctype="multipart/form-data">
+            <form class="pb-3" method="post" enctype="multipart/form-data">
               <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
               <div class="form-control">
+              <h5>Upload Files</h5>
                 <div class="col-4">
                   <input style="font-size:16px;" name="userfile" type="file" id="userfile">
                 </div>
@@ -485,6 +486,7 @@ if(isset($_POST['deleteFileID'])){
             </form>
 
             <table style="width:80%;">
+            <h5>Download Files</h5>
 
             <?php
             require('../php/connect.php');
@@ -524,7 +526,15 @@ if(isset($_POST['deleteFileID'])){
                         <td><p style="float:left;">Private</p></td>
                       <?php } ?>
                     <td><p style="float:right;"><?php echo "".$date ?></p></td>
-                    <td><p style="float:right;"><?php echo "".$poster ?></p></td>
+                    <?php
+                      $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
+                      $result3 = mysqli_query($link, $query3);
+                      if (!$result3){
+                        die('Error: ' . mysqli_error($link));
+                      }
+                      list($firstname,$lastname) = mysqli_fetch_array($result3);
+                    ?>
+                    <td><p style="float:right;"><?php echo "".$firstname." ".$lastname ?></p></td>
                     <td>
                       <form method="post" id="deleteFileForm">
                         <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
