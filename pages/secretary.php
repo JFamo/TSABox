@@ -142,24 +142,24 @@ if(isset($_POST['deleteFileID'])){
             <form method="post" enctype="multipart/form-data">
               <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
               <div class="form-control">
-                <div class="col-4">
+                <div class="col-12">
                   <input style="font-size:16px;" name="userfile" type="file" id="userfile">
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <small>Who Can View :</small>
                 <select id="view" name="view" class="form-control form-control-sm">
                   <option value="all">All</option>
                   <option value="officer">Officers Only</option>
                 </select>
                 </div>
-                <div class="col-4">
+                <div class="col-12">
                 <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
                 </div>
               </div>
             </form>
         <?php } ?>
         <br>
-          <table style="width:80%;">
+          <table class="minutesTable">
 
           <?php
           require('../php/connect.php');
@@ -240,7 +240,7 @@ if(isset($_POST['deleteFileID'])){
     <script src="../js/scripts.js"></script>
   </body>
 
-  <footer>
+  <footer style="position:relative;">
     <div class="bg-blue color-white py-3">
         <center>
         <p>

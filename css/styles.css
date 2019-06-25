@@ -51,3 +51,13 @@ h1{
     font-family: 'Ubuntu';
     src: url('../fonts/Ubuntu/Ubuntu-Regular.ttf'); 
 }
+
+.minutesTable {
+    width: 80%;
+}
+
+@media only screen and (max-width: 990px) {
+.minutesTable {
+    width: 100%;
+}
+}
