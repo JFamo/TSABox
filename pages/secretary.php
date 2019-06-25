@@ -158,7 +158,7 @@ if(isset($_POST['deleteFileID'])){
               </div>
             </form>
         <?php } ?>
-
+        <br>
           <table style="width:80%;">
 
           <?php
@@ -199,7 +199,14 @@ if(isset($_POST['deleteFileID'])){
                       <td><p style="float:left;">Private</p></td>
                     <?php } ?>
                   <td><p style="float:right;"><?php echo "".$date ?></p></td>
-                  <td><p style="float:right;"><?php echo "".$poster ?></p></td>
+                  <?php $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
+                  $result3 = mysqli_query($link, $query3);
+                  if(!$result3){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  list($firstname,$lastname) = mysqli_fetch_array($result3);
+                  ?>
+                  <td><p style="float:right;"><?php echo " " . $firstname . " " . $lastname ?></p></td>
                   <?php
                     if($rank == "officer" || $rank == "admin" || $rank == "adviser"){
                   ?>
