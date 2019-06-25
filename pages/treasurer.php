@@ -318,8 +318,8 @@ if(isset($_POST['transact'])){
 
       
         <br>
-<!-- Everyone's balance -->
-
+<!-- Everyone's balance 
+  
         <div class="container">
           <div class = "row">
               <p>User Balance Quickview</p>
@@ -370,12 +370,13 @@ if(isset($_POST['transact'])){
                 </div>
             </div>
           </div>
-
+-->
 
     <div class= "container">
       <div class = "row">
         Transaction History
       </div>
+      <br>
       <?php
           require('../php/connect.php');
 
@@ -420,7 +421,7 @@ if(isset($_POST['transact'])){
     <script src="../js/scripts.js"></script>
   </body>
 
-  <footer>
+  <footer style = "position:relative">
     <div class="bg-blue color-white py-3">
         <center>
         <p>
