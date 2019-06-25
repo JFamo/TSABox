@@ -33,7 +33,7 @@ session_start();
   </head>
   <body>
     <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="#">
           <div class="row">
             <div class="col nopadding">
                 <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
