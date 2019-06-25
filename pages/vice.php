@@ -94,104 +94,180 @@ $rank = $_SESSION['rank'];
   <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
   <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
     <div class="col-sm-12"> 
-          <div class="contentcard">
-            <h3 style="border-bottom:2px solid #CF0C0C">Membership Overview</h3>
-            <form method="post" enctype="multipart/form-data">
-              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-              <div class="form-control" style="border:0;">
-                <div class="row py-3">
-                  <div class="col-sm-6">
-                    <input style="font-size:16px;" name="userfile" type="file" id="userfile">
-                  </div>
-                  <div class="col-sm-6">
-                    <small>Who Can View :</small>
-                    <select id="view" name="view" class="form-control form-control-sm">
-                      <option value="all">All</option>
-                      <option value="officer">Officers Only</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-12">
-                    <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        <br>
-            <h3 style="border-bottom:2px solid #CF0C0C">Browse</h3>
-          <table class="minutesTable">
+      <div class="contentcard" id="canvasSection" style="height:300px;">
+        <h3 style="border-bottom:2px solid #CF0C0C">Membership Summary</h3>
+        <script src="../js/Chart.js"></script>
+          <div id="canvasDiv">
+            <canvas id="gradeChart" style="max-width:40%; float:left;"></canvas>
+            <canvas id="rankChart" style="max-width:40%; float:right;"></canvas>
+            </div>
+        <script>
+          var ctx = document.getElementById('gradeChart').getContext('2d');
+          var chart = new Chart(ctx, {
+              // The type of chart we want to create
+              type: 'doughnut',
+              // The data for our dataset
+              data: {
+                  labels: ["Freshmen", "Sophomores", "Juniors", "Seniors"],
+                  datasets: [{
+                      label: "My First dataset",
+                      backgroundColor: ['rgb(28, 115, 255)','rgb(165,70,87)','rgb(238,227,171)','rgb(115,186,155)'],
+                      data: [<?php
+                require("../php/connect.php");
+                //get number of 9th graders
+                $query="SELECT COUNT(username) FROM users WHERE grade='9' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers . ", ";
+                //get number of 10th graders
+                $query="SELECT COUNT(username) FROM users WHERE grade='10' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers . ", ";
+                //get number of 11th graders
+                $query="SELECT COUNT(username) FROM users WHERE grade='11' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers . ", ";
+                //get number of 12th graders
+                $query="SELECT COUNT(username) FROM users WHERE grade='12' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers;
+                mysqli_close($link);
+                ?>],
+                  }]
+              },
+              // Configuration options go here
+              options: {
+                circumference: 2 * Math.PI,
+                cutoutPercentage: 75
+              }
+          });
+          var ctx = document.getElementById('rankChart').getContext('2d');
+          var chart = new Chart(ctx, {
+              // The type of chart we want to create
+              type: 'doughnut',
+              // The data for our dataset
+              data: {
+                  labels: ["Advisers", "Officers", "Members"],
+                  datasets: [{
+                      label: "My First dataset",
+                      backgroundColor: ['rgb(28, 115, 255)','rgb(165,70,87)','rgb(238,227,171)'],
+                      data: [<?php
+                require("../php/connect.php");
+                //get number of advisers
+                $query="SELECT COUNT(username) FROM ranks WHERE rank='adviser' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers . ", ";
+                //get number of officers
+                $query="SELECT COUNT(username) FROM ranks WHERE rank='officer' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers . ", ";
+                //get number of members
+                $query="SELECT COUNT(username) FROM ranks WHERE rank='member' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username = '$username'))";
+                $result = mysqli_query($link, $query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($numUsers) = mysqli_fetch_array($result);
+                echo $numUsers;
+                ?>],
+                  }]
+              },
+              // Configuration options go here
+              options: {
+                circumference: 2 * Math.PI,
+                cutoutPercentage: 75
+              }
+          });
+        </script>
+      </div>
+      <br>
+      <div>
+      <h3 style="border-bottom:2px solid #CF0C0C">Members and Events</h3>
+        <table class="minutesTable">
+        <tr>
+          <th>
+            <b style="float:left;">Name</b>
+          </th>
+          <th>
+            <b style="float:left;">Grade</b>
+          </th>
+          <th>
+            <b style="float:left;"># of Events</b>
+          </th>
+        </tr>
+
+        <?php
+        require('../php/connect.php');
+        $query="SELECT firstname, lastname, username, grade FROM users WHERE username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) ORDER BY lastname ASC";
+        $result = mysqli_query($link, $query);
+        if (!$result){
+          die('Error: ' . mysqli_error($link));
+        }
+        while(list($firstname, $lastname, $user, $grade) = mysqli_fetch_array($result)){
+            ?>
+
+          <tr>
+            <td><p class="" style="float:left;"><?php echo $firstname." ".$lastname ?></p></td>
+            <td><p class="" style="float:left;"><?php echo $grade ?></p></td>
+            <?php $query2="SELECT COUNT(username) FROM user_team_mapping WHERE username='$user'";
+            $result2 = mysqli_query($link, $query2);
+            if(!$result2){
+              die('Error: ' . mysqli_error($link));
+            }
+            list($eventcount) = mysqli_fetch_array($result2);
+            ?>
+            <td><p style="float:left; <?php if($eventcount < 3 || $eventcount > 6){ echo'color:red;'; } ?>"><?php echo $eventcount ?></p></td>
+            <td>
+              <button class="nobtn" data-toggle="collapse" href="#events-<?php echo $user; ?>" aria-expanded="false">&#9660;</button>
+            </td>
+          </tr>
+          <tr class="collapse out" id="events-<?php echo $user; ?>">
+            <td style="padding-left:1rem;" colspan="4">
+                <div class="card"><?php 
+                $query3="SELECT name FROM events WHERE id IN (SELECT event FROM teams WHERE id IN (SELECT team FROM user_team_mapping WHERE username='$user'))";
+                $result3 = mysqli_query($link, $query3);
+                if(!$result3){
+                  die('Error: ' . mysqli_error($link));
+                }
+                while(list($eventname) = mysqli_fetch_array($result3)){
+                  echo $eventname . "<br>";
+                }
+                ?></div>
+            </td>
+          </tr>
 
           <?php
-          require('../php/connect.php');
-          $query="SELECT id, name, date, view, size, poster FROM minutes WHERE poster IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username'))";
-          $result = mysqli_query($link, $query);
-          if (!$result){
-            die('Error: ' . mysqli_error($link));
           }
-          $doMemberSkip = 0;
-          if(mysqli_num_rows($result) == 0){
-            echo "No Minutes Found!<br>";
-          }
-          else{
-            //FOR MEMBERS - check if all available files are hidden
-            if($rank == "member"){
-              $viewLevel = "all";
-              $query2="SELECT id, view FROM minutes WHERE view='$viewLevel' AND poster IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username'))";
-              $result2 = mysqli_query($link, $query2);
-              if (!$result2){
-                die('Error: ' . mysqli_error($link));
-              }
-              if(mysqli_num_rows($result2) == 0){
-                $doMemberSkip = 1;
-              }
-            }
-            if($doMemberSkip == 1){
-                echo "No Minutes Found!<br>";
-            }
-            else{
-              while(list($id, $name, $date, $view, $size, $poster) = mysqli_fetch_array($result)){
-                if(($view == "officer" && ($rank == "officer" || $rank == "admin" || $rank == "adviser")) || ($view == "all")){
-                  ?>
-                <tr>
-                  <td><a class="text-primary" href="../php/download_minutes.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
-                      <td><p style="float:left;"><?php echo round(($size / 1024) , 2) ?>KB</p></td>
-                  <td><p style="float:right;"><?php echo "".$date ?></p></td>
-                  <?php $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
-                  $result3 = mysqli_query($link, $query3);
-                  if(!$result3){
-                    die('Error: ' . mysqli_error($link));
-                  }
-                  list($firstname,$lastname) = mysqli_fetch_array($result3);
-                  ?>
-                  <td><p style="float:right;"><?php echo " " . $firstname . " " . $lastname ?></p></td>
-                  <?php
-                    if($rank == "officer" || $rank == "admin" || $rank == "adviser"){
-                  ?>
-                  <td>
-                    <form method="post" id="deleteFileForm">
-                      <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
-                      <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
-                      <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
-                    </form>
-                  </td>
-                  <?php
-                    }
-                  ?>
-                </tr>
-                <?php
-                }
-              }
-            }
-          }
-              
           mysqli_close($link);
           ?>
 
-          </table>
+        </table>
         </div>
-</div>
+      </div>
+    </div>
 
 <?php }else{ ?>
 
