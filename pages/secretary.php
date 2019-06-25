@@ -163,7 +163,7 @@ if(isset($_POST['deleteFileID'])){
 
           <?php
           require('../php/connect.php');
-          $query="SELECT id, name, date, view, poster FROM minutes WHERE poster IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username'))";
+          $query="SELECT id, name, date, view, size, poster FROM minutes WHERE poster IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username'))";
           $result = mysqli_query($link, $query);
           if (!$result){
             die('Error: ' . mysqli_error($link));
@@ -189,15 +189,12 @@ if(isset($_POST['deleteFileID'])){
                 echo "No Minutes Found!<br>";
             }
             else{
-              while(list($id, $name, $date, $view, $poster) = mysqli_fetch_array($result)){
+              while(list($id, $name, $date, $view, $size, $poster) = mysqli_fetch_array($result)){
                 if(($view == "officer" && ($rank == "officer" || $rank == "admin" || $rank == "adviser")) || ($view == "all")){
                   ?>
                 <tr>
                   <td><a class="text-primary" href="../php/download_minutes.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
-                  <?php
-                  if($view == "officer"){ ?>
-                      <td><p style="float:left;">Private</p></td>
-                    <?php } ?>
+                      <td><p style="float:left;"><?php echo round(($size / 1024) , 2) ?>KB</p></td>
                   <td><p style="float:right;"><?php echo "".$date ?></p></td>
                   <?php $query3="SELECT firstname, lastname FROM users WHERE username='$poster'";
                   $result3 = mysqli_query($link, $query3);
