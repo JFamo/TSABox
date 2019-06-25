@@ -19,23 +19,28 @@ function validate($data){
 function getChapterBalance()
 {
   $returnValue = 0;
-  $chapter = 1; //$_SESSION['chapter'];
+  $chapter = 1;
   require('../php/connect.php');
-  $transQ = "SELECT chapter, amount FROM chapter_transactions WHERE chapter='$chapter'";
+  $transQ = "SELECT personto, personfrom, amount FROM transactions WHERE chapter='$chapter'";
   $transR = mysqli_query($link, $transQ);
   if (!$transR){
     die('Error: ' . mysqli_error($link));
   }
   while($row = mysqli_fetch_array($transR)){
+    if($row['personto'] == 'chapter'){
       $returnValue += $row['amount'];
+    }
+    if($row['personfrom'] == 'chapter'){
+      $returnValue -= $row['amount'];
+    }
   }
-
   return $returnValue;
 }
 
 session_start();
 $rank = "adviser";
 $username = $_SESSION['username'];
+$amount = 0;
 /*
 $rank = $_SESSION['rank'];
 $fullname = $_SESSION['fullname'];
@@ -43,7 +48,7 @@ $chapter = $_SESSION['chapter'];
 */
 
 //handling transactions
-if(isset($_POST['amount'])){
+if(isset($_POST['transact'])){
 
   //variables assignment
   $personfrom = $_POST['personfrom'];
@@ -55,7 +60,7 @@ if(isset($_POST['amount'])){
 
   
 
-  //make the transaction
+  //add the transaction to the mysql
   $query = "INSERT INTO transactions (personto, personfrom, description, amount, date, chapter) VALUES ('$personto', '$personfrom', '$description', '$amount', now(), 1)";
 
   $result = mysqli_query($link, $query);
@@ -67,7 +72,7 @@ if(isset($_POST['amount'])){
   //update balances
   if($personto != "expense" && $personto != "chapter"){
 
-    $query2 = "UPDATE users SET balance=balance+'$amount' WHERE id='$personto' AND chapter='$chapter'";
+    $query2 = "UPDATE user_balance SET balance=balance+'$amount' WHERE user='$personto' AND chapter=1";
 
     $result2 = mysqli_query($link, $query2);
 
@@ -78,7 +83,7 @@ if(isset($_POST['amount'])){
   }
   if($personfrom != "income" && $personfrom != "chapter"){
 
-    $query3 = "UPDATE users SET balance=balance-'$amount' WHERE id='$personfrom' AND chapter='$chapter'";
+    $query3 = "UPDATE user_balance SET balance=balance-'$amount' WHERE user='$personfrom' AND chapter=1";
 
     $result3 = mysqli_query($link, $query3);
 
@@ -87,14 +92,14 @@ if(isset($_POST['amount'])){
     }
 
   }
-  /*
+  
   $activityForm = "Transacted " . $amount . " from " . $personfrom . " to " . $personto;
-    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('$fullname', '$activityForm', now(), '$chapter')";
+    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('username', '$activityForm', now(), 1)";
 
     if (!mysqli_query($link, $sql)){
       die('Error: ' . mysqli_error($link));
     }
-  */
+  
   mysqli_close($link);
 
   $fmsg =  "Transaction of ".$amount." Completed Successfully!";
@@ -309,7 +314,57 @@ if(isset($_POST['amount'])){
           </form>
         </div>
 
+<!-- Everyone's balance -->
+        <div class="row" style="width:97.5%; padding:0; margin:0;">
+          <div class="col-8"  style="padding:0; margin:0; text-align:left;">
+            <div class="adminDataSection" style="padding-left:15px; width:97.5%; padding-bottom: 20px;">
+              <p class="userDashSectionHeader" style="padding-left:0px;">User Balance Quickview</p>
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                  <div class="carousel-inner">
+                    <?php
 
+                    require('../php/connect.php');
+
+                    $query="SELECT user, balance FROM user_balance WHERE chapter=1 ORDER BY user ASC";
+
+                    $result = mysqli_query($link, $query);
+
+                    if (!$result){
+                      die('Error: ' . mysqli_error($link));
+                    }
+
+                    $isfirst = true;
+
+                    while(list($personname, $personbalance) = mysqli_fetch_array($result)){
+                      if($personrank != "admin"){
+                      ?>
+                      <div class="carousel-item <?php if($isfirst){ echo "active"; } ?>">
+                        <div class="innerCarouselText">
+                            <p><?php echo $personname ?></p>
+                            <p><?php echo "$".$personbalance ?></p>
+                        </div>
+                      </div>
+
+                      <?php
+                      $isfirst = false;
+                      }
+                    }
+                        
+                    mysqli_close($link);
+
+                  ?>
+                  </div>
+                  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </div>
+            </div>
+          </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
