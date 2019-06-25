@@ -134,6 +134,12 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
       if (!$result2){
         die('Error: ' . mysqli_error($link));
       }
+      //Set Hold
+      $query2 = "INSERT INTO holds (username, status) VALUES ('$username', 'hold')";
+      $result2 = mysqli_query($link, $query2);
+      if (!$result2){
+        die('Error: ' . mysqli_error($link));
+      }
       $fmsg = "Successfully Registered!";
     }
     else{
