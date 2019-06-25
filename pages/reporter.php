@@ -129,7 +129,7 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
                     <div class="form-group">
                       <textarea class="form-control" name="announcementText" maxlength=1000 placeholder="Text (1000 char max)" rows="3"></textarea>
                     </div>
-                    <button type="submit">Submit</button>
+                    <button class="btn btn-primary" type="submit">Post</button>
                   </div>
 
                 </div>
