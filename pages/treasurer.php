@@ -78,6 +78,7 @@ if(isset($_POST['transact'])){
   //variables assignment
   $personfrom = $_POST['personfrom'];
   $personto = $_POST['personto'];
+  if(!($personto=="expense"&&$personfrom=="income")){
   $amount = $_POST['amount'];
   $description = addslashes($_POST['description']);
 
@@ -97,25 +98,65 @@ if(isset($_POST['transact'])){
   //update balances
   if($personto != "expense" && $personto != "chapter"){
 
+    $query1 = "SELECT balance FROM user_balance WHERE user='$personto'";
+
+    $result2 = mysqli_query($link, $query1);
+
+    if (!$result2){
+      die('Error: ' . mysqli_error($link));
+    }
+
+    list($balance) = mysqli_fetch_array($result2);
+
+    if($balance==""){
+
+      $query1 = "INSERT INTO `user_balance` (`user`, `balance`) VALUES ('$personto', '$amount')";
+      $result2 = mysqli_query($link, $query1);
+
+      if (!$result2){
+      die('Error: ' . mysqli_error($link));
+      }
+    }else{
     $query2 = "UPDATE user_balance SET balance=balance+'$amount' WHERE user='$personto'";
 
     $result2 = mysqli_query($link, $query2);
 
     if (!$result2){
       die('Error: ' . mysqli_error($link));
+    
+      }
     }
-
   }
-  if($personfrom != "income" && $personfrom != "chapter"){
+  if($personfrom != "expense" && $personfrom != "chapter"){
 
-    $query3 = "UPDATE user_balance SET balance=balance-'$amount' WHERE user='$personfrom'";
+    $query1 = "SELECT balance FROM user_balance WHERE user='$personfrom'";
 
-    $result3 = mysqli_query($link, $query3);
+    $result2 = mysqli_query($link, $query1);
 
-    if (!$result3){
+    if (!$result2){
       die('Error: ' . mysqli_error($link));
     }
 
+    list($balance) = mysqli_fetch_array($result2);
+
+    if($balance==""){
+
+      $query1 = "INSERT INTO `user_balance` (`user`, `balance`) VALUES ('$personfrom', '-$amount')";
+      $result2 = mysqli_query($link, $query1);
+
+      if (!$result2){
+      die('Error: ' . mysqli_error($link));
+      }
+    }else{
+    $query2 = "UPDATE user_balance SET balance=balance-'$amount' WHERE user='$personfrom'";
+
+    $result2 = mysqli_query($link, $query2);
+
+    if (!$result2){
+      die('Error: ' . mysqli_error($link));
+    
+      }
+    }
   }
   
   $activityForm = "Transacted " . $amount . " from " . $personfrom . " to " . $personto;
@@ -129,6 +170,7 @@ if(isset($_POST['transact'])){
 
   $fmsg =  "Transaction of ".$amount." Completed Successfully!";
 
+}
 }
 
 
