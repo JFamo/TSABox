@@ -15,6 +15,33 @@ function validate($data){
 
 session_start();
 
+$username = $_SESSION['username'];
+
+//get permission settings
+require('../php/connect.php');
+
+//post scores
+if(isset($_POST['scoreValue'])){
+
+  //variables assignment
+  $testNum = $_POST['testNumber'];
+  $scoreVal = $_POST['scoreValue'];
+  $myName = addslashes($username);
+
+  require('../php/connect.php');
+
+  $query = "INSERT INTO scores (username, test, score) VALUES ('$myName', '$testNum', '$scoreVal')";
+
+  $result = mysqli_query($link,$query);
+
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+  mysqli_close($link);
+}
+
+
 
 ?>
 
@@ -84,8 +111,10 @@ session_start();
     </ul>
   </div>
 </nav>
+
   <div class="containter" id="content">
-    <h1>Parliamentarian</h1>
+    <h1> Parliamentarian </h1>
+    
     <small>The Parliamentarian page contains links to parliamentary procedure study guides and practice tests, and allows for the automatic generation of a randomized practice Chapter Team test</small>
 
     <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
@@ -93,7 +122,7 @@ session_start();
         <div class="contentcard">
           <div class="row" style="width:97.5%;">
   
-        <center>
+        
         <div class="col-sm-9" id="content" style="padding:0 0 0 0;">
           <div class="adminDataSection" style="margin-bottom:15px; width:97.5%; padding-left:5%; padding-right:5%; padding-bottom: 2.5%"><center>
           <p class="userDashSectionHeader" style="padding-left:0;">Practice Test</p>
@@ -132,7 +161,7 @@ session_start();
 
                 require('../php/connect.php');
 
-                $query = "SELECT fullname, MAX(score) FROM scores WHERE test='100' AND chapter='$chapter' GROUP BY fullname ORDER BY MAX(score) DESC LIMIT 12";
+                $query = "SELECT username, MAX(score) FROM scores WHERE test='100' AND username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) GROUP BY username ORDER BY MAX(score) DESC LIMIT 10";
 
                 $result = mysqli_query($link,$query);
 
@@ -161,7 +190,16 @@ session_start();
 
               ?>
             </ul>
-          <?php if($rank == "admin" || $rank == "adviser") { ?>
+          <?php 
+          require('../php/connect.php');
+          $query = "SELECT rank FROM ranks WHERE username='$username'";
+          $rank = mysqli_query($link, $query);
+
+          if(!$result){
+            die('Error : ' . mysqli_error($link));
+          }
+
+          if($rank == "admin" || $rank == "adviser") { ?>
             <br>
             <form method="post">
               <input type="submit" name="clearScores" class="btn btn-danger" value="Clear Scores"/>
@@ -185,7 +223,7 @@ session_start();
     <script src="../js/parli.js"></script>
   </body>
 
-  <footer>
+  <footer style = "position:relative">
     <div class="bg-blue color-white py-3">
         <center>
         <p>
