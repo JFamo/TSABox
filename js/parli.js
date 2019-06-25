@@ -721,12 +721,6 @@ function generate(){
 	if(difficulty == "chapter"){
 		numquestions = 50;
 	}
-	if(difficulty == "benchmark1"){
-		numquestions = 20;
-	}
-	if(difficulty == "benchmark2"){
-		numquestions = 25;
-	}
 	//check if # of questions is too large
 	if(difficulty == "beginner" && numquestions > beginner.length){
 		numquestions = beginner.length;
@@ -817,12 +811,6 @@ function generate(){
 				var thisquestion = challenging[rand];
 			}
 		}
-		else if(difficulty == "benchmark1"){
-			var thisquestion = getBenchmarkOne(i);
-		}
-		else if(difficulty == "benchmark2"){
-			var thisquestion = getBenchmarkTwo(i);
-		}
 		questions.push(thisquestion);
 	}
 	//output
@@ -864,14 +852,6 @@ function submitAnswers(){
 	content.innerHTML = '<div class="adminDataSection" style="margin-bottom: 15px; padding-top:15px; padding-bottom:15px;"><center><b style="font-size:20px;">Score : ' + numberCorrect + " / " + numquestions + "</b><br></center></div>" + content.innerHTML;
 	window.scrollTo(0,0);
 	//PHP submission
-	if(difficulty == "benchmark1"){
-		document.getElementById('scoreValue').value = numberCorrect;
-		document.getElementById('testNumber').value = 1;
-	}
-	if(difficulty == "benchmark2"){
-		document.getElementById('scoreValue').value = numberCorrect;
-		document.getElementById('testNumber').value = 2;
-	}
 	if(difficulty == "chapter"){
 		document.getElementById('scoreValue').value = numberCorrect;
 		document.getElementById('testNumber').value = 100;

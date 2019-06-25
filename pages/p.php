@@ -40,28 +40,6 @@ if(isset($_POST['scoreValue'])){
 
   mysqli_close($link);
 }
-//clear scores
-require('../php/connect.php');
-$query = "SELECT rank FROM ranks WHERE username='$username'";
-          $rank = mysqli_query($link, $query);
-
-          if(!$rank){
-            die('Error : ' . mysqli_error($link));
-          }
-if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
-
-  
-
-  $query = "TRUNCATE TABLE scores";
-
-  $result = mysqli_query($link,$query);
-
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-
-  mysqli_close($link);
-}
 
 
 
@@ -80,9 +58,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
 
     <title>TSABox</title>
   </head>
-
-  <body>    
-    <!-- Nav Bar -->
+  <body>
     <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
         <a class="navbar-brand" href="index.html">
           <div class="row">
@@ -94,7 +70,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav"> 
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           OfficerBox
@@ -105,7 +81,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
           <a class="dropdown-item" href="secretary.php">Secretary</a>
           <a class="dropdown-item" href="treasurer.php">Treasurer</a>
           <a class="dropdown-item" href="reporter.php">Reporter</a>
-          <a class="dropdown-item active" href="#">Parliamentarian</a>
+          <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
         </div>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -136,17 +112,19 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
   </div>
 </nav>
 
-<!-- Title -->
-<div class="container" id="content">
-  <h1> Parliamentarian </h1>
-  <small> The Parliamentarian page contains links to parliamentary procedure study guides and practice tests, and allows for the automatic generation of a randomized practice Chapter Team test </small>
+  <div class="containter" id="content">
+    <h1> Parliamentarian </h1>
+    
+    <small>The Parliamentarian page contains links to parliamentary procedure study guides and practice tests, and allows for the automatic generation of a randomized practice Chapter Team test</small>
+  </div>
 
-<div class="row" style="padding-top:1rem; padding-bottom:1rem;">
+    <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
       <div class="col-sm-12">
         <div class="contentcard">
           <div class="row" style="width:97.5%;">
-
-<div class="col-sm-9" id="content" style="padding:0 0 0 0;">
+  
+        
+        <div class="col-sm-9" id="content" style="padding:0 0 0 0;">
           <div class="adminDataSection" style="margin-bottom:15px; width:97.5%; padding-left:5%; padding-right:5%; padding-bottom: 2.5%"><center>
           <p class="userDashSectionHeader" style="padding-left:0;">Practice Test</p>
           <form id="createForm">
@@ -218,7 +196,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
           $query = "SELECT rank FROM ranks WHERE username='$username'";
           $rank = mysqli_query($link, $query);
 
-          if(!$rank){
+          if(!$result){
             die('Error : ' . mysqli_error($link));
           }
 
@@ -226,11 +204,8 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
             <br>
             <form method="post">
               <input type="submit" name="clearScores" class="btn btn-danger" value="Clear Scores"/>
-
             </form>
-
-          <?php 
-          } mysqli_close($link) ?>
+          <?php } ?>
           </center></div>
         </div>
         <div class="col-sm-3" style="padding:0 0 0 0;">
@@ -255,7 +230,6 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
       </div>
     </div>
   </div>
-  </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -264,9 +238,6 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
     <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
     <script src="../js/scripts.js"></script>
     <script src="../js/parli.js"></script>
-
-    <iframe name="hideframe" style="display:none;"></iframe>
-
   </body>
 
   <footer style = "position:relative">
