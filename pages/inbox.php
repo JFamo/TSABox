@@ -121,9 +121,9 @@ if(isset($_POST['newBio'])){
           SocialBox
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">My Profile</a>
-          <a class="dropdown-item" href="social.php">Find Friends</a>          
-          <a class="dropdown-item" href="inbox.php">My Inbox</a>
+          <a class="dropdown-item" href="profile.php">My Profile</a>
+          <a class="dropdown-item" href="social.php">Find Friends</a>
+          <a class="dropdown-item" href="#">My Inbox</a>
         </div>
       </li>
       <li class="nav-item">
@@ -135,137 +135,33 @@ if(isset($_POST['newBio'])){
   </div>
 </nav>
 
-<!-- Title -->
-<div class="container" id="content">
+
+<div class= "container">
   <div class = "row">
-    <div class = "col-sm-9">
-      <h1> <?php echo $username ?>'s Profile  </h1>
-    </div>
-    <div class = "col-sm-3">
-
-    </div>
+    <h2> Messages </h2>
   </div>
-  <div class = "row">
-    <p> <?php
-    require('../php/connect.php');
-    $query = "SELECT name FROM chapters WHERE id=(SELECT chapter FROM user_chapter_mapping WHERE username='$username')";
-    $result = mysqli_query($link, $query);
-    list($chapter) = mysqli_fetch_array($result);
-    echo $chapter;
-    ?>
-    </p>
-  </div>
-  <div class = "row">
-    <p>
-      <?php 
-        require('../php/connect.php');
-        $query = "SELECT content FROM bio WHERE username='$username'";
-        $result = mysqli_query($link, $query);
-        list($post) = mysqli_fetch_array($result);
-        echo $post;
-      ?>
-    </p>
-  </div>
-
-
-</div>
-
-<!-- Reporter reporting new post -->
-  <div class = "container" id="content">
-    <form method="POST">
-      
-      <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
-
-        <div class="col-sm-12">
-          <div class="form-group">
-            <label for="bio"> <h3>Change Bio</h3> </label>
-            <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1"></textarea>
-          </div>
-          <button type="submit">Submit</button>
-        </div>
-
-        </div>
-    </form>
-  </div>
-
-
-
-  <!-- Reporter reporting new post -->
-  <div class = "container" id="content">
-    <form method="POST">
-      
-      <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
-
-        <div class="col-sm-12">
-          <div class="form-group">
-            <label for="postTitle"> <h3>New post</h3> </label>
-            <textarea class="form-control" name="postTitle" maxlength=100 placeholder="Title (100 char max)" rows="1"></textarea>
-          </div>
-          <div class="form-group">
-            <textarea class="form-control" name="postText" maxlength=1000 placeholder="Text (1000 char max)" rows="3" required></textarea>
-          </div>
-          <button type="submit">Submit</button>
-        </div>
-
-        </div>
-    </form>
-  </div>
-
-<!-- Retrieving posts from database -->
   <?php
-    require('../php/connect.php');
-
-    $query="SELECT * FROM posts WHERE username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) ORDER BY date DESC";
-    $result = mysqli_query($link, $query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-
-    if(mysqli_num_rows($result) == 0){
+      require('../php/connect.php');
+      $query = "SELECT personfrom, content, date FROM messages WHERE personto='$username'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      while(list($personfrom, $message, $date) = mysqli_fetch_array($result)){
       ?>
-      <div class="container" id="content">
-        <?php echo "There are no posts! <br>"; ?>
-      </div>
-      <?php
-    }
-    else{
-      while($resultArray = mysqli_fetch_array($result)){
-
-        $title = $resultArray['title'];
-        $content = $resultArray['content'];
-        $username = $resultArray['username'];
-        $date = $resultArray['date'];
-        ?>
-
-        <!-- Displaying retrieved posts-->
-        <div class="container" id="content">
-          <div class="row" style="padding-top: 1rem; padding-bottom: 1rem; overflow: auto;">
-            <div class="col-sm-12">              
-                <div class="d-flex"> 
-                    <h2> <?php
-                    echo $title;
-                    ?> </h2>
-                </div>
-                <div class="d-flex">
-                  <?php
-                    echo $content;
-                  ?>
-                </div>
-                <div class="d-flex" style="padding-top: 0.5rem;"> 
-                  <small> <?php
-                  echo " - " . $username . " on " . $date;
-                  ?> </small>
-                </div>               
-            </div>
-          </div>
-        </div>
-
-        <?php
-        }
-    }    
-  mysqli_close($link);
-  ?>
-
+  <div class = "row">
+    <div class = "col-sm-3">
+      From: <?php echo $personfrom; ?>
+    </div>
+    <div class = "col-sm-7" style="overflow-x:auto">
+      <?php echo $message; ?>
+    </div>
+    <div class = "col-sm-2">
+      <?php echo $date; ?>
+    </div>
+  </div>
+<?php } ?>
+</div>
 
 
   <!-- Optional JavaScript -->
