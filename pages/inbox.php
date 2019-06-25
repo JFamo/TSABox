@@ -18,14 +18,14 @@ session_start();
 $username = $_SESSION['username'];
 
 //Inputting form data into database
-if(isset($_POST['postTitle']) && isset($_POST['postText'])){
+if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 
   //Accept POST variables, reassign for query
-  $postTitle = validate($_POST['postTitle']);
-  $postText = validate($_POST['postText']);
-
+  $subject = validate($_POST['subject']);
+  $message = validate($_POST['message']);
+  $to = validate($_POST['to']);
   require('../php/connect.php');
-   $query = "INSERT INTO posts (title, content, username, date) VALUES ('$postTitle', '$postText', '$username', NOW())";
+   $query = "INSERT INTO messages (personfrom, personto, content, date, subject) VALUES ('$username', '$to', '$message', NOW(), '$subject')";
   $result = mysqli_query($link,$query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
@@ -33,36 +33,6 @@ if(isset($_POST['postTitle']) && isset($_POST['postText'])){
 }
 
 
-if(isset($_POST['newBio'])){
-  $newBio = validate($_POST['newBio']);
-
-  require('../php/connect.php');
-
-  $query = "SELECT content FROM bio WHERE username='$username'";
-  $result = mysqli_query($link, $query);
-
-  if (!$result){
-      die('Error: ' . mysqli_error($link));
-  }
-  list($bio) = mysqli_fetch_array($result);
-  if($bio==""){
-      $query1 = "INSERT INTO `bio` (`username`, `content`) VALUES ('$username', '$newBio')";
-      $result2 = mysqli_query($link, $query1);
-
-      if (!$result2){
-      die('Error: ' . mysqli_error($link));
-      }
-  }else{
-    $query2 = "UPDATE bio SET content='$newBio' WHERE username='$username'";
-
-    $result2 = mysqli_query($link, $query2);
-
-    if (!$result2){
-      die('Error: ' . mysqli_error($link));
-    
-      }
-  }
-}
 
 ?>
 
@@ -135,32 +105,87 @@ if(isset($_POST['newBio'])){
   </div>
 </nav>
 
+<!-- send messages -->
 
+<div class = "container" id="content">
+    <form method="POST">
+      
+      <div class="row">
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="postTitle"> <h3>New message</h3> </label>
+            <textarea class="form-control" name="to" maxlength=20 placeholder="To: (username)" rows="1"></textarea>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" name="subject" maxlength=100 placeholder="Subject (100 char max)" rows="1"></textarea>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" name="message" maxlength=1000 placeholder="Text (1000 char max)" rows="3" required></textarea>
+          </div>
+          <button type="submit">Send</button>
+        </div>
+
+        </div>
+    </form>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<!-- View messages -->
 <div class= "container">
   <div class = "row">
     <h2> Messages </h2>
   </div>
   <?php
       require('../php/connect.php');
-      $query = "SELECT personfrom, content, date FROM messages WHERE personto='$username'";
+      $query = "SELECT personfrom, content, date, subject FROM messages WHERE personto='$username'";
       $result = mysqli_query($link, $query);
       if (!$result){
         die('Error: ' . mysqli_error($link));
       }
-      while(list($personfrom, $message, $date) = mysqli_fetch_array($result)){
+
+      if(mysqli_num_rows($result) == 0){
+        ?> <div class = "row"> 
+          You have no messages!
+        </div>
+      <?php 
+      }else{
+        echo mysqli_num_rows($result);
+      while(list($personfrom, $message, $date, $subject) = mysqli_fetch_array($result)){
       ?>
   <div class = "row">
     <div class = "col-sm-3">
-      From: <?php echo $personfrom; ?>
+      From: <?php 
+      require('../php/connect.php');
+
+      $query = "SELECT firstname, lastname FROM users WHERE username='$personfrom'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      list($firstname, $lastname) = mysqli_fetch_array($result);
+
+      echo $firstname . " " . $lastname ?>
     </div>
-    <div class = "col-sm-7" style="overflow-x:auto">
+    <div class = "col-sm-2">
+      <?php echo $subject; ?>
+    </div>
+    <div class = "col-sm-5" style="overflow-x:auto">
       <?php echo $message; ?>
     </div>
     <div class = "col-sm-2">
       <?php echo $date; ?>
     </div>
   </div>
-<?php } ?>
+<?php }} ?>
 </div>
 
 

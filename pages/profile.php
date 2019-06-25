@@ -15,7 +15,12 @@ function validate($data){
 
 session_start();
 
-$username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
+if(isset($_GET['user'])){
+  $username = $_GET['user'];
+}else{
+  $username = $_SESSION['username'];
+}
 
 //Inputting form data into database
 if(isset($_POST['postTitle']) && isset($_POST['postText'])){
@@ -62,6 +67,47 @@ if(isset($_POST['newBio'])){
     
       }
   }
+}
+
+if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
+  //file details
+  $fileName = $_FILES['userfile']['name'];
+  $tmpName = $_FILES['userfile']['tmp_name'];
+  $fileSize = $_FILES['userfile']['size'];
+  $fileType = $_FILES['userfile']['type'];
+  //file data manipulation
+  $fp = fopen($tmpName, 'r');
+  $content = fread($fp, filesize($tmpName));
+  $content = addslashes($content);
+  fclose($fp);
+  if(!get_magic_quotes_gpc()){
+    $fileName = addslashes($fileName);
+  }
+  //get poster
+  $poster = $username;
+  require('../php/connect.php');
+  $query = "INSERT INTO profile_pictures (username, picture) VALUES ('$username', '$content')";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  
+  mysqli_close($link);
+}
+
+
+function getImage(){
+  require('../php/connect.php');
+
+    $query = "SELECT picture FROM profile_pictures WHERE username='$username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    while($image = mysqli_fetch_array($result)){
+      echo "images/" . $image['image_name'];
+
+    }
 }
 
 ?>
@@ -138,20 +184,34 @@ if(isset($_POST['newBio'])){
 <!-- Title -->
 <div class="container" id="content">
   <div class = "row">
-    <div class = "col-sm-9">
-      <h1> <?php echo $username ?>'s Profile  </h1>
+    <div class = "col-sm-4">
+      <!-- profile picture -->
+      <img src="<?php getimage(); ?>" width="auto" height="auto">
+      <?php
+      
+      ?>
+  
     </div>
-    <div class = "col-sm-3">
-
+    <div class = "col-sm-8">
+      <h1> <?php echo $username ?>'s Profile  </h1>
     </div>
   </div>
   <div class = "row">
     <p> <?php
     require('../php/connect.php');
+
+    $query = "SELECT firstname, lastname, grade FROM users WHERE username = '$username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    list($firstname, $lastname, $grade) = mysqli_fetch_array($result);
+
+
     $query = "SELECT name FROM chapters WHERE id=(SELECT chapter FROM user_chapter_mapping WHERE username='$username')";
     $result = mysqli_query($link, $query);
     list($chapter) = mysqli_fetch_array($result);
-    echo $chapter;
+    echo $firstname . " " . $lastname . " is in " . $grade . " grade at " . $chapter;
     ?>
     </p>
   </div>
@@ -161,16 +221,61 @@ if(isset($_POST['newBio'])){
         require('../php/connect.php');
         $query = "SELECT content FROM bio WHERE username='$username'";
         $result = mysqli_query($link, $query);
-        list($post) = mysqli_fetch_array($result);
-        echo $post;
+        list($bio) = mysqli_fetch_array($result);
+        echo "Bio: " . $bio;
       ?>
     </p>
   </div>
+  <div class = "row">
+    <p>
+      <?php 
+        require('../php/connect.php');
+        $query = "SELECT email FROM users WHERE username='$username'";
+        $result = mysqli_query($link, $query);
+        list($email) = mysqli_fetch_array($result);
+        echo "Email: " . $email;
+      ?>
+    </p>
 
-
+  </div>
 </div>
 
-<!-- Reporter reporting new post -->
+
+
+
+<?php if($username == $_SESSION['username']){ 
+  ?>
+<!-- Change Boi -->
+  <div class = "container">
+  <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
+    <div class="col-sm-12"> 
+          <div class="contentcard">
+            <h3 style="border-bottom:2px solid #CF0C0C">Upload</h3>
+            <form method="post" enctype="multipart/form-data">
+              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+              <div class="form-control" style="border:0;">
+                <div class="row py-3">
+                  <div class="col-sm-6">
+                    <input style="font-size:16px;" name="userfile" type="file" id="userfile">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+  </div>
   <div class = "container" id="content">
     <form method="POST">
       
@@ -190,7 +295,7 @@ if(isset($_POST['newBio'])){
 
 
 
-  <!-- Reporter reporting new post -->
+  <!-- Creating new posts -->
   <div class = "container" id="content">
     <form method="POST">
       
@@ -206,16 +311,14 @@ if(isset($_POST['newBio'])){
           </div>
           <button type="submit">Submit</button>
         </div>
-
         </div>
     </form>
   </div>
 
 <!-- Retrieving posts from database -->
-  <?php
+  <?php }
     require('../php/connect.php');
-
-    $query="SELECT * FROM posts WHERE username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) ORDER BY date DESC";
+    $query="SELECT * FROM posts WHERE username='$username' ORDER BY date DESC";
     $result = mysqli_query($link, $query);
     if (!$result){
       die('Error: ' . mysqli_error($link));
