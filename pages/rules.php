@@ -158,7 +158,7 @@ if(isset($_POST['deleteFileID'])){
 
           <?php
           require('../php/connect.php');
-          $query="SELECT id, name, size FROM rules WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')";
+          $query="SELECT id, name, size FROM rules WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username') ORDER BY name ASC";
           $result = mysqli_query($link, $query);
           if (!$result){
             die('Error: ' . mysqli_error($link));
