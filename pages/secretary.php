@@ -17,36 +17,8 @@ session_start();
 
 $username = $_SESSION['username'];
 $rank = 'officer';
-$chapter = '1';
-require('../php/connect.php');
 
-//File Deletion
-if(isset($_POST['deleteFileID'])){
-  //file details
-  $fileid = $_POST['deleteFileID'];
-  $filename = $_POST['deleteFileName'];
-  if($rank == "officer" || $rank == "admin" || $rank == "adviser"){
-    require('../php/connect.php');
-    $query = "DELETE FROM minutes WHERE id = '$fileid'";
-    $result = mysqli_query($link, $query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-    $activityForm = "Deleted File " . $filename;
-    $sql = "INSERT INTO activity (user, activity, date, chapter) VALUES ('$fullname', '$activityForm', now(), '$chapter')";
-    if (!mysqli_query($link, $sql)){
-      die('Error: ' . mysqli_error($link));
-    }
-    mysqli_close($link);
-    $fmsg =  "File ".$filename." Deleted Successfully!";
-  }
-  else{
-    $fmsg =  "Failed to Authorize File Deletion!";
-  }
-}
-
-//FILE Uploading
-if(isset($_POST['uploadMinutes']) && $_FILES['userfile']['size'] > 0){
+if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
   //file details
   $fileName = $_FILES['userfile']['name'];
   $tmpName = $_FILES['userfile']['tmp_name'];
@@ -62,23 +34,33 @@ if(isset($_POST['uploadMinutes']) && $_FILES['userfile']['size'] > 0){
   }
   //file viewality
   $view = $_POST['view'];
-  $class = "minutes";
   //get poster
-  $poster = $_SESSION['username'];
+  $poster = $username;
   require('../php/connect.php');
   $query = "INSERT INTO minutes (name, size, type, content, date, view, poster) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$view', '$poster')";
   $result = mysqli_query($link, $query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
   }
-
-  $activityForm = "Uploaded Minutes File " . $fileName;
-    $sql = "INSERT INTO minutes (name, size, date) VALUES ('$username', '$size', now())";
-    if (!mysqli_query($link, $sql)){
+  
+  mysqli_close($link);
+}
+//file deletion
+if(isset($_POST['deleteFileID'])){
+  //file details
+  $fileid = $_POST['deleteFileID'];
+  $filename = $_POST['deleteFileName'];
+  if($rank == "officer" || $rank == "admin" || $rank == "adviser"){
+    require('../php/connect.php');
+    $query = "DELETE FROM minutes WHERE id = '$fileid'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
       die('Error: ' . mysqli_error($link));
     }
-  mysqli_close($link);
-  $fmsg =  "File ".$fileName." Uploaded Successfully!";
+    mysqli_close($link);
+  }
+  else{
+  }
 }
 
 ?>
@@ -97,7 +79,7 @@ if(isset($_POST['uploadMinutes']) && $_FILES['userfile']['size'] > 0){
     <title>TSABox</title>
   </head>
   <body>
-    <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
+    <nav class="header bg-blue navbar navbar-expand-lg navbar-dark" style="min-height:95px; z-index: 1000;">
         <a class="navbar-brand" href="index.html">
           <div class="row">
             <div class="col nopadding">
@@ -150,76 +132,68 @@ if(isset($_POST['uploadMinutes']) && $_FILES['userfile']['size'] > 0){
   </div>
 </nav>
 
-<div class="container" id="content">
-    <h1>Secretary</h1>
-    <small>Recorded minutes from previous meetings</small>
-</div>
-<center><div class='container'>
-  <div class='row'>
-    <div class='col-sm-12'>
-      <div class="adminDataSection">
-        <p class="userDashSectionHeader" style="padding-left:0px;"><h3>Upload</h3></p>
-          <form method="post" enctype="multipart/form-data" class="fileForm">
-            <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-            <div class="form-row">
-              <div class="col-4">
-                <input style="font-size:16px;" name="userfile" type="file" id="userfile">
-              </div>
-              <div class="col-4">
-                <small>Who Can View :</small>
+ <div class="container" id="content">
+  <h1>Secretary</h1>
+  <small>Recorded minutes of past meetings</small>
+
+  <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
+    <div class="col-sm-12"> 
+        <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
+            <form method="post" enctype="multipart/form-data">
+              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+              <div class="form-control">
+                <div class="col-4">
+                  <input style="font-size:16px;" name="userfile" type="file" id="userfile">
+                </div>
+                <div class="col-4">
+                    <small>Who Can View :</small>
                 <select id="view" name="view" class="form-control form-control-sm">
                   <option value="all">All</option>
                   <option value="officer">Officers Only</option>
                 </select>
+                </div>
+                <div class="col-4">
+                <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
+                </div>
               </div>
-              <div class="col-4">
-                <input name="uploadMinutes" type="submit" class="btn btn-primary" id="uploadMinutes" value="Upload">
-              </div>
-            </div>
-          </form>
-        </div>
-    </div>
-  </div>
-</div>
-</center>
-<br>
-<div class="adminDataSection">
-  <p class="userDashSectionHeader" style="padding-left:0px;">Browse</p>
-  <table style="width:90%; height:80%;">
+            </form>
+        <?php } ?>
 
-  <?php
-  require('../php/connect.php');
-    $query="SELECT name, type, size, date, view, poster FROM minutes";
-    $result = mysqli_query($link, $query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-    $doMemberSkip = 0;
-    if(mysqli_num_rows($result) == 0){
-      echo "No Minutes Found!<br>";
-    }
-    else{
-    //FOR MEMBERS - check if all available files are hidden
-      if($rank == "member"){
-        $viewLevel = "all";
-        $query2="SELECT name, view FROM minutes WHERE view='$viewLevel'";
-        $result2 = mysqli_query($link, $query2);
-        if (!$result2){
-          die('Error: ' . mysqli_error($link));
-        }
-        if(mysqli_num_rows($result2) == 0){
-          $doMemberSkip = 1;
-        }
-      }
-      if($doMemberSkip == 1){
-        echo "No Minutes Found!<br>";
-      }
-      else{
-        while(list($name, $type, $size, $date, $view, $poster) = mysqli_fetch_array($result)){
-      if(($view == "officer" && ($rank == "officer" || $rank == "admin" || $rank == "adviser")) || ($view == "all")){
-      ?>
-        <tr>
-        <td><a class="minutesLink text-primary" href="../php/download.php?id=<?php echo "".$username ?>" style="float:left;"><?php echo "".$name ?></a></td>
+          <table style="width:80%;">
+
+          <?php
+          require('../php/connect.php');
+          $query="SELECT id, name, date, view, poster FROM minutes WHERE poster IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username'))";
+          $result = mysqli_query($link, $query);
+          if (!$result){
+            die('Error: ' . mysqli_error($link));
+          }
+          $doMemberSkip = 0;
+          if(mysqli_num_rows($result) == 0){
+            echo "No Minutes Found!<br>";
+          }
+          else{
+            //FOR MEMBERS - check if all available files are hidden
+            if($rank == "member"){
+              $viewLevel = "all";
+              $query2="SELECT id, view FROM minutes WHERE view='$viewLevel' AND poster IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username'))";
+              $result2 = mysqli_query($link, $query2);
+              if (!$result2){
+                die('Error: ' . mysqli_error($link));
+              }
+              if(mysqli_num_rows($result2) == 0){
+                $doMemberSkip = 1;
+              }
+            }
+            if($doMemberSkip == 1){
+                echo "No Minutes Found!<br>";
+            }
+            else{
+              while(list($id, $name, $date, $view, $poster) = mysqli_fetch_array($result)){
+                if(($view == "officer" && ($rank == "officer" || $rank == "admin" || $rank == "adviser")) || ($view == "all")){
+                  ?>
+                <tr>
+                  <td><a class="text-primary" href="../php/download_minutes.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
                   <?php
                   if($view == "officer"){ ?>
                       <td><p style="float:left;">Private</p></td>
@@ -231,7 +205,8 @@ if(isset($_POST['uploadMinutes']) && $_FILES['userfile']['size'] > 0){
                   ?>
                   <td>
                     <form method="post" id="deleteFileForm">
-                      <input name="deleteFileID" type="hidden" value="<?php echo $username ?>">
+                      <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
+                      <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
                       <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
                     </form>
                   </td>
@@ -248,16 +223,10 @@ if(isset($_POST['uploadMinutes']) && $_FILES['userfile']['size'] > 0){
           mysqli_close($link);
           ?>
 
-          </table>
+          </table>  
         </div>
-        
-      </center>
-
-    </div>
-  </center>
-  </div>
-  </div>
-  </div>
+</div>
+</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
