@@ -41,13 +41,9 @@ if(isset($_POST['scoreValue'])){
   mysqli_close($link);
 }
 //clear scores
-require('../php/connect.php');
-$query = "SELECT rank FROM ranks WHERE username='$username'";
-          $rank = mysqli_query($link, $query);
+  $rank = "admin";
 
-          if(!$rank){
-            die('Error : ' . mysqli_error($link));
-          }
+  
 if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
 
   
@@ -162,8 +158,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
                 <option value="average">Average</option>
                 <option value="challenging">Challenging</option>
                 <option value="chapter">Chapter Team (50 questions)</option>
-                <option value="benchmark1">Beginner Benchmark</option>
-                <option value="benchmark2">Dunbar Benchmark</option>
+      
               </select>
             </div>
           </form>
@@ -204,7 +199,16 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
                   else if($counter == 3){
                     echo '<img src="../imgs/ribbon-third.png" width="20px" height="20px" />';
                   }
-                  echo $thisname . ' - ' . $thisscore . '</li>';
+
+                  $query = "SELECT firstname,lastname FROM users WHERE username='$thisname'";
+
+                  $res=mysqli_query($link,$query);
+                  if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                  list($first, $last)=mysqli_fetch_array($res);
+
+                  echo $first . ' ' . $last . ' - ' . $thisscore . '</li>';
 
                   $counter += 1;
                 }
@@ -214,14 +218,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
               ?>
             </ul>
           <?php 
-          require('../php/connect.php');
-          $query = "SELECT rank FROM ranks WHERE username='$username'";
-          $rank = mysqli_query($link, $query);
-
-          if(!$rank){
-            die('Error : ' . mysqli_error($link));
-          }
-
+          $rank = "admin";
           if($rank == "admin" || $rank == "adviser") { ?>
             <br>
             <form method="post">
@@ -230,7 +227,7 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
             </form>
 
           <?php 
-          } mysqli_close($link) ?>
+          }  ?>
           </center></div>
         </div>
         <div class="col-sm-3" style="padding:0 0 0 0;">
@@ -240,10 +237,10 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
           <!--PARLI PRO-->
           <b><p class="bodyTextType1" style="padding-left:0;">Helpful Guides</p></b>
           <a href="https://docs.google.com/presentation/d/19JnTf9YjODwRgyt2N4jIxER_rYEQZaEyjZtwk_zvyRs/edit?usp=sharing">State Guide</a><br>
-          <a href="http://tsaweb.org/sites/default/files/Parliamentary_Procedure_Basics.pptx">National Beginner Guide</a><br>
-          <a href="http://tsaweb.org/sites/default/files/Parliamentary_Procedure_Advanced.pptx">National Advanced Guide</a><br>
+          <a href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&ved=2ahUKEwjvuf_9mIXjAhUwT98KHQVQAyoQFjAAegQIAxAC&url=https%3A%2F%2Ftsaweb.org%2Fdocs%2Fdefault-source%2Ftoolkits%2Fparliamentary_procedure_basics-(3).pptx%3Fsfvrsn%3Debcb6b1c_0&usg=AOvVaw0nUHwwuTkN4wLsegZxATe4">National Beginner Guide</a><br>
+          <a href="https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&ved=2ahUKEwjvuf_9mIXjAhUwT98KHQVQAyoQFjABegQIABAC&url=https%3A%2F%2Ftsaweb.org%2Fdocs%2Fdefault-source%2Ftoolkits%2Fparliamentary_procedure_advanced-(1).pptx%3Fsfvrsn%3D1276260e_0&usg=AOvVaw06_fnebd5QAhTegeeQbPd_">National Advanced Guide</a><br>
   
-          <b><p class="bodyTextType1">Practice Tests</p></b>
+          <br><b><p class="bodyTextType1">Practice Tests</p></b>
           <a href="http://www.300questions.org/" target="_blank">300 Questions</a><br>
           <a href="https://drive.google.com/file/d/0B0djtG22WOS_aEhsVWZLT0xocDg/view?usp=sharing" target="_blank">Dunbar Tests</a><br>
           </center>
