@@ -18,6 +18,7 @@ session_start();
 $username = $_SESSION['username'];
 $team = $_SESSION['team'];
 
+//Handler to create a new task
 if(isset($_POST['task-name'])){
 
   $taskname = validate($_POST['task-name']);
@@ -44,6 +45,54 @@ if(isset($_POST['task-delete'])){
   if (!$result){
       die('Error: ' . mysqli_error($link));
   }
+  mysqli_close($link);
+
+}
+
+//Handler to begin a task
+if(isset($_POST['task-begin'])){
+
+  require('../php/connect.php');
+
+  $taskid = $_POST['task-begin'];
+
+  $sql = "UPDATE tasks SET status='progress' WHERE id='$taskid'";
+  if (!mysqli_query($link, $sql)){
+    die('Error: ' . mysqli_error($link));
+  }
+  $sql = "UPDATE tasks SET creator='$username' WHERE id='$taskid'";
+  if (!mysqli_query($link, $sql)){
+    die('Error: ' . mysqli_error($link));
+  }
+  $sql = "UPDATE tasks SET date=NOW() WHERE id='$taskid'";
+  if (!mysqli_query($link, $sql)){
+    die('Error: ' . mysqli_error($link));
+  }
+    
+  mysqli_close($link);
+
+}
+
+//Handler to complete a task
+if(isset($_POST['task-complete'])){
+
+  require('../php/connect.php');
+
+  $taskid = $_POST['task-complete'];
+
+  $sql = "UPDATE tasks SET status='complete' WHERE id='$taskid'";
+  if (!mysqli_query($link, $sql)){
+    die('Error: ' . mysqli_error($link));
+  }
+  $sql = "UPDATE tasks SET creator='$username' WHERE id='$taskid'";
+  if (!mysqli_query($link, $sql)){
+    die('Error: ' . mysqli_error($link));
+  }
+  $sql = "UPDATE tasks SET date=NOW() WHERE id='$taskid'";
+  if (!mysqli_query($link, $sql)){
+    die('Error: ' . mysqli_error($link));
+  }
+    
   mysqli_close($link);
 
 }
