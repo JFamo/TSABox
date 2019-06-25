@@ -248,17 +248,17 @@ if(isset($_POST['transact'])){
       <div class = "row">
         <h3>Transact</h3>
       </div>
-      <form method="post" enctype="multipart/form-data" class="fileForm">
+      <form method="post" enctype="multipart/form-data" class="form-control">
         <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
         <div class="form-row">
           <div class="col-4">
             <small>$ Amount</small>
-            <input name="amount" type="number" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>" min="0" max="10000">
+            <input name="amount" type="number" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>" min="0" max="10000" class="form-control">
           </div>
           <div class="col-4">
-            <small>From</small><br>
+            <small>From</small>
             <!--Give each user as an option-->
-            <select id="personfrom" name="personfrom">
+            <select id="personfrom" name="personfrom" class="form-control">
               <option value="income">Income</option>
               <option value="chapter">Chapter</option>
               <?php
@@ -287,9 +287,9 @@ if(isset($_POST['transact'])){
             </select>
           </div>
           <div class="col-4">
-            <small>To</small><br>
+            <small>To</small>
             <!--Give each user as an option-->
-            <select id="personto" name="personto">
+            <select id="personto" name="personto" class="form-control">
               <option value="expense">Expense</option>
               <option value="chapter">Chapter</option>
               <?php
@@ -323,10 +323,11 @@ if(isset($_POST['transact'])){
         <div class="form-row">
           <div class="col-8">
             <small>Description</small>
-            <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>" maxlength="100">
+            <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>" maxlength="100" class="form-control">
           </div>
           <div class="col-4">
-            <input name="transact" type="submit" class="btn btn-primary" id="transact" value="Transact">
+            <small></small><br>
+            <input name="transact" type="submit" class="btn btn-primary" id="transact" value="Transact" class="form-control">
           </div>
         </div>
       </form>
@@ -365,7 +366,7 @@ if(isset($_POST['transact'])){
       }   
 
       if(mysqli_num_rows($result) == 0){
-        echo "No Transactions Found!<br>";
+        echo "No Balances Found!<br>";
       }
 
 
