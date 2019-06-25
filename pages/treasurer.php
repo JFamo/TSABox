@@ -181,7 +181,7 @@ if(isset($_POST['transact'])){
 <br>
       <div class = "container">
         <div class = "row">
-          <p>Transact</p>
+          <h3>Transact</h3>
         </div>
           <form method="post" enctype="multipart/form-data" class="fileForm">
             <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
@@ -268,11 +268,13 @@ if(isset($_POST['transact'])){
               </div>
           </form>
         </div>
-
-
+  <div class = "container">
+    <div class="row" style="padding-top: 1rem;">
+      <h3>Balances </h3>
+    </div>
     <div class="row">
       <div class = "col-sm-12">
-        <p>Chapter balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
+        <p>Chapter Balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
         </p>
         <p>Individual Balances: </p>
       </div>
@@ -374,13 +376,13 @@ if(isset($_POST['transact'])){
 
     <div class= "container">
       <div class = "row">
-        Transaction History
+        <h3> Transaction History </h3>
       </div>
       <br>
       <?php
           require('../php/connect.php');
 
-          $query="SELECT * FROM transactions WHERE chapter=1"; //chapter=$chapter
+          $query="SELECT personto, personfrom, description, amount, date FROM transactions WHERE chapter=1"; //chapter=$chapter
 
           $result = mysqli_query($link, $query);
 
@@ -401,17 +403,18 @@ if(isset($_POST['transact'])){
                 <div class = "col-sm-3">
                 <p><?php echo "To: ".$personto ?></p>
               </div>
-              <div class = "col-sm-1">
+              <div class = "col-sm-2">
                 <p><?php echo "$: ".$amount ?></p>
               </div>
-              <div class = "col-sm-1">
+              <div class = "col-sm-2">
                 <p><?php echo "On: ".$date ?></p>
               </div>
-              <div class = "col-sm-4">
+              <div class = "col-sm-2" style="overflow-x:auto">
                 <p><?php echo $description ?></p>
               </div>
             </div>
       <?php } } ?>
+      </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
