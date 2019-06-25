@@ -168,7 +168,7 @@ if(isset($_POST['select-event'])){
 
               require('../php/connect.php');
 
-              $query="SELECT min, max, teams FROM limits WHERE event IN (SELECT id FROM events WHERE level IN (SELECT level FROM chapters WHERE id='$chapter'))";
+              $query="SELECT event, min, max, teams FROM limits WHERE event IN (SELECT id FROM events WHERE level IN (SELECT level FROM chapters WHERE id='$chapter'))";
               $result = mysqli_query($link, $query);
               if (!$result){
                 die('Error: ' . mysqli_error($link));
@@ -177,12 +177,46 @@ if(isset($_POST['select-event'])){
                 echo "Could not find any events!";
               }
               else{
+                //Iterate every event at my level
                 while($resultArray = mysqli_fetch_array($result)){
+                  $event = $resultArray['event'];
                   $teams = $resultArray['teams'];
                   $min = $resultArray['min'];
                   $max = $resultArray['max'];
+
+                  //Get excess qualifier teams
+                  $query2="SELECT count FROM extrateams WHERE event='$event' AND chapter='$chapter'";
+                  $result2 = mysqli_query($link, $query2);
+                  if (!$result2){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  list($excessteams) = mysqli_fetch_array($result2);
+                  $teams = $teams + $excessteams;
+
+                  //Start team count by iterating teams
+                  $query2="SELECT id FROM teams WHERE chapter='$chapter' AND event='$event'";
+                  $result2 = mysqli_query($link, $query2);
+                  if (!$result2){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  $countFullTeams = 0;
+                  while(list($teamid) = mysqli_fetch_array($result2)){
+                    $query3="SELECT COUNT(username) FROM user_team_mapping WHERE team='$teamid'";
+                    $result3 = mysqli_query($link, $query3);
+                    if (!$result3){
+                      die('Error: ' . mysqli_error($link));
+                    }
+                    list($membercount) = mysqli_fetch_array($result3);
+                    if($membercount >= $max){
+                      $countFullTeams += 1;
+                    }
+                  }
+
+                  //Finally calculate number of available teams by subtracting filled teams from limit
+                  $teams = $teams - $countFullTeams;
+
                   for($team = 0; $team < $teams; $team++){
-                    
+                    echo $event . " : " . $team . "<br>";
                   }
                 }
               }
