@@ -67,6 +67,16 @@ h1{
     src: url('../fonts/Ubuntu/Ubuntu-Regular.ttf'); 
 }
 
+.minutesTable {
+    width: 80%;
+}
+
+@media only screen and (max-width: 990px) {
+  .minutesTable {
+      width: 100%;
+  }
+}
+  
 #content{
 	padding-top:1rem;
 	padding-bottom:1rem;
