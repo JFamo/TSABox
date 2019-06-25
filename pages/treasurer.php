@@ -177,57 +177,12 @@ if(isset($_POST['transact'])){
 </nav>
 <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
   <div class="container">
-
-    <div class="row">
-      <div class = "col-sm-12">
-        <p>Chapter balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
-        </p>
-        <p>Individual Balances: </p>
-      </div>
-    </div>
-
-    <?php
-
-          //User Balances
-
-          require('../php/connect.php');
-
-          $query="SELECT * FROM user_balance WHERE chapter=1"; //chapter=$chapter
-
-          $result = mysqli_query($link, $query);
-
-          if (!$result){
-            die('Error: ' . mysqli_error($link));
-          }   
-
-          if(mysqli_num_rows($result) == 0){
-            echo "No Transactions Found!<br>";
-          }
-          else{
-            while(list($user, $amount) = mysqli_fetch_array($result)){
-              ?>
-              <div class="row">
-                <div class = "col-sm-9">
-                <p><?php echo "User : ".$user ?></p>
-              </div>
-                <div class = "col-sm-3">
-                <p><?php echo "$".$amount ?></p>
-              </div>
-            </div>
-              
-              <?php
-            }
-          }
-        }
-          ?>
-              
-    </div>
-  </div>
-
-      <!-- transaction stuff -->
-
-        <div class="adminDataSection">
-          <p class="userDashSectionHeader" style="padding-left:0px;">Transact</p>
+<!-- transaction stuff -->
+<br>
+      <div class = "container">
+        <div class = "row">
+          <p>Transact</p>
+        </div>
           <form method="post" enctype="multipart/form-data" class="fileForm">
             <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
             <div class="form-row">
@@ -314,11 +269,61 @@ if(isset($_POST['transact'])){
           </form>
         </div>
 
+
+    <div class="row">
+      <div class = "col-sm-12">
+        <p>Chapter balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
+        </p>
+        <p>Individual Balances: </p>
+      </div>
+    </div>
+
+    <?php
+
+          //User Balances
+
+          require('../php/connect.php');
+
+          $query="SELECT * FROM user_balance WHERE chapter=1"; //chapter=$chapter
+
+          $result = mysqli_query($link, $query);
+
+          if (!$result){
+            die('Error: ' . mysqli_error($link));
+          }   
+
+          if(mysqli_num_rows($result) == 0){
+            echo "No Transactions Found!<br>";
+          }
+          else{
+            while(list($user, $amount) = mysqli_fetch_array($result)){
+              ?>
+              <div class="row">
+                <div class = "col-sm-9">
+                <p><?php echo "User : ".$user ?></p>
+              </div>
+                <div class = "col-sm-3">
+                <p><?php echo "$".$amount ?></p>
+              </div>
+            </div>
+              
+              <?php
+            }
+          }
+        }
+          ?>
+              
+    </div>
+  </div>
+
+      
+        <br>
 <!-- Everyone's balance -->
-        <div class="row" style="width:97.5%; padding:0; margin:0;">
-          <div class="col-8"  style="padding:0; margin:0; text-align:left;">
-            <div class="adminDataSection" style="padding-left:15px; width:97.5%; padding-bottom: 20px;">
-              <p class="userDashSectionHeader" style="padding-left:0px;">User Balance Quickview</p>
+
+        <div class="container">
+          <div class = "row">
+              <p>User Balance Quickview</p>
+            </div>
                 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                   <div class="carousel-inner">
                     <?php
@@ -355,7 +360,7 @@ if(isset($_POST['transact'])){
                   ?>
                   </div>
                   <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
                     <span class="sr-only">Previous</span>
                   </a>
                   <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
