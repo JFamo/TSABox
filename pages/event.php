@@ -248,6 +248,30 @@ if(isset($_POST['deleteFileID'])){
 
       <div class="row pt-5">
         <div class="col-sm-12">
+          <h3 class="band-blue">My Team</h3>
+          <?php
+
+          require('../php/connect.php');
+
+          $query="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$team')";
+          $result = mysqli_query($link, $query);
+          if (!$result){
+            die('Error: ' . mysqli_error($link));
+          }
+
+          while($resultArray = mysqli_fetch_array($result)){
+
+            $firstname = $resultArray['firstname'];
+            $lastname = $resultArray['lastname'];
+
+            echo "<p>". $firstname . " " . $lastname . "</p>";
+          }
+          ?>
+        </div>
+      </div>
+
+      <div class="row pt-5">
+        <div class="col-sm-12">
         <h3 class="band-red">Tasks in Progress</h3>
 
         <div class="d-flex justify-content-start flex-wrap">
