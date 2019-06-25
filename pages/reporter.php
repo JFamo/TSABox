@@ -112,7 +112,6 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
 
 <?php
-$_SESSION['rank'] = "officer";
   //Check if user is legible to post announcements
   if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
   ?>  
