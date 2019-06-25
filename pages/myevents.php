@@ -35,7 +35,6 @@ if(isset($_POST['select-event'])){
   mysqli_close($link);
 }
 
-
 ?>
 
 <!doctype html>
