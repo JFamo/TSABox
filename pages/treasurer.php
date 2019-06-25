@@ -336,7 +336,7 @@ if(isset($_POST['transact'])){
                     $isfirst = true;
 
                     while(list($personname, $personbalance) = mysqli_fetch_array($result)){
-                      if($personrank != "admin"){
+                      //if($personrank != "admin"){
                       ?>
                       <div class="carousel-item <?php if($isfirst){ echo "active"; } ?>">
                         <div class="innerCarouselText">
@@ -347,7 +347,7 @@ if(isset($_POST['transact'])){
 
                       <?php
                       $isfirst = false;
-                      }
+                      //}
                     }
                         
                     mysqli_close($link);
@@ -365,6 +365,47 @@ if(isset($_POST['transact'])){
                 </div>
             </div>
           </div>
+
+
+    <div class= "container">
+      <div class = "row">
+        Transaction History
+      </div>
+      <?php
+          require('../php/connect.php');
+
+          $query="SELECT * FROM transactions WHERE chapter=1"; //chapter=$chapter
+
+          $result = mysqli_query($link, $query);
+
+          if (!$result){
+            die('Error: ' . mysqli_error($link));
+          }   
+
+          if(mysqli_num_rows($result) == 0){
+            echo "No Transactions Found!<br>";
+          }
+          else{
+            while(list($personto, $personfrom, $description, $amount, $date) = mysqli_fetch_array($result)){
+              ?>
+              <div class="row">
+                <div class = "col-sm-3">
+                <p><?php echo "From : ".$personfrom ?></p>
+              </div>
+                <div class = "col-sm-3">
+                <p><?php echo "To: ".$personto ?></p>
+              </div>
+              <div class = "col-sm-1">
+                <p><?php echo "$: ".$amount ?></p>
+              </div>
+              <div class = "col-sm-1">
+                <p><?php echo "On: ".$date ?></p>
+              </div>
+              <div class = "col-sm-4">
+                <p><?php echo $description ?></p>
+              </div>
+            </div>
+      <?php } } ?>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
