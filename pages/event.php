@@ -583,9 +583,41 @@ if(isset($_POST['deleteFileID'])){
             <div class="row pt-5">
               <div class="col-sm-12">
                 <h3 class="band-blue">Progress Summary</h3>
-
+                <script src="../js/Chart.js"></script>
                 <canvas id="chartjs-4" class="chartjs" width="962" height="481" style="display: block; height: 385px; width: 770px;"></canvas>
-                <script>new Chart(document.getElementById("chartjs-4"),{"type":"doughnut","data":{"labels":["Red","Blue","Yellow"],"datasets":[{"label":"My First Dataset","data":[300,50,100],"backgroundColor":["rgb(255, 99, 132)","rgb(54, 162, 235)","rgb(255, 205, 86)"]}]}});</script>
+
+                <script>new Chart(document.getElementById("chartjs-4"),{"type":"doughnut","data":{"labels":["In Progress","Complete","Backlog"],"datasets":[{"label":"Event Weight","data":[<?php
+                require('../php/connect.php');
+                $query = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='progress'";
+                $result = mysqli_query($link,$query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($progress_weight) = mysqli_fetch_array($result);
+                echo $progress_weight;
+                ?>,<?php
+                require('../php/connect.php');
+                $query = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='complete'";
+                $result = mysqli_query($link,$query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($progress_weight) = mysqli_fetch_array($result);
+                echo $progress_weight;
+                ?>,<?php
+                require('../php/connect.php');
+                $query = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='backlog'";
+                $result = mysqli_query($link,$query);
+                if (!$result){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($progress_weight) = mysqli_fetch_array($result);
+                echo $progress_weight;
+                ?>],"backgroundColor":["rgb(255, 99, 132)","rgb(54, 162, 235)","rgb(255, 205, 86)"]}]}});</script>
+
+                <?php 
+                mysqli_close($link);
+                ?>
 
               </div>
             </div>
