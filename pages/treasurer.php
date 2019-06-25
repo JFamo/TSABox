@@ -62,14 +62,8 @@ require('../php/connect.php');
 $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
 $resultChapter = mysqli_query($link, $query);
 list($chapter) = mysqli_fetch_array($resultChapter);
-
-$rank = "adviser";
-$amount = 0;
-/*
 $rank = $_SESSION['rank'];
-$fullname = $_SESSION['fullname'];
-$chapter = $_SESSION['chapter'];
-*/
+
 
 
 //handling transactions
