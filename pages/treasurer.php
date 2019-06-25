@@ -16,12 +16,13 @@ function validate($data){
     return $data;
 }
 
-function getChapterBalance()
+
+
+function getChapterBalance($Chapter)
 {
   $returnValue = 0;
-  $chapter = 1;
   require('../php/connect.php');
-  $transQ = "SELECT personto, personfrom, amount FROM transactions WHERE chapter='$chapter'";
+  $transQ = "SELECT personto, personfrom, amount FROM transactions WHERE chapter='$Chapter'";
   $transR = mysqli_query($link, $transQ);
   if (!$transR){
     die('Error: ' . mysqli_error($link));
@@ -55,14 +56,21 @@ function getFullName($username){
 
 
 session_start();
-$rank = "adviser";
+
 $username = $_SESSION['username'];
+require('../php/connect.php');
+$query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
+$resultChapter = mysqli_query($link, $query);
+list($chapter) = mysqli_fetch_array($resultChapter);
+
+$rank = "adviser";
 $amount = 0;
 /*
 $rank = $_SESSION['rank'];
 $fullname = $_SESSION['fullname'];
 $chapter = $_SESSION['chapter'];
 */
+
 
 //handling transactions
 if(isset($_POST['transact'])){
@@ -89,7 +97,7 @@ if(isset($_POST['transact'])){
   //update balances
   if($personto != "expense" && $personto != "chapter"){
 
-    $query2 = "UPDATE user_balance SET balance=balance+'$amount' WHERE user='$personto' AND chapter=1";
+    $query2 = "UPDATE user_balance SET balance=balance+'$amount' WHERE user='$personto'";
 
     $result2 = mysqli_query($link, $query2);
 
@@ -100,7 +108,7 @@ if(isset($_POST['transact'])){
   }
   if($personfrom != "income" && $personfrom != "chapter"){
 
-    $query3 = "UPDATE user_balance SET balance=balance-'$amount' WHERE user='$personfrom' AND chapter=1";
+    $query3 = "UPDATE user_balance SET balance=balance-'$amount' WHERE user='$personfrom'";
 
     $result3 = mysqli_query($link, $query3);
 
@@ -141,7 +149,7 @@ if(isset($_POST['transact'])){
   </head>
   <body>
     <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="main.php">
           <div class="row">
             <div class="col nopadding">
                 <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
@@ -204,7 +212,7 @@ if(isset($_POST['transact'])){
             <div class="form-row">
               <div class="col-4">
                 <small>$ Amount</small>
-                <input name="amount" type="float" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>">
+                <input name="amount" type="number" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>" min="0" max="10000">
               </div>
               <div class="col-4">
                   <small>From</small><br>
@@ -276,7 +284,7 @@ if(isset($_POST['transact'])){
             <div class="form-row">
                 <div class="col-8">
                   <small>Description</small>
-                  <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>">
+                  <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>" maxlength="50">
                 </div>
                 <div class="col-4">
                   <input name="transact" type="submit" class="btn btn-primary" id="transact" value="Transact">
@@ -295,7 +303,7 @@ if(isset($_POST['transact'])){
         <p>Chapter Balance:</p>
       </div>
       <div class = "col-sm-3">
-        <p> $<?php echo number_format((float)getChapterBalance(), 0, '.', '') ?> </p>
+        <p> $<?php echo number_format((float)getChapterBalance($chapter), 0, '.', '') ?> </p>
       </div>
     </div>
     <div class = "row">
@@ -309,7 +317,7 @@ if(isset($_POST['transact'])){
 
           require('../php/connect.php');
 
-          $query="SELECT * FROM user_balance WHERE chapter=1"; //chapter=$chapter
+          $query="SELECT * FROM user_balance";
 
           $result = mysqli_query($link, $query);
 
@@ -320,8 +328,25 @@ if(isset($_POST['transact'])){
           if(mysqli_num_rows($result) == 0){
             echo "No Transactions Found!<br>";
           }
+
+
+
+
+
+
           else{
-            while(list($user, $amount) = mysqli_fetch_array($result)){
+            while(list($user, $amount) = mysqli_fetch_array($result))
+            {
+              $getChapterQuery = "SELECT chapter FROM user_chapter_mapping WHERE username='$user'";
+              $chapterResult = mysqli_query($link, $getChapterQuery);
+
+              if(!$chapterResult){
+                die('Error: ' . mysqli_error($link));
+              }
+              
+              list($otherChapter) = mysqli_fetch_array($chapterResult);
+              if($otherChapter==$chapter){
+
               ?>
               <div class="row">
                 <div class = "col-sm-9">
@@ -334,69 +359,18 @@ if(isset($_POST['transact'])){
               
               <?php
             }
+            else{
+              
+            }
           }
         }
+      }
           ?>
         </div>
               
     </div>
   </div>
-
-      
         <br>
-<!-- Everyone's balance 
-  
-        <div class="container">
-          <div class = "row">
-              <p>User Balance Quickview</p>
-            </div>
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                  <div class="carousel-inner">
-                    <?php
-
-                    require('../php/connect.php');
-
-                    $query="SELECT user, balance FROM user_balance WHERE chapter=1 ORDER BY user ASC";
-
-                    $result = mysqli_query($link, $query);
-
-                    if (!$result){
-                      die('Error: ' . mysqli_error($link));
-                    }
-
-                    $isfirst = true;
-
-                    while(list($personname, $personbalance) = mysqli_fetch_array($result)){
-                      //if($personrank != "admin"){
-                      ?>
-                      <div class="carousel-item <?php if($isfirst){ echo "active"; } ?>">
-                        <div class="innerCarouselText">
-                            <p><?php echo $personname ?></p>
-                            <p><?php echo "$".$personbalance ?></p>
-                        </div>
-                      </div>
-
-                      <?php
-                      $isfirst = false;
-                      //}
-                    }
-                        
-                    mysqli_close($link);
-
-                  ?>
-                  </div>
-                  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </div>
-            </div>
-          </div>
--->
 
     <div class= "container">
       <div class = "row">
