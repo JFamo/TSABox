@@ -15,6 +15,23 @@ function validate($data){
 
 session_start();
 
+$username = $_SESSION['username'];
+
+//Inputting form data into database
+if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
+
+  //Accept POST variables, reassign for query
+  $announcementTitle = validate($_POST['announcementTitle']);
+  $announcementText = validate($_POST['announcementText']);
+
+  require('../php/connect.php');
+   $query = "INSERT INTO announcements (title, content, username, date) VALUES ('$announcementTitle', '$announcementText', '$username', NOW())";
+  $result = mysqli_query($link,$query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+}
+
 
 ?>
 
@@ -31,7 +48,9 @@ session_start();
 
     <title>TSABox</title>
   </head>
-  <body>
+
+  <body>    
+    <!-- Nav Bar -->
     <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
         <a class="navbar-brand" href="index.html">
           <div class="row">
@@ -43,7 +62,7 @@ session_start();
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav"> 
+    <ul class="navbar-nav">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           OfficerBox
@@ -85,22 +104,108 @@ session_start();
   </div>
 </nav>
 
-    <div class="container" id="content">
-      <div class="text-center">
-        <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch
-        Modal Login Form</a>
-      </div>
-    </div>
+<!-- Title -->
+<div class="container" id="content">
+  <h1> Reporter </h1>
+  <small> View announcements by the Reporter </small>
+</div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../js/jquery-3.3.1.slim.min.js"></script>
-    <script src="../js/popper.min.js"></script>
-    <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
-    <script src="../js/scripts.js"></script>
+
+<?php
+$_SESSION['rank'] = "officer";
+  //Check if user is legible to post announcements
+  if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
+  ?>  
+  <!-- Reporter reporting new announcement -->
+  <div class = "container" id="content">
+    <form method="POST">
+      
+      <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="announcementTitle"> <h3>New Announcement</h3> </label>
+            <textarea class="form-control" name="announcementTitle" maxlength=100 placeholder="Title (100 char max)" rows="1"></textarea>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" name="announcementText" maxlength=1000 placeholder="Text (1000 char max)" rows="3"></textarea>
+          </div>
+          <button type="submit">Submit</button>
+        </div>
+
+        </div>
+    </form>
+  </div>
+<?php }
+?>
+
+<!-- Retrieving announcements from database -->
+  <?php
+    require('../php/connect.php');
+
+    $query="SELECT * FROM announcements WHERE username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) ORDER BY date DESC";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+
+    if(mysqli_num_rows($result) == 0){
+      ?>
+      <div class="container" id="content">
+        <?php echo "There are no announcements! <br>"; ?>
+      </div>
+      <?php
+    }
+    else{
+      while($resultArray = mysqli_fetch_array($result)){
+
+        $title = $resultArray['title'];
+        $content = $resultArray['content'];
+        $username = $resultArray['username'];
+        $date = $resultArray['date'];
+        ?>
+
+        <!-- Displaying retrieved announcements-->
+        <div class="container" id="content">
+          <div class="row" style="padding-top: 1rem; padding-bottom: 1rem; overflow: auto;">
+            <div class="col-sm-12">              
+                <div class="d-flex"> 
+                    <h2> <?php
+                    echo $title;
+                    ?> </h2>
+                </div>
+                <div class="d-flex">
+                  <?php
+                    echo $content;
+                  ?>
+                </div>
+                <div class="d-flex" style="padding-top: 0.5rem;"> 
+                  <small> <?php
+                  echo " - " . $username . " on " . $date;
+                  ?> </small>
+                </div>               
+            </div>
+          </div>
+        </div>
+
+        <?php
+        }
+    }    
+  mysqli_close($link);
+  ?>
+
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="../js/jquery-3.3.1.slim.min.js"></script>
+  <script src="../js/popper.min.js"></script>
+  <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
+  <script src="../js/scripts.js"></script>
+
   </body>
 
-  <footer>
+  <footer style = "position: relative;">
     <div class="bg-blue color-white py-3">
         <center>
         <p>
@@ -114,7 +219,5 @@ session_start();
   </footer>
 
 </html>
-
-<?php 
-
+<?php
 ?>
