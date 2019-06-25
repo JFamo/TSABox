@@ -37,6 +37,23 @@ function getChapterBalance()
   return $returnValue;
 }
 
+function getFullName($username){
+  $username = strtolower($username);
+  if($username=="chapter"||$username=="expense"||$username=="income"){
+    return $username;
+  }
+  require('../php/connect.php');
+  $query3="SELECT firstname, lastname FROM users WHERE username='$username'";
+  $result3 = mysqli_query($link, $query3);
+  if(!$result3){
+    die('Error: ' . mysqli_error($link));
+  }
+  list($firstname, $lastname) = mysqli_fetch_array($result3);
+  return $firstname . " " . $lastname;
+}
+
+
+
 session_start();
 $rank = "adviser";
 $username = $_SESSION['username'];
@@ -176,9 +193,8 @@ if(isset($_POST['transact'])){
   </div>
 </nav>
 <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>
-  <div class="container">
 <!-- transaction stuff -->
-<br>
+  <br>
       <div class = "container">
         <div class = "row">
           <h3>Transact</h3>
@@ -188,7 +204,7 @@ if(isset($_POST['transact'])){
             <div class="form-row">
               <div class="col-4">
                 <small>$ Amount</small>
-                <input name="amount" type="number" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>">
+                <input name="amount" type="float" id="amount" value="<?php echo isset($_POST['amount']) ? $_POST['amount'] : '' ?>">
               </div>
               <div class="col-4">
                   <small>From</small><br>
@@ -268,18 +284,25 @@ if(isset($_POST['transact'])){
               </div>
           </form>
         </div>
+
+
   <div class = "container">
     <div class="row" style="padding-top: 1rem;">
       <h3>Balances </h3>
     </div>
     <div class="row">
-      <div class = "col-sm-12">
-        <p>Chapter Balance: $<?php echo number_format((float)getChapterBalance(), 2, '.', '') ?>
-        </p>
-        <p>Individual Balances: </p>
+      <div class = "col-sm-9">
+        <p>Chapter Balance:</p>
+      </div>
+      <div class = "col-sm-3">
+        <p> $<?php echo number_format((float)getChapterBalance(), 0, '.', '') ?> </p>
       </div>
     </div>
-
+    <div class = "row">
+      <div class = "col-sm-9">
+        <p style="font-weight:bold">Individual Balances</p>
+      </div>
+    </div>
     <?php
 
           //User Balances
@@ -314,6 +337,7 @@ if(isset($_POST['transact'])){
           }
         }
           ?>
+        </div>
               
     </div>
   </div>
@@ -378,7 +402,6 @@ if(isset($_POST['transact'])){
       <div class = "row">
         <h3> Transaction History </h3>
       </div>
-      <br>
       <?php
           require('../php/connect.php');
 
@@ -398,13 +421,13 @@ if(isset($_POST['transact'])){
               ?>
               <div class="row">
                 <div class = "col-sm-3">
-                <p><?php echo "From : ".$personfrom ?></p>
+                <p>From: <?php echo getFullName($personfrom); ?></p>
               </div>
                 <div class = "col-sm-3">
-                <p><?php echo "To: ".$personto ?></p>
+                <p>To: <?php echo getFullName($personto); ?></p>
               </div>
               <div class = "col-sm-2">
-                <p><?php echo "$: ".$amount ?></p>
+                <p><?php echo "$ ".$amount ?></p>
               </div>
               <div class = "col-sm-2">
                 <p><?php echo "On: ".$date ?></p>
