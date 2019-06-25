@@ -284,7 +284,7 @@ if(isset($_POST['transact'])){
             <div class="form-row">
                 <div class="col-8">
                   <small>Description</small>
-                  <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>" maxlength="50">
+                  <input name="description" style="width:100%;" type="text" id="description" value="<?php echo isset($_POST['description']) ? $_POST['description'] : '' ?>" maxlength="100">
                 </div>
                 <div class="col-4">
                   <input name="transact" type="submit" class="btn btn-primary" id="transact" value="Transact">
