@@ -120,6 +120,7 @@ $rank = $_SESSION['rank'];
             <small>User</small>
             <!--Give each user as an option-->
             <select id="username" name="username" class="form-control">
+              
             
               <?php
 
@@ -143,21 +144,21 @@ $rank = $_SESSION['rank'];
                 list($first,$last)=mysqli_fetch_array($res);
 
                 $query = "SELECT rank FROM ranks WHERE username='$user'";
-                $r=mysqli_query($query);
-                if(!$r){
+                $res2=mysqli_query($link,$query);
+                if(!$res2){
                   die('Error: ' . mysqli_error($link));
                 }
 
-                list($rank) = mysqli_fetch_array($r);
+                list($thisrank) = mysqli_fetch_array($res2);
 
-                if($rank == 'member'){
+                if($thisrank == 'member'){
                 ?>
 
                 <option><?php echo $first . ' ' . $last; ?></option>
 
                 <?php
+                }
               }
-            }
 
 
               mysqli_close($link);
