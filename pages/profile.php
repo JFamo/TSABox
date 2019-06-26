@@ -150,15 +150,39 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
   }
 }
 //change password
-if(isset($_POST['newPassword'])){
+if(isset($_POST['currentPassword']) && isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
     require('../php/connect.php');
+    $currentPassword = $_POST['currentPassword'];
+    $newPassword = $_POST['newPassword'];
+    $confirmPassword = $_POST['confirmPassword'];
 
-
-
-
-  
+    if($newPassword==$confirmPassword){
+      $query= "SELECT username FROM users WHERE username='$username'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      $count = mysqli_num_rows($result);
+      if($count == 1){
+        $query2 = "SELECT password FROM users WHERE username='$username'";
+        $result2 = mysqli_query($link, $query2);
+        if (!$result2){
+          die('Error: ' . mysqli_error($link));
+        }
+        list($passwordValue) = mysqli_fetch_array($result2);
+        if(password_verify($currentPassword, $passwordValue)){
+          echo $newPassword;
+          $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+          echo $newPassword;
+          $query3 = "UPDATE users SET password='$newPassword' WHERE username='$username'";
+          $result3 = mysqli_query($link, $query3);
+          if (!$result3){
+            die('Error: ' . mysqli_error($link));
+          }
+        }
+      }
+    }
 }
-
 if(isset($_POST['newEmail'])){
     require('../php/connect.php');
     $newEmail =$_POST['newEmail'];
@@ -439,46 +463,42 @@ if(isset($_POST['newFirstName']) && isset($_POST['newLastName'])){
   ?>
 
 <div class ="container">
-  <!-- change password -->
-  <div class = "row">
-    <h3> Change Password </h3>
-  </div>
-  <div class = "row">
-        <div class="col-sm-3">
-            <p>Current Password</p>
-        </div>
-        <div class="col-sm-9">
-          <form method="POST">
-            <input type="password" name="currentPassword" maxlength=30  rows="1">
-        </form>
-      </div>
+  <form method="POST">
+    <!-- change password -->
+    <div class = "row">
+      <h3> Change Password </h3>
     </div>
-  <div class = "row">
+    <div class = "row">
       <div class="col-sm-3">
-        <p>New Password</p>
+          <p>Current Password</p>
       </div>
-      <form method="POST">
-      <div class ="col-sm-9">
-            <input type="password" name="newPassword" maxlength=30  rows="1">
+      <div class="col-sm-9">
+          <input type="password" name="currentPassword" maxlength=30  rows="1" required>
+      </div>
+      </div>
+    <div class = "row">
+        <div class="col-sm-3">
+          <p>New Password</p>
         </div>
-    </form>
-  </div>
-  <div class = "row">
-      <div class="col-sm-3">
-        <p>Confirm Password</p>
-      </div>
-      <form method="POST">
         <div class ="col-sm-9">
-          <input type="password" name="confirmPassword" maxlength=30  rows="1">
+              <input type="password" name="newPassword" maxlength=30  rows="1" required>
+          </div>
+    </div>
+    <div class = "row">
+        <div class="col-sm-3">
+          <p>Confirm Password</p>
         </div>
-    </form>
-  </div>
-  <div class="row">
-    <?php echo $pwmsg; ?>
-  </div>
-  <div class="row">
-    <button type="submit" class="btn btn-primary" value="Submit"></button>
-  </div>
+          <div class ="col-sm-9">
+            <input type="password" name="confirmPassword" maxlength=30  rows="1" required>
+          </div>
+    </div>
+    <div class="row">
+      <?php echo $pwmsg; ?>
+    </div>
+    <div class="row">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
 
 
