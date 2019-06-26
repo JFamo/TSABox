@@ -14,24 +14,15 @@ function validate($data){
 }
 
 session_start();
-
+$search = "";
 $username = $_SESSION['username'];
 
 //Inputting form data into database
-if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
+if(isset($_POST['search'])){
 
   //Accept POST variables, reassign for query
-  $announcementTitle = validate($_POST['announcementTitle']);
-  $announcementText = validate($_POST['announcementText']);
-
-  require('../php/connect.php');
-   $query = "INSERT INTO announcements (title, content, username, date) VALUES ('$announcementTitle', '$announcementText', '$username', NOW())";
-  $result = mysqli_query($link,$query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
+  $search = validate($_POST['search']);
 }
-
 
 ?>
 
@@ -106,7 +97,7 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
 <!-- THE MEAT -->
 
-<div class = "container">
+<div class = "container" style="padding-bottom: 25px">
   <div class = "row">
     <h3>
       Here you can find other people in TSA
@@ -115,9 +106,11 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 </div>
 
 
-<div class="container" style="padding-top: 1rem;">
+<div class="container" style="padding-bottom: 25px;">
   <div class = "row">
+  	<h5>
     Here are some of your chapter members
+	</h5>
   </div>
   <?php 
     //display all people in your chapter
@@ -161,10 +154,72 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
   ?>
 </div>
 
+<div class = "container" id="content">
+    <form method="POST">
+      <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="searchbar"> <h3>Search for Users</h3> </label>
+            <textarea class="form-control" name="search" maxlength=100 placeholder="Username" rows="1"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
 
+        </div>
+    </form>
+  </div>
 
+<!-- people not in your chapter -->
 
+<div class="container" style="padding-bottom: 25px;">
+  <div class = "row">
+  	<h5>
+    Here are some other TSA members
+	</h5>
+  </div>
+  <?php 
+    //display people not in your chapter that match the search
+    require('../php/connect.php');
 
+    $query = "SELECT chapter FROM user_chapter_mapping WHERE username = '$username'";
+    $result = mysqli_query($link, $query);
+    if(!$result){
+      die('Error: ' . mysqli_error($link));
+    } 
+    list($chapter) = mysqli_fetch_array($result);
+    $query = "SELECT username FROM user_chapter_mapping WHERE chapter !='$chapter'";
+    $result = mysqli_query($link, $query);
+
+    if(!$result){
+      die('Error: ' . mysqli_error($link));
+    } 
+
+    while(list($otherPeople) = mysqli_fetch_array($result)){
+    $query1 = "SELECT username, firstname, lastname FROM users WHERE username='$otherPeople'";
+    $result1 = mysqli_query($link, $query1);
+
+    if(!$result1){
+      die('Error: ' . mysqli_error($link));
+    } 
+    list($Username, $firstname, $lastname) = mysqli_fetch_array($result1);
+
+    echo $search . " " . "." . $Username;
+	echo strpos("." . $Username, $search);
+    if($search==""||(strpos(" " . $Username, $search))>=0){
+      ?>
+      <div class= "row" >
+        <div class = "col-sm-3" >
+          <a href=<?php echo "profile.php?user=" . $Username; ?>>
+            <?php echo $firstname . " " . $lastname ?>
+          </a>
+        </div>
+      </div>
+      <?php
+    }
+}
+
+  ?>
+</div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
