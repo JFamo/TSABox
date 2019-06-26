@@ -17,7 +17,6 @@ session_start();
 
 $username = $_SESSION['username'];
 $rank = $_SESSION['rank'];
-$team = $_SESSION['team'];
 
 if(isset($_POST['select-event'])){
 
@@ -106,7 +105,19 @@ if(isset($_POST['select-event'])){
 </nav>
 </li>
 </li>
-
+<div class="col-sm-6" style="padding-top:1rem">
+  <h1>Welcome, <?php 
+  require('../php/connect.php');
+  $query="SELECT firstname FROM users WHERE username='$username'";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  list($firstname)=mysqli_fetch_array($result);
+  echo ucfirst($firstname);
+  ?>
+  </h1>
+</div>
 <div class="row" style="padding:1rem">
   <div class="col-sm-6"> 
     <div class="contentcard">
@@ -138,58 +149,39 @@ if(isset($_POST['select-event'])){
                   $eventid = $resultArray['id'];
                   echo "<form method='POST'><input type='hidden' name='select-event' value='" . $eventid . "'><input class='nobtn' type='submit' value='" . $eventname . "'><p style='border-bottom:2px solid #CF0C0C' align='center'></form></p>";
                   ?>
-
-                  <script src="../js/Chart.js"></script>
-                <canvas id="chartjs-4" class="chartjs" width="200" height="100" style="display: block; height: 100px; width: 200px;"></canvas>
-
-                <script>new Chart(document.getElementById("chartjs-4"),{"type":"doughnut","data":{"labels":["In Progress","Complete","Backlog"],"datasets":[{"label":"Event Weight","data":[<?php
-                require('../php/connect.php');
-                $query2 = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='progress'";
-                $result2 = mysqli_query($link,$query2);
-                if (!$result2){
-                  die('Error: ' . mysqli_error($link));
-                }
-                list($progress_weight) = mysqli_fetch_array($result2);
-                echo $progress_weight;
-                ?>,<?php
-                require('../php/connect.php');
-                $query2 = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='complete'";
-                $result2 = mysqli_query($link,$query2);
-                if (!$result){
-                  die('Error: ' . mysqli_error($link));
-                }
-                list($progress_weight) = mysqli_fetch_array($result2);
-                echo $progress_weight;
-                ?>,<?php
-                require('../php/connect.php');
-                $query2 = "SELECT SUM(weight) FROM tasks WHERE team='$team' AND status='backlog'";
-                $result2 = mysqli_query($link,$query2);
-                if (!$result){
-                  die('Error: ' . mysqli_error($link));
-                }
-                list($progress_weight) = mysqli_fetch_array($result2);
-                echo $progress_weight;
-                ?>],"backgroundColor":["rgb(255, 99, 132)","rgb(54, 162, 235)","rgb(255, 205, 86)"]}]}});</script>
-
-                <?php 
-                mysqli_close($link);
-                ?>
-
               </div>  
               <?php
-                  if($eventnumber == 3){
-                    ?>
-                  </div>
-                  <?php
-                    echo "<div class='row' style='padding-left:1rem'>";
-                  }
-                $eventnumber += 1;
-                }
-              }
-            ?>
+              if($eventnumber == 3){
+              ?>
             </div>
-        </div>
-      </div>
+            <?php
+            echo "<div class='row' style='padding-left:1rem'>";
+              }
+          $eventnumber += 1;
+          }
+        }
+      ?>
+    </div>
+  </div>
+  <br>
+  <div class="col-sm-6">
+    <div class="contentcard">   
+    <h2 align="left">Balance: $<?php
+
+      require('../php/connect.php');
+      $query="SELECT balance FROM user_balance WHERE user='$username'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      list($balance)=mysqli_fetch_array($result);
+      echo ucfirst($balance);
+
+    ?>
+    </h2>
+  </div>
+</div>
+</div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../js/jquery-3.3.1.slim.min.js"></script>
