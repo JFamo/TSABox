@@ -121,3 +121,20 @@ h1,h2,h3{
   	display:none;
   }
 }
+
+.evt-namerow{
+	padding-top:0.5rem;
+	padding-bottom:0.5rem;
+}
+
+.evt-teamrow{
+	padding-top:0.5rem;
+	padding-bottom:0.5rem;
+}
+
+.evt-slot{
+	border:2px solid black;
+	width:200px;
+	height:50px;
+	text-align: center;
+}

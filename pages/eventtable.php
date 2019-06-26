@@ -73,7 +73,7 @@ list($chapter) = mysqli_fetch_array($result);
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="myevents.php">My Events</a>
           <a class="dropdown-item" href="rules.php">Rules</a>
-          <a class="dropdown-item active" href="#">Event Selection</a>
+          <a class="dropdown-item" href="selection.php">Event Selection</a>
           <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
         </div>
       <li class="nav-item dropdown">
@@ -102,17 +102,7 @@ list($chapter) = mysqli_fetch_array($result);
 
       <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
         <div class="col-sm-12">
-          <table id="eventTable" class="table table-striped">
-          <thead>
-            <tr>
-              <th>Event</th>
-              <th>Team</th>
-              <th>Members</th>
-              <th>Min</th>
-              <th>Max</th>
-              <th></th>
-            </tr>
-            </thead>
+          <table id="eventTable">
             <tbody>
             <?php
 
@@ -143,30 +133,19 @@ list($chapter) = mysqli_fetch_array($result);
                   list($excessteams) = mysqli_fetch_array($result2);
                   $teams = $teams + $excessteams;
 
+                  //Display event name row
+                  //Get event name
+                  $query2="SELECT name FROM events WHERE id='$event'";
+                  $result2 = mysqli_query($link, $query2);
+                  if (!$result2){
+                    die('Error: ' . mysqli_error($link));
+                  }
+                  list($eventname) = mysqli_fetch_array($result2);
+                  echo "<tr class='evt-namerow'><td><b>".$eventname."</b></td></tr>";
+
                   for($team = 1; $team <= $teams; $team++){
 
-                    $teamisfull = false;
-
-                    //Make sure this team is not full
-                    $query2="SELECT id FROM teams WHERE chapter='$chapter' AND event='$event' AND number='$team'";
-                    $result2 = mysqli_query($link, $query2);
-                    if (!$result2){
-                      die('Error: ' . mysqli_error($link));
-                    }
-                    while(list($teamid) = mysqli_fetch_array($result2)){
-                      $query3="SELECT COUNT(username) FROM user_team_mapping WHERE team='$teamid'";
-                      $result3 = mysqli_query($link, $query3);
-                      if (!$result3){
-                        die('Error: ' . mysqli_error($link));
-                      }
-                      list($membercount) = mysqli_fetch_array($result3);
-                      if($membercount >= $max){
-                        $teamisfull=true;
-                      }
-                    }
-
-                    if(!$teamisfull){
-                      echo "<tr><td>";
+                      echo "<tr class='evt-teamrow'>";
 
                       //Get my team ID
                       $query2="SELECT id FROM teams WHERE chapter='$chapter' AND event='$event' AND number='$team'";
@@ -176,16 +155,6 @@ list($chapter) = mysqli_fetch_array($result);
                       }
                       list($teamid) = mysqli_fetch_array($result2);
 
-                      //Get event name
-                      $query2="SELECT name FROM events WHERE id='$event'";
-                      $result2 = mysqli_query($link, $query2);
-                      if (!$result2){
-                        die('Error: ' . mysqli_error($link));
-                      }
-                      list($eventname) = mysqli_fetch_array($result2);
-
-                      echo $eventname . "</td><td>" . $team . "</td><td>";
-
                       //Get team members
                       $query2="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$teamid')";
                       $result2 = mysqli_query($link, $query2);
@@ -193,25 +162,20 @@ list($chapter) = mysqli_fetch_array($result);
                         die('Error: ' . mysqli_error($link));
                       }
                       while(list($firstname, $lastname) = mysqli_fetch_array($result2)){
-                        echo $firstname . " " . $lastname . "<br>";
+                        echo "<td class='evt-slot'>".$firstname . " " . $lastname . "</td>";
                       }
 
-                      echo "</td><td>" . $min . "</td><td>" . $max . "</td><td>";
-                      if(!$maxevents){
-
-                        //Check if I am in this event
-                        $query2="SELECT COUNT(team) FROM user_team_mapping WHERE username='$username' AND team IN (SELECT id FROM teams WHERE event='$event' AND chapter='$chapter')";
-                        $result2 = mysqli_query($link, $query2);
-                        if (!$result2){
-                          die('Error: ' . mysqli_error($link));
+                      for($q = 1; $q <= $max; $q++){
+                        if($q < $min){
+                          $bck = "#6b7fdb";
                         }
-                        list($myevent) = mysqli_fetch_array($result2);
-                        if($myevent == 0){
-                          echo "<form method='post'><input type='submit' value='Join' class='btn btn-primary'><input type='hidden' name='join-event' value='".$event."'><input type='hidden' name='join-number' value='".$team."'></form>";
+                        else{
+                          $bck = "#d6d6d6";
                         }
+                        echo "<td class='evt-slot' style='background-color:" . $bck . ";'></td>";
                       }
-                      echo "</td></tr>";
-                    }
+
+                      echo "</tr>";
                   }
                 }
               }
