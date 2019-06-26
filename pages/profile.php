@@ -13,6 +13,8 @@ function validate($data){
     return $data;
 }
 
+
+
 session_start();
 
 $rank = $_SESSION['rank'];
@@ -21,6 +23,27 @@ if(isset($_GET['user'])){
 }else{
   $username = $_SESSION['username'];
 }
+
+function getImage($Username){
+  require('../php/connect.php');
+    $query = "SELECT * FROM profilepictures WHERE username='$Username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+
+    while($image = mysqli_fetch_array($result)){
+
+      echo '
+            <tr>
+                <td>
+                    <img src="data:image;base64,'.base64_encode($image['content']).'" height="200" width="200" class="img-thumnail" />
+                </td>
+            <tr>
+            ';
+    }
+}
+
 
 //Inputting form data into database
 if(isset($_POST['postTitle']) && isset($_POST['postText'])){
@@ -68,7 +91,6 @@ if(isset($_POST['newBio'])){
       }
   }
 }
-
 if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
   //file details
   $fileName = $_FILES['userfile']['name'];
@@ -83,32 +105,17 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
   if(!get_magic_quotes_gpc()){
     $fileName = addslashes($fileName);
   }
-  //get poster
-  $poster = $username;
   require('../php/connect.php');
-  $query = "INSERT INTO profile_pictures (username, picture) VALUES ('$username', '$content')";
+  $query = "INSERT INTO profilepictures (name, size, type, content, date, username) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$username')";
   $result = mysqli_query($link, $query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
   }
-  
   mysqli_close($link);
 }
 
 
-function getImage(){
-  require('../php/connect.php');
 
-    $query = "SELECT picture FROM profile_pictures WHERE username='$username'";
-    $result = mysqli_query($link, $query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-    while($image = mysqli_fetch_array($result)){
-      echo "images/" . $image['image_name'];
-
-    }
-}
 
 ?>
 
@@ -186,9 +193,8 @@ function getImage(){
   <div class = "row">
     <div class = "col-sm-4">
       <!-- profile picture -->
-      <img src="<?php getimage(); ?>" width="auto" height="auto">
-      <?php
-      
+      <?php 
+      getimage($username);
       ?>
   
     </div>
