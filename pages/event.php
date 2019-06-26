@@ -193,7 +193,7 @@ if(isset($_POST['deleteFileID'])){
   <title>TSABox</title>
 </head>
 <body>
-  <nav class="header bg-blue navbar navbar-expand-lg navbar-dark" style="min-height:95px; z-index: 1000;">
+  <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
     <a class="navbar-brand" href="main.php">
       <div class="row">
         <div class="col nopadding">
@@ -204,7 +204,7 @@ if(isset($_POST['deleteFileID'])){
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav"> 
+          <ul class="navbar-nav">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 OfficerBox
@@ -217,6 +217,7 @@ if(isset($_POST['deleteFileID'])){
                 <a class="dropdown-item" href="reporter.php">Reporter</a>
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
+            </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   EventBox
@@ -227,6 +228,7 @@ if(isset($_POST['deleteFileID'])){
                   <a class="dropdown-item" href="selection.php">Event Selection</a>
                   <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
                 </div>
+              </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     SocialBox
@@ -237,6 +239,13 @@ if(isset($_POST['deleteFileID'])){
                     <a class="dropdown-item" href="social.php">Find Friends</a>
                   </div>
                 </li>
+                <?php if($rank == "adviser" || $rank == "admin") { ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../pages/admin.php">
+                      Admin
+                    </a>
+                  </li>
+                  <?php } ?>
                 <li class="nav-item">
                   <a class="nav-link" href="../php/logout.php">
                     Logout

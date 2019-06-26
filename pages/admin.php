@@ -171,7 +171,7 @@ if($rank == "adviser" || $rank == "admin") {
 
 <body>    
   <!-- Nav Bar -->
-  <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
+    <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
     <a class="navbar-brand" href="main.php">
       <div class="row">
         <div class="col nopadding">
@@ -195,6 +195,7 @@ if($rank == "adviser" || $rank == "admin") {
                 <a class="dropdown-item" href="reporter.php">Reporter</a>
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
+            </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   EventBox
@@ -205,6 +206,7 @@ if($rank == "adviser" || $rank == "admin") {
                   <a class="dropdown-item" href="selection.php">Event Selection</a>
                   <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
                 </div>
+              </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     SocialBox
@@ -220,15 +222,16 @@ if($rank == "adviser" || $rank == "admin") {
                     <a class="nav-link active" href="../pages/admin.php">
                       Admin
                     </a>
-                  <?php } ?>
-                  <li class="nav-item">
-                    <a class="nav-link" href="../php/logout.php">
-                      Logout
-                    </a>
                   </li>
-                </ul>
-              </div>
-            </nav>
+                  <?php } ?>
+                <li class="nav-item">
+                  <a class="nav-link" href="../php/logout.php">
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
 
             <!-- Title -->
             <div class="container" id="content">
