@@ -156,12 +156,10 @@ if(isset($_POST['search'])){
 
 <div class = "container" id="content">
     <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
-        <div class="col-sm-12">
           <h3 style="border-bottom:2px solid #CF0C0C">Other Users</h3>
+      </div>
           <input class="form-control" id="userSearch" type="text" placeholder="Search...">
           <table id="userTable" class="table table-striped">
-          <thead>
-            </thead>
             <tbody>
             <?php
         		require('../php/connect.php');
@@ -190,20 +188,19 @@ if(isset($_POST['search'])){
 
 				    
 				      ?>
-				      <div class= "row" >
-				        <div class = "col-sm-3" >
+
+            	<tr>
+            		<td>
 				          <a href=<?php echo "profile.php?user=" . $Username; ?>>
 				            <?php echo $firstname . " " . $lastname ?>
 				          </a>
-				        </div>
-				      </div>
+				      </td>
+				  </tr>
 				      <?php
                   }
             ?>
             </tbody>
           </table>
-        </div>
-      </div>
   </div>
 
 

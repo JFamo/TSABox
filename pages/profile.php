@@ -347,6 +347,7 @@ if(isset($_POST['newGrade'])){
 
   </div>
 </div>
+</div>
 
 
 
