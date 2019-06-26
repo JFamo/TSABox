@@ -569,7 +569,7 @@ if(isset($_POST['newGrade'])){
   </form>
 </div>
 
-<div class ="container" style="padding-top">
+<div class ="container" style="padding-bottom">
   <!-- change grade -->
   <form method="POST">
   <div class = "row">
