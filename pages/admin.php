@@ -150,10 +150,10 @@ $rank = $_SESSION['rank'];
 
                 list($rank) = mysqli_fetch_array($r);
 
-                if($rank = 'member'){
+                if($rank == 'member'){
                 ?>
 
-                <option><?php echo $first . ' ' . $last ?></option>
+                <option><?php echo $first . ' ' . $last; ?></option>
 
                 <?php
               }
