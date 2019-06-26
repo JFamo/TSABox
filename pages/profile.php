@@ -178,9 +178,15 @@ if(isset($_POST['currentPassword']) && isset($_POST['newPassword']) && isset($_P
           $result3 = mysqli_query($link, $query3);
           if (!$result3){
             die('Error: ' . mysqli_error($link));
+          }else{
+            $pwmsg = "Password updated successfully!";
           }
+        }else{
+          $pwmsg = "Incorrect old password!";
         }
       }
+    }else{
+      $pwmsg = "New passwords don't match!";
     }
 }
 if(isset($_POST['newEmail'])){
