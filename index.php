@@ -55,14 +55,14 @@ if(isset($_POST['login-username']) and isset($_POST['login-password'])){
   }
   $count = mysqli_num_rows($result);
   if($count == 1){
-    $query2 = "SELECT password, firstname, lastname FROM users WHERE username='$username'";
+    $query2 = "SELECT username, password, firstname, lastname FROM users WHERE username='$username'";
     $result2 = mysqli_query($link, $query2);
     if (!$result2){
       die('Error: ' . mysqli_error($link));
     }
-    list($passwordValue, $firstnameValue, $lastnameValue) = mysqli_fetch_array($result2);
+    list($usernameValue, $passwordValue, $firstnameValue, $lastnameValue) = mysqli_fetch_array($result2);
     if(password_verify($password, $passwordValue)){
-      $_SESSION['username'] = $username;
+      $_SESSION['username'] = $usernameValue;
       $_SESSION['firstname'] = $firstnameValue;
       $_SESSION['lastname'] = $lastnameValue;
 
@@ -91,6 +91,7 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
   $firstname = $_POST['register-firstname'];
   $lastname = $_POST['register-lastname'];
   $orgcode = $_POST['register-code'];
+  $grade = $_POST['register-grade'];
 
   $username = validate($username);
   $password = validate($password);
@@ -117,7 +118,7 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
 
     if($orgwithcodecount == 1){
       //User Creation
-      $query2 = "INSERT INTO users (username, password, firstname, lastname) VALUES ('$username', '$password', '$firstname', '$lastname')";
+      $query2 = "INSERT INTO users (username, password, firstname, lastname, grade) VALUES ('$username', '$password', '$firstname', '$lastname', '$grade')";
       $result2 = mysqli_query($link, $query2);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
@@ -267,6 +268,20 @@ if(isset($_SESSION['username'])){
                 <div class="form-group col-md-6">
                   <label for="register-lastname">Last Name</label>
                   <input type="text" class="form-control" id="register-lastname" name="register-lastname" placeholder="Doe">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="register-grade">Grade</label>
+                  <select class="form-control" id="register-grade" name="register-grade">
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
                 </div>
               </div>
               <div class="form-row">
