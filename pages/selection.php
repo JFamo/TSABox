@@ -2,20 +2,21 @@
 //Basic function to sanitize input data
 function validate($data){
   $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    $data = str_replace('\\', '', $data);
-    $data = str_replace('/', '', $data);
-    $data = str_replace("'", '', $data);
-    $data = str_replace(";", '', $data);
-    $data = str_replace("(", '', $data);
-    $data = str_replace(")", '', $data);
-    return $data;
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  $data = str_replace('\\', '', $data);
+  $data = str_replace('/', '', $data);
+  $data = str_replace("'", '', $data);
+  $data = str_replace(";", '', $data);
+  $data = str_replace("(", '', $data);
+  $data = str_replace(")", '', $data);
+  return $data;
 }
 
 session_start();
 
 $username = $_SESSION['username'];
+$maxevents = false; //Use this to track if we have 6 and hide join buttons. This is setin the current events div
 
 require('../php/connect.php');
 
@@ -42,6 +43,42 @@ if(isset($_POST['select-event'])){
   $_SESSION['team'] = $teamid;
   header('Location: event.php');
   mysqli_close($link);
+}
+
+//Join teams
+if(isset($_POST['join-event'])){
+
+  $joinevent = validate($_POST['join-event']);
+  $joinnumber = validate($_POST['join-number']);
+
+  require('../php/connect.php');
+  $query = "SELECT id FROM teams WHERE event='$joinevent' AND number='$joinnumber' AND chapter='$chapter'";
+  $result = mysqli_query($link,$query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  //If this team does not exist, create it first
+  if(mysqli_num_rows($result) == 0){
+    $query = "INSERT INTO teams (chapter,event,number) VALUES ('$chapter', '$joinevent', '$joinnumber')";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    $teamid = mysqli_insert_id($link);
+  }
+  else{
+    list($teamid) = mysqli_fetch_array($result);
+  }
+
+  //Actually join the team
+  $query = "INSERT INTO user_team_mapping (username,team) VALUES ('$username', '$teamid')";
+    $result = mysqli_query($link,$query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+
+  mysqli_close($link);
+
 }
 
 ?>
@@ -152,6 +189,9 @@ if(isset($_POST['select-event'])){
 
                 $eventnumber += 1;
                 }
+                if($eventnumber == 7){
+                  $maxevents = true;
+                }
               }
             ?>
             </div>
@@ -170,6 +210,7 @@ if(isset($_POST['select-event'])){
               <th>Team</th>
               <th>Members</th>
               <th>Min</th>
+              <th>Max</th>
               <th></th>
             </tr>
             </thead>
@@ -256,8 +297,20 @@ if(isset($_POST['select-event'])){
                       echo $firstname . " " . $lastname . "<br>";
                     }
 
-                    echo "</td><td>" . $min . "</td><td>";
-                    echo "<form method='post'><input type='submit' value='Join' class='btn btn-primary'></form>";
+                    echo "</td><td>" . $min . "</td><td>" . $max . "</td><td>";
+                    if(!$maxevents){
+
+                      //Check if I am in this event
+                      $query2="SELECT COUNT(team) FROM user_team_mapping WHERE username='$username' AND team='$teamid'";
+                      $result2 = mysqli_query($link, $query2);
+                      if (!$result2){
+                        die('Error: ' . mysqli_error($link));
+                      }
+                      list($myevent) = mysqli_fetch_array($result2);
+                      if($myevent == 0){
+                        echo "<form method='post'><input type='submit' value='Join' class='btn btn-primary'><input type='hidden' name='join-event' value='".$event."'><input type='hidden' name='join-number' value='".$team."'></form>";
+                      }
+                    }
                     echo "</td></tr>";
                   }
                 }
