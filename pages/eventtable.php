@@ -16,6 +16,7 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
 
 require('../php/connect.php');
 
@@ -25,6 +26,30 @@ if (!$result){
   die('Error: ' . mysqli_error($link));
 }
 list($chapter) = mysqli_fetch_array($result);
+
+if($_POST['event-add']){
+
+  $eventadd = validate($_POST['event-add']);
+
+  $query = "INSERT INTO extrateams (chapter, event, count) VALUES ('$chapter','$eventadd',1) ON DUPLICATE KEY UPDATE count=count+1";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+}
+
+if($_POST['event-delete']){
+
+  $eventadd = validate($_POST['event-delete']);
+
+  $query = "INSERT INTO extrateams (chapter, event, count) VALUES ('$chapter','$eventadd',-1) ON DUPLICATE KEY UPDATE count=count-1";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+}
 
 ?>
 
@@ -143,7 +168,7 @@ list($chapter) = mysqli_fetch_array($result);
                   list($eventname) = mysqli_fetch_array($result2);
                   echo "<tr class='evt-namerow'><td><b>".$eventname."</b></td></tr>";
 
-                  if($teams == 0){
+                  if($teams <= 0){
                     echo "<td colspan='6'>You have no teams for this event!</td>";
                   }
                   for($team = 1; $team <= $teams; $team++){
@@ -177,6 +202,9 @@ list($chapter) = mysqli_fetch_array($result);
                       }
 
                       echo "</tr>";
+                  }
+                  if($rank == "admin" || $rank == "adviser"){
+                    echo "<tr><td colspan='1'><form method='post'><input type='hidden' name='event-add' value='".$event."'><input type='submit' value='Add Team' class='btn btn-primary'></form></td><td colspan='1'><form method='post'><input type='hidden' name='event-delete' value='".$event."'><input type='submit' value='Delete Team' class='btn btn-danger'></form></td></tr>";
                   }
                 }
               }
