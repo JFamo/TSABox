@@ -102,7 +102,7 @@ if(isset($_POST['task-complete'])){
 if(isset($_POST['drop-event'])){
 
   $verify = $_POST['verify'];
-  if($verify){
+  if($verify == 'yes'){
 
     require('../php/connect.php');
 
