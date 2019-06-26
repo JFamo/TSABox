@@ -133,8 +133,8 @@ $rank = $_SESSION['rank'];
                 die('Error: ' . mysqli_error($link));
               } 
 
-              while(list($username) = mysqli_fetch_array($result)){
-                $query = "SELECT firstname,lastname FROM users WHERE username='$username'";
+              while(list($user) = mysqli_fetch_array($result)){
+                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
                 $res=mysqli_query($link,$query);
                 if(!$res){
                   die('Error: ' . mysqli_error($link));
@@ -142,7 +142,7 @@ $rank = $_SESSION['rank'];
                 }
                 list($first,$last)=mysqli_fetch_array($res);
 
-                $query = "SELECT rank FROM ranks WHERE username='$username'";
+                $query = "SELECT rank FROM ranks WHERE username='$user'";
                 $r=mysqli_query($query);
                 if(!$r){
                   die('Error: ' . mysqli_error($link));
