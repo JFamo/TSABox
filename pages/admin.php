@@ -111,7 +111,7 @@ $rank = $_SESSION['rank'];
     <!-- Make User Officer -->
     <center>
     <div class = "container mt-5 contentcard">
-      <h3 style="border-bottom:2px solid #CF0C0C">Transact</h3>
+      <h3 style="border-bottom:2px solid #CF0C0C">Promote Member to Officer</h3>
       <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
         <div class="form-row">
@@ -157,6 +157,8 @@ $rank = $_SESSION['rank'];
 
                 <?php
               }
+            }
+
 
               mysqli_close($link);
 
@@ -177,8 +179,7 @@ $rank = $_SESSION['rank'];
     
           </div>
           
-        </div>
-        </div>
+        
       </center>
 
         <!-- Optional JavaScript -->
