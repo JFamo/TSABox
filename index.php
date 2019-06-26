@@ -174,11 +174,11 @@ if(isset($_SESSION['username'])){
     <nav class="header bg-blue navbar navbar-expand-lg navbar-dark" style="min-height:95px; z-index: 1000;">
         <a class="navbar-brand" href="index.html">
           <div class="row">
-            <div class="col nopadding">
+            <div class="col">
                 <img src="images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
             </div>
-            <div class="col nopadding">
-                <p>TSABOX</p>
+            <div class="col">
+                <p style="margin-bottom: 0;">TSABOX</p>
             </div>
           </div>
         </a>
@@ -191,7 +191,29 @@ if(isset($_SESSION['username'])){
       </div>
     </nav>
 
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">Login</button>
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-12">
+          <center>
+          <h2>Manage your chapter<br><span class="text-primary">Effectively</span> and <span class="text-primary">Successfully</span> with</h2>
+          <br>
+          <h1>TSA Box</h1>
+          <br>
+          <h6 style="text-decoration: underline;;">A comprehensive suite of chapter management tools</h6></center>
+        </div>
+      </div>
+      <div class="row pt-5">
+        <div class="col-12">
+          <center>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">Login</button>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">Register</button>
+            <br><br>
+            <?php echo "<b class='text-danger'>".$fmsg."</b>"; ?>
+          </center>
+        </div>
+      </div>
+    </div>
+    
     <div class="modal fade" id="loginModal" role="dialog">
       <div class="modal-dialog">
       <div class="modal-content">
@@ -218,10 +240,6 @@ if(isset($_SESSION['username'])){
       </div>
     </div>
 
-  <br>
-  <?php echo $fmsg; ?>
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">Register</button>
     <div class="modal fade" id="registerModal" role="dialog">
       <div class="modal-dialog">
       <div class="modal-content">
@@ -278,9 +296,6 @@ if(isset($_SESSION['username'])){
   <footer>
     <div class="bg-blue color-white py-3">
         <center>
-        <p>
-          For more information, visit <a href="pages/about.html" style="color:white;">The About Page</a>.
-        </p>
         <p>
           Made by Team T1285, 2018-2019, All Rights Reserved
         </p>
