@@ -189,6 +189,7 @@ if(isset($_POST['deleteAnnouncementID'])){
                 $date = $resultArray['date'];
                 ?>
 
+
                 <!-- Displaying retrieved announcements-->
                 <div class="container" id="content">
                   <div class="row" style="padding-top: 1rem; padding-bottom: 1rem; overflow: auto;">
