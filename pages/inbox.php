@@ -172,7 +172,7 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
       list($firstname, $lastname) = mysqli_fetch_array($result1);
       echo $firstname . " " . $lastname?>
     </div>
-    <div class = "col-sm-2">
+    <div class = "col-sm-2" style="overflow-x:auto">
       <?php echo $subject; ?>
     </div>
     <div class = "col-sm-5" style="overflow-x:auto">

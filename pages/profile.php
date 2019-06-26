@@ -289,7 +289,7 @@ if(isset($_POST['newGrade'])){
 
 <!-- Title -->
 <div class="container" id="content">
-  <div class = "row">
+  <div class = "row" style="overflow-y: visible">
     <div class = "col-sm-4">
       <!-- profile picture -->
       <?php 
@@ -299,10 +299,7 @@ if(isset($_POST['newGrade'])){
     </div>
     <div class = "col-sm-8">
       <h1> <?php echo $username ?>'s Profile  </h1>
-    </div>
-  </div>
-  <div class = "row">
-    <p> <?php
+    <h5> <?php
     require('../php/connect.php');
 
     $query = "SELECT firstname, lastname, grade FROM users WHERE username = '$username'";
@@ -318,9 +315,7 @@ if(isset($_POST['newGrade'])){
     list($chapter) = mysqli_fetch_array($result);
     echo $firstname . " " . $lastname . " is in grade " . $grade . " at " . $chapter;
     ?>
-    </p>
-  </div>
-  <div class = "row">
+    </h5>
     <p>
       <?php 
         require('../php/connect.php');
@@ -332,8 +327,6 @@ if(isset($_POST['newGrade'])){
         }
       ?>
     </p>
-  </div>
-  <div class = "row">
     <p>
       <?php 
         require('../php/connect.php');
@@ -569,7 +562,7 @@ if(isset($_POST['newGrade'])){
   </form>
 </div>
 
-<div class ="container" style="padding-bottom">
+<div class ="container pb-5">
   <!-- change grade -->
   <form method="POST">
   <div class = "row">
