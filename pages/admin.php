@@ -49,6 +49,36 @@ if(isset($_POST['officers'])){
   }
 }
 
+//change password
+if(isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
+    require('../php/connect.php');
+    
+    
+    $newPassword = $_POST['newPassword'];
+    $confirmPassword = $_POST['confirmPassword'];
+
+    if($newPassword==$confirmPassword){
+      $query= "SELECT username FROM users WHERE username='$user'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      $count = mysqli_num_rows($result);
+      if($count == 1){
+        
+          echo $newPassword;
+          $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+          echo $newPassword;
+          $query3 = "UPDATE users SET password='$newPassword' WHERE username='$user'";
+          $result3 = mysqli_query($link, $query3);
+          if (!$result3){
+            die('Error: ' . mysqli_error($link));
+          }
+        }
+      }
+    }
+
+
 ?>
 
 <!doctype html>
@@ -296,7 +326,32 @@ if(isset($_POST['officers'])){
       </form>
     </div>
           
-        
+    <form method="post"> 
+    <div class = "row">
+      </div>
+    <div class = "row">
+        <div class="col-sm-8">
+          <p>New Password</p>
+        </div>
+        <div class ="col-sm-8">
+              <input type="password" name="newPassword" maxlength=30  rows="1" required>
+          </div>
+    </div>
+    <div class = "row">
+        <div class="col-sm-8">
+          <p>Confirm Password</p>
+        </div>
+          <div class ="col-sm-8">
+            <input type="password" name="confirmPassword" maxlength=30  rows="1" required>
+          </div>
+    </div>
+    <div class="row">
+      
+    </div>
+    <div class="row">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>   
       </center>
 
         <!-- Optional JavaScript -->
@@ -309,7 +364,7 @@ if(isset($_POST['officers'])){
     </form>
   </div>
 
-      <footer <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>style="position:relative;"<?php } ?>>
+      <footer style="position:relative;">
         <div class="bg-blue color-white py-3">
           <center>
             <p>
