@@ -27,7 +27,7 @@ if (!$result){
 }
 list($chapter) = mysqli_fetch_array($result);
 
-if(issset($_POST['event-add'])){
+if(isset($_POST['event-add'])){
 
   $eventadd = validate($_POST['event-add']);
 
