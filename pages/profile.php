@@ -169,6 +169,18 @@ if(isset($_POST['newEmail'])){
     }
   
 }
+
+if(isset($_POST['newFirstName']) && isset($_POST['newLastName'])){
+    require('../php/connect.php');
+    $newFirstName =$_POST['newFirstName'];
+    $newLastName =$_POST['newLastName'];
+    $query = "UPDATE users SET firstname='$newFirstName', lastname='$newLastName' WHERE username='$username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+  
+}
 ?>
 
 <!doctype html>
@@ -468,9 +480,14 @@ if(isset($_POST['newEmail'])){
     <button type="submit" class="btn btn-primary" value="Submit"></button>
   </div>
 </div>
+
+
 <br>
+
+
 <div class ="container" style="padding-top">
-  <!-- change password -->
+  <!-- change email -->
+  <form method="POST">
   <div class = "row">
     <h3> Update Email </h3>
   </div>
@@ -479,12 +496,41 @@ if(isset($_POST['newEmail'])){
             <p>New Email</p>
         </div>
         <div class="col-sm-9">
-          <form method="POST">
+          
             <input name="newEmail" maxlength=30  rows="1" required>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            </div>
+            
+            
+      
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<div class ="container" style="padding-top">
+  <!-- change name -->
+  <form method="POST">
+    <div class = "row">
+      <h3> Change Name </h3>
+    </div>
+    <div class = "row">
+      <div class="col-sm-3">
+        <p>First Name</p>
+      </div>
+      <div class="col-sm-9">
+        <input name="newFirstName" maxlength=30  rows="1" required>
       </div>
     </div>
+    <div class = "row">
+      <div class="col-sm-3">
+        <p>Last Name</p>
+      </div>
+      <div class="col-sm-9">
+        <input name="newLastName" maxlength=30  rows="1" required>
+      </div>
+    </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
 
 
