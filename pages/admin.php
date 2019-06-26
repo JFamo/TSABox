@@ -23,8 +23,31 @@ $resultChapter = mysqli_query($link, $query);
 list($chapter) = mysqli_fetch_array($resultChapter);
 $rank = $_SESSION['rank'];
 
+//Change Rank to Officer
+if(isset($_POST['users'])){
+  $user = $_POST['users'];
 
+  $query = "UPDATE ranks SET rank='officer' WHERE username='$user'";
 
+  $result = mysqli_query($link, $query);
+
+  if(!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+}
+
+//Change Rank to Member
+if(isset($_POST['officers'])){
+  $user = $_POST['officers'];
+
+  $query = "UPDATE ranks SET rank='member' WHERE username='$user'";
+
+  $result = mysqli_query($link, $query);
+
+  if(!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+}
 
 ?>
 
@@ -111,15 +134,15 @@ $rank = $_SESSION['rank'];
     <!-- Make User Officer -->
     <center>
     <div class = "container mt-5 contentcard">
-      <h3 style="border-bottom:2px solid #CF0C0C">Promote Member to Officer</h3>
+      <h3 style="border-bottom:2px solid #CF0C0C">Change Member Ranks</h3>
       <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
         <div class="form-row">
           
           <div class="col-4">
-            <small>User</small>
+            <small>Member</small>
             <!--Give each user as an option-->
-            <select id="username" name="username" class="form-control">
+            <select id="users" name="users" class="form-control">
               
             
               <?php
@@ -154,7 +177,68 @@ $rank = $_SESSION['rank'];
                 if($thisrank == 'member'){
                 ?>
 
-                <option><?php echo $first . ' ' . $last; ?></option>
+                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+
+                <?php
+                }
+              }
+
+
+              mysqli_close($link);
+
+              ?>
+            </select>
+          </div>
+          <div class="form-row">
+          <div class="col-4">
+            <small></small><br>
+            <input type="submit" class="btn btn-primary" value="Make Officer">
+          </div>
+        </div>
+
+          
+      </form>
+      <form class="form-control">
+        <div class="row">
+          <div class="col-4">
+            <small>Officer</small>
+            <!--Give each user as an option-->
+            <select id="officers" name="officers" class="form-control">
+              
+            
+              <?php
+
+              require('../php/connect.php');
+
+              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+
+              $result = mysqli_query($link, $query);
+
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              } 
+
+              while(list($user) = mysqli_fetch_array($result)){
+                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                $res=mysqli_query($link,$query);
+                if(!$res){
+                  die('Error: ' . mysqli_error($link));
+
+                }
+                list($first,$last)=mysqli_fetch_array($res);
+
+                $query = "SELECT rank FROM ranks WHERE username='$user'";
+                $res2=mysqli_query($link,$query);
+                if(!$res2){
+                  die('Error: ' . mysqli_error($link));
+                }
+
+                list($thisrank) = mysqli_fetch_array($res2);
+
+                if($thisrank == 'officer'){
+                ?>
+
+                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
 
                 <?php
                 }
@@ -168,10 +252,10 @@ $rank = $_SESSION['rank'];
           </div>
           
         </div>
-        <div class="form-row">
-          <div class="col-4">
+        <div class="col-4">
+          
             <small></small><br>
-            <input name="transact" type="submit" class="btn btn-primary" id="transact" value="Transact" class="form-control">
+            <input type="submit" class="btn btn-primary" value="Make Member">
           </div>
         </div>
       </form>
