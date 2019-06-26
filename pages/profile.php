@@ -340,7 +340,9 @@ if(isset($_POST['newGrade'])){
         $query = "SELECT email FROM users WHERE username='$username'";
         $result = mysqli_query($link, $query);
         list($email) = mysqli_fetch_array($result);
-        echo "Email: " . $email;
+        if($email!=""){
+          echo "Email: " . $email;
+        }
       ?>
     </p>
 
@@ -475,6 +477,7 @@ if(isset($_POST['newGrade'])){
   mysqli_close($link);
   ?>
 
+<?php if($username==$_SESSION['username']){ ?>
 <div class ="container">
   <form method="POST">
     <!-- change password -->
@@ -587,7 +590,7 @@ if(isset($_POST['newGrade'])){
     <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-
+<?php } ?>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="../js/jquery-3.3.1.slim.min.js"></script>
