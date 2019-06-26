@@ -98,6 +98,27 @@ if(isset($_POST['task-complete'])){
 
 }
 
+//Handler to drop this event
+if(isset($_POST['drop-event'])){
+
+  $verify = $_POST['verify'];
+  if($verify == 'yes'){
+
+    require('../php/connect.php');
+
+    $sql = "DELETE FROM user_team_mapping WHERE username='$username' AND team='$team'";
+    if (!mysqli_query($link, $sql)){
+      die('Error: ' . mysqli_error($link));
+    }
+
+    mysqli_close($link);
+    $_SESSION['team'] = -1;
+    header('Location: myevents.php');
+
+  }
+
+}
+
 if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
 
   //file details
@@ -587,6 +608,27 @@ if(isset($_POST['deleteFileID'])){
                 mysqli_close($link);
                 ?>
 
+              </div>
+            </div>
+
+            <div class="row pt-5">
+              <div class="col-sm-12">
+                <h3 class="band-red">Drop Event</h3>
+                <form class="form-control" method="post">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <small>Are you sure?</small>
+                      <select class="form-control" name="verify">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-6">
+                      <small><br></small>
+                      <input type="submit" class="btn btn-danger" value="Drop" name="drop-event">
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
 
