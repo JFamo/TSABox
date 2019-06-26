@@ -17,6 +17,7 @@ function validate($data){
 
 session_start();
 
+$pwmsg="";
 $rank = $_SESSION['rank'];
 if(isset($_GET['user'])){
   $username = $_GET['user'];
@@ -146,16 +147,17 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
       die('Error: ' . mysqli_error($link));
     }
     mysqli_close($link);
-
-
-
-
-
   }
 }
+//change password
+if(isset($_POST['changePassword'])){
+    
 
 
 
+
+  
+}
 
 ?>
 
@@ -214,7 +216,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
           SocialBox
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">My Profile</a>
+          <a class="dropdown-item" href="profile.php">My Profile</a>
           <a class="dropdown-item" href="social.php">Find Friends</a>          
           <a class="dropdown-item" href="inbox.php">My Inbox</a>
         </div>
@@ -257,7 +259,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
     $query = "SELECT name FROM chapters WHERE id=(SELECT chapter FROM user_chapter_mapping WHERE username='$username')";
     $result = mysqli_query($link, $query);
     list($chapter) = mysqli_fetch_array($result);
-    echo $firstname . " " . $lastname . " is in " . $grade . " grade at " . $chapter;
+    echo $firstname . " " . $lastname . " is in grade " . $grade . " at " . $chapter;
     ?>
     </p>
   </div>
@@ -298,7 +300,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
           <div class="contentcard">
             <h3 style="border-bottom:2px solid #CF0C0C">Upload</h3>
             <form method="post" enctype="multipart/form-data">
-              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+              <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
               <div class="form-control" style="border:0;">
                 <div class="row py-3">
                   <div class="col-sm-6">
@@ -415,7 +417,44 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
   mysqli_close($link);
   ?>
 
-
+<div class ="container">
+  <!-- change password -->
+  <div class = "row">
+    <h3> Change Password <h3>
+  </div>
+  <div class = "row">
+    <form method="POST">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label for="pw"> <p>Current Password</p> </label>
+            <input type="password"  class="form-control" name="currentPassword" maxlength=30  rows="1"></textarea>
+          </div>
+        </div>
+    </form>
+  </div>
+  <div class = "row">
+    <form method="POST">
+      <div class="col-sm-12">
+      <label for="pw"> <p>Current Password</p> </label>
+            <input type="password" class="form-control" name="newPassword" maxlength=30  rows="1">
+          </div>
+    </form>
+  </div>
+  <div class = "row">
+    <form method="POST">
+      <div class="col-sm-12">
+      <label for="pw"> <p>Current Password</p> </label>
+      <input type="password" class="form-control" name="confirmPassword" maxlength=30  rows="1">
+    </div>
+    </form>
+  </div>
+  <div class="row">
+    <?php echo $pwmsg; ?>
+  </div>
+  <div class="row">
+    <button name=changePassword type="submit" class="btn btn-primary" id=changePassword>Submit</button>
+  </div>
+</div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
