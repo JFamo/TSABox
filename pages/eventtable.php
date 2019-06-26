@@ -143,6 +143,9 @@ list($chapter) = mysqli_fetch_array($result);
                   list($eventname) = mysqli_fetch_array($result2);
                   echo "<tr class='evt-namerow'><td><b>".$eventname."</b></td></tr>";
 
+                  if($teams == 0){
+                    echo "<td colspan='6'>You have no teams for this event!</td>";
+                  }
                   for($team = 1; $team <= $teams; $team++){
 
                       echo "<tr class='evt-teamrow'>";
@@ -156,23 +159,21 @@ list($chapter) = mysqli_fetch_array($result);
                       list($teamid) = mysqli_fetch_array($result2);
 
                       //Get team members
-                      $query2="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$teamid')";
-                      $result2 = mysqli_query($link, $query2);
-                      if (!$result2){
+                      $queryT="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$teamid')";
+                      $resultT = mysqli_query($link, $queryT);
+                      if (!$resultT){
                         die('Error: ' . mysqli_error($link));
-                      }
-                      while(list($firstname, $lastname) = mysqli_fetch_array($result2)){
-                        echo "<td class='evt-slot'>".$firstname . " " . $lastname . "</td>";
                       }
 
                       for($q = 1; $q <= $max; $q++){
-                        if($q < $min){
+                        if($q <= $min){
                           $bck = "#6b7fdb";
                         }
                         else{
                           $bck = "#d6d6d6";
                         }
-                        echo "<td class='evt-slot' style='background-color:" . $bck . ";'></td>";
+                        $row = mysqli_fetch_row($resultT);
+                        echo "<td class='evt-slot' style='background-color:" . $bck . ";'>" . $row[0] . " " . $row[1] . "</td>";
                       }
 
                       echo "</tr>";
