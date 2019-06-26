@@ -205,6 +205,17 @@ if(isset($_POST['newFirstName']) && isset($_POST['newLastName'])){
     }
   
 }
+
+if(isset($_POST['newGrade'])){
+    require('../php/connect.php');
+    $newGrade =$_POST['newGrade'];
+    $query = "UPDATE users SET grade='$newGrade' WHERE username='$username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+  
+}
 ?>
 
 <!doctype html>
@@ -555,6 +566,27 @@ if(isset($_POST['newFirstName']) && isset($_POST['newLastName'])){
   </form>
 </div>
 
+<div class ="container" style="padding-top">
+  <!-- change grade -->
+  <form method="POST">
+  <div class = "row">
+    <h3> Update Grade </h3>
+  </div>
+  <div class = "row">
+        <div class="col-sm-3">
+            <p>New Grade</p>
+        </div>
+        <div class="col-sm-9">
+          
+            <input name="newGrade" maxlength=30  rows="1" required>
+            </div>
+            
+            
+      
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
