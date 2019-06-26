@@ -150,7 +150,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
   }
 }
 //change password
-if(isset($_POST['changePassword'])){
+if(isset($_POST['newPassword'])){
     require('../php/connect.php');
 
 
@@ -159,6 +159,16 @@ if(isset($_POST['changePassword'])){
   
 }
 
+if(isset($_POST['newEmail'])){
+    require('../php/connect.php');
+    $newEmail =$_POST['newEmail'];
+    $query = "UPDATE users SET email='$newEmail' WHERE username='$username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+  
+}
 ?>
 
 <!doctype html>
@@ -334,7 +344,7 @@ if(isset($_POST['changePassword'])){
             <label for="bio"> <h3>Change Bio</h3> </label>
             <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1" required></textarea>
           </div>
-          <button type="submit">Submit</button>
+          <button class="btn btn-primary" type="submit">Submit</button>
         </div>
 
         </div>
@@ -357,7 +367,7 @@ if(isset($_POST['changePassword'])){
           <div class="form-group">
             <textarea class="form-control" name="postText" maxlength=1000 placeholder="Text (1000 char max)" rows="3" required></textarea>
           </div>
-          <button type="submit">Submit</button>
+          <button class="btn btn-primary" type="submit">Submit</button>
         </div>
         </div>
     </form>
@@ -446,8 +456,8 @@ if(isset($_POST['changePassword'])){
         <p>Confirm Password</p>
       </div>
       <form method="POST">
-      <div class ="col-sm-9">
-            <input type="password" name="confirmPassword" maxlength=30  rows="1">
+        <div class ="col-sm-9">
+          <input type="password" name="confirmPassword" maxlength=30  rows="1">
         </div>
     </form>
   </div>
@@ -455,9 +465,28 @@ if(isset($_POST['changePassword'])){
     <?php echo $pwmsg; ?>
   </div>
   <div class="row">
-    <input name="changePassword" type="submit" class="btn btn-primary" id="changePassword" value="Submit">
+    <button type="submit" class="btn btn-primary" value="Submit"></button>
   </div>
 </div>
+<br>
+<div class ="container" style="padding-top">
+  <!-- change password -->
+  <div class = "row">
+    <h3> Update Email </h3>
+  </div>
+  <div class = "row">
+        <div class="col-sm-3">
+            <p>New Email</p>
+        </div>
+        <div class="col-sm-9">
+          <form method="POST">
+            <input name="newEmail" maxlength=30  rows="1" required>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+</div>
+
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
