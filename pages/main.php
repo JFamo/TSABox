@@ -51,18 +51,18 @@ if(isset($_POST['select-event'])){
     <title>TSABox</title>
   </head>
   <body style="background-image:url(../images/bg-logos.png); background-size:170px 140px;">
-    <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
-        <a class="navbar-brand" href="#">
-          <div class="row">
-            <div class="col nopadding">
-                <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
-            </div>
-        <a class="navbar-brand" href="#">TSABox</a>
+      <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
+    <a class="navbar-brand" href="main.php">
+      <div class="row">
+        <div class="col nopadding">
+          <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
+        </div>
+        <a class="navbar-brand" href="main.php">TSABox</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav"> 
+          <ul class="navbar-nav">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 OfficerBox
@@ -76,35 +76,42 @@ if(isset($_POST['select-event'])){
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                EventBox
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="myevents.php">My Events</a>
-                <a class="dropdown-item" href="rules.php">Rules</a>
-                <a class="dropdown-item" href="selection.php">Event Selection</a>
-                <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                SocialBox
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="profile.php">My Profile</a>
-                <a class="dropdown-item" href="chapter.php">My Chapter</a>
-                <a class="dropdown-item" href="social.php">Find Friends</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../php/logout.php">
-                Logout
-              </a>
-            </li>
-          </ul>
-        </div>
-    </nav>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  EventBox
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="myevents.php">My Events</a>
+                  <a class="dropdown-item" href="rules.php">Rules</a>
+                  <a class="dropdown-item" href="selection.php">Event Selection</a>
+                  <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
+                </div>
+              </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    SocialBox
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="profile.php">My Profile</a>
+                    <a class="dropdown-item" href="chapter.php">My Chapter</a>
+                    <a class="dropdown-item" href="social.php">Find Friends</a>
+                  </div>
+                </li>
+                <?php if($rank == "adviser" || $rank == "admin") { ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../pages/admin.php">
+                      Admin
+                    </a>
+                  </li>
+                  <?php } ?>
+                <li class="nav-item">
+                  <a class="nav-link" href="../php/logout.php">
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
 
     <div class="container px-5" id="content">
       <div class="row">

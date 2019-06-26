@@ -15,6 +15,7 @@ function validate($data){
 
 session_start();
 $username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
 
 //Grabing full name
 require('../php/connect.php');
@@ -100,6 +101,7 @@ if(isset($_POST['deleteAnnouncementID'])){
                 <a class="dropdown-item active" href="reporter.php">Reporter</a>
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
+            </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   EventBox
@@ -110,6 +112,7 @@ if(isset($_POST['deleteAnnouncementID'])){
                   <a class="dropdown-item" href="selection.php">Event Selection</a>
                   <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
                 </div>
+              </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     SocialBox
@@ -120,6 +123,13 @@ if(isset($_POST['deleteAnnouncementID'])){
                     <a class="dropdown-item" href="social.php">Find Friends</a>
                   </div>
                 </li>
+                <?php if($rank == "adviser" || $rank == "admin") { ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../pages/admin.php">
+                      Admin
+                    </a>
+                  </li>
+                  <?php } ?>
                 <li class="nav-item">
                   <a class="nav-link" href="../php/logout.php">
                     Logout
