@@ -27,7 +27,7 @@ if (!$result){
 }
 list($chapter) = mysqli_fetch_array($result);
 
-if($_POST['event-add']){
+if(issset($_POST['event-add'])){
 
   $eventadd = validate($_POST['event-add']);
 
@@ -39,7 +39,7 @@ if($_POST['event-add']){
 
 }
 
-if($_POST['event-delete']){
+if(isset($_POST['event-delete'])){
 
   $eventadd = validate($_POST['event-delete']);
 
