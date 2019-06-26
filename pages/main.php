@@ -15,6 +15,25 @@ function validate($data){
 
 session_start();
 
+$username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
+
+if(isset($_POST['select-event'])){
+
+  $selectevent = addslashes($_POST['select-event']);
+  $selectevent = validate($selectevent);
+
+  require('../php/connect.php');
+  $query = "SELECT id FROM teams WHERE event='$selectevent' AND id IN (SELECT team FROM user_team_mapping WHERE username='$username')";
+  $result = mysqli_query($link,$query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  list($teamid) = mysqli_fetch_array($result);
+  $_SESSION['team'] = $teamid;
+  header('Location: event.php');
+  mysqli_close($link);
+}
 
 ?>
 
@@ -84,14 +103,85 @@ session_start();
     </ul>
   </div>
 </nav>
+</li>
+</li>
+<div class="col-sm-6" style="padding-top:1rem">
+  <h1>Welcome, <?php 
+  require('../php/connect.php');
+  $query="SELECT firstname FROM users WHERE username='$username'";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+  list($firstname)=mysqli_fetch_array($result);
+  echo ucfirst($firstname);
+  ?>
+  </h1>
+</div>
+<div class="row" style="padding:1rem">
+  <div class="col-sm-6"> 
+    <div class="contentcard">
+      <h2 style="border-bottom:2px solid #CF0C0C" align="left">Event Overview</h2>
+        <?php
 
-    <div class="container" id="content">
-      <div class="text-center">
-        <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch
-        Modal Login Form</a>
-      </div>
+          require('../php/connect.php');
+
+              $query="SELECT name, id FROM events WHERE id IN (SELECT event FROM teams WHERE id IN (SELECT team FROM user_team_mapping WHERE username='$username'))";
+              $result = mysqli_query($link, $query);
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              }
+
+              if(mysqli_num_rows($result) == 0){
+                echo "You are not in any events!";
+              }
+              else{
+                ?>
+                <div class="row" style="padding:1rem;">
+                <?php
+                $eventnumber = 1;
+                while($resultArray = mysqli_fetch_array($result)){
+                  ?>
+                <div class="col-sm-4" style="font-size:1.5rem; padding:1rem;">
+                  <?php
+
+                  $eventname = $resultArray['name'];
+                  $eventid = $resultArray['id'];
+                  echo "<form method='POST'><input type='hidden' name='select-event' value='" . $eventid . "'><input class='nobtn' type='submit' value='" . $eventname . "'><p style='border-bottom:2px solid #CF0C0C' align='center'></form></p>";
+                  ?>
+              </div>  
+              <?php
+              if($eventnumber == 3){
+              ?>
+            </div>
+            <?php
+            echo "<div class='row' style='padding-left:1rem'>";
+              }
+          $eventnumber += 1;
+          }
+        }
+      ?>
     </div>
+  </div>
+  <br>
+  <div class="col-sm-6">
+    <div class="contentcard">   
+    <h2 align="left">Balance: $<?php
 
+      require('../php/connect.php');
+      $query="SELECT balance FROM user_balance WHERE user='$username'";
+      $result = mysqli_query($link, $query);
+      if (!$result){
+        die('Error: ' . mysqli_error($link));
+      }
+      list($balance)=mysqli_fetch_array($result);
+      echo ucfirst($balance);
+
+    ?>
+    </h2>
+  </div>
+</div>
+</div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../js/jquery-3.3.1.slim.min.js"></script>
