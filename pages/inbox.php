@@ -123,7 +123,7 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
           <div class="form-group">
             <textarea class="form-control" name="message" maxlength=1000 placeholder="Text (1000 char max)" rows="3" required></textarea>
           </div>
-          <button type="submit">Send</button>
+          <button class="btn btn-primary" type="submit">Send</button>
         </div>
 
         </div>

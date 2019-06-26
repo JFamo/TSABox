@@ -151,7 +151,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
 }
 //change password
 if(isset($_POST['changePassword'])){
-    
+    require('../php/connect.php');
 
 
 
@@ -332,7 +332,7 @@ if(isset($_POST['changePassword'])){
         <div class="col-sm-12">
           <div class="form-group">
             <label for="bio"> <h3>Change Bio</h3> </label>
-            <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1"></textarea>
+            <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1" required></textarea>
           </div>
           <button type="submit">Submit</button>
         </div>
@@ -362,7 +362,6 @@ if(isset($_POST['changePassword'])){
         </div>
     </form>
   </div>
-
 <!-- Retrieving posts from database -->
   <?php }
     require('../php/connect.php');
@@ -420,39 +419,43 @@ if(isset($_POST['changePassword'])){
 <div class ="container">
   <!-- change password -->
   <div class = "row">
-    <h3> Change Password <h3>
+    <h3> Change Password </h3>
   </div>
   <div class = "row">
-    <form method="POST">
-        <div class="col-sm-12">
-          <div class="form-group">
-            <label for="pw"> <p>Current Password</p> </label>
-            <input type="password"  class="form-control" name="currentPassword" maxlength=30  rows="1"></textarea>
-          </div>
+        <div class="col-sm-3">
+            <p>Current Password</p>
+        </div>
+        <div class="col-sm-9">
+          <form method="POST">
+            <input type="password" name="currentPassword" maxlength=30  rows="1">
+        </form>
+      </div>
+    </div>
+  <div class = "row">
+      <div class="col-sm-3">
+        <p>New Password</p>
+      </div>
+      <form method="POST">
+      <div class ="col-sm-9">
+            <input type="password" name="newPassword" maxlength=30  rows="1">
         </div>
     </form>
   </div>
   <div class = "row">
-    <form method="POST">
-      <div class="col-sm-12">
-      <label for="pw"> <p>Current Password</p> </label>
-            <input type="password" class="form-control" name="newPassword" maxlength=30  rows="1">
-          </div>
-    </form>
-  </div>
-  <div class = "row">
-    <form method="POST">
-      <div class="col-sm-12">
-      <label for="pw"> <p>Current Password</p> </label>
-      <input type="password" class="form-control" name="confirmPassword" maxlength=30  rows="1">
-    </div>
+      <div class="col-sm-3">
+        <p>Confirm Password</p>
+      </div>
+      <form method="POST">
+      <div class ="col-sm-9">
+            <input type="password" name="confirmPassword" maxlength=30  rows="1">
+        </div>
     </form>
   </div>
   <div class="row">
     <?php echo $pwmsg; ?>
   </div>
   <div class="row">
-    <button name=changePassword type="submit" class="btn btn-primary" id=changePassword>Submit</button>
+    <input name="changePassword" type="submit" class="btn btn-primary" id="changePassword" value="Submit">
   </div>
 </div>
 
