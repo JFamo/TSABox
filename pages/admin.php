@@ -78,6 +78,67 @@ if(isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
       }
     }
 
+    //Delete A User
+
+    if(isset($_POST['del'])){
+      $u=$_POST['del'];
+      if($_POST['verify'] == 'Yes'){
+        $query="SELECT balance FROM user_balance WHERE user='$u'";
+        $result4=mysqli_query($link,$query);
+        if(!$result4){
+          die('Error: ' . mysqli_error($link));
+        }
+        list($bal)=mysqli_fetch_array($result4);
+
+
+        $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$u'";
+        $resultChapter = mysqli_query($link, $query);
+        if(!$resultChapter){
+          die('Error: ' . mysqli_error($link));
+        }
+        list($chapter) = mysqli_fetch_array($resultChapter);
+        
+
+        $reason="User Deleted";
+
+        $query = "INSERT INTO transactions (personto, description, amount, chapter, date) VALUES ('chapter','$reason','$bal','chapter', NOW())";
+
+        $transfer=mysqli_query($link, $query);
+        if(!$transfer){
+          die('Error: ' . mysqli_error($link));
+        }
+
+        $query = "DELETE FROM ranks WHERE username='$u'";
+        $d=mysqli_query($link,$query);
+        if(!$d){
+          die('Error: ' . mysqli_error($link));
+        }
+       $query = "DELETE FROM users WHERE username='$u'";
+        $d=mysqli_query($link,$query);
+        if(!$d){
+          die('Error: ' . mysqli_error($link));
+        }
+        $query = "DELETE FROM user_chapter_mapping WHERE username='$u'";
+        $d=mysqli_query($link,$query);
+        if(!$d){
+          die('Error: ' . mysqli_error($link));
+        }
+        $query = "DELETE FROM user_balance WHERE user='$u'";
+        $d=mysqli_query($link,$query);
+        if(!$d){
+          die('Error: ' . mysqli_error($link));
+        }
+        $query = "DELETE FROM user_team_mapping WHERE username='$u'";
+        $d=mysqli_query($link,$query);
+        if(!$d){
+          die('Error: ' . mysqli_error($link));
+        }
+
+
+    }
+
+    }
+
 
 ?>
 
@@ -270,10 +331,7 @@ if(isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
                 <?php
                 }
               }
-
-
               mysqli_close($link);
-
               ?>
             </select>
           </div>
@@ -351,6 +409,76 @@ if(isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
     <div class="row">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
+  </form>   
+      </center>
+
+      <center>
+    <div class = "container mt-5 contentcard">
+      <h3 style="border-bottom:2px solid #CF0C0C">Remove User</h3>
+      <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+        <div class="row">
+
+      <div class="col-8">
+            <small>Select Member</small>
+            <!--Give each user as an option-->
+            <select id="del" name="del" class="form-control">
+              <?php
+
+              require('../php/connect.php');
+
+              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+
+              $result = mysqli_query($link, $query);
+
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              } 
+
+              while(list($user) = mysqli_fetch_array($result)){
+                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                $res=mysqli_query($link,$query);
+                if(!$res){
+                  die('Error: ' . mysqli_error($link));
+
+                }
+                list($first,$last)=mysqli_fetch_array($res);
+
+                $query = "SELECT rank FROM ranks WHERE username='$user'";
+                $res2=mysqli_query($link,$query);
+                if(!$res2){
+                  die('Error: ' . mysqli_error($link));
+                }
+
+                list($thisrank) = mysqli_fetch_array($res2);
+
+                if($user != $username){
+                ?>
+
+                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+
+                <?php
+                }
+              }
+
+
+              mysqli_close($link);
+
+              ?>
+            </select>
+          </div>
+          <div class="col-4">
+            <small>Verify Deletion</small>
+          <select name="verify" class="form-control">
+            <option>No</option>
+            <option>Yes</option>
+            </select>
+          </div>
+          <div class="col-4">
+            <small></small><br>
+            <input type="submit" class="btn btn-primary" value="Remove User">
+          </div>
+        </div></div>
   </form>   
       </center>
 
