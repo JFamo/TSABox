@@ -302,7 +302,7 @@ if(isset($_POST['join-event'])){
                       if(!$maxevents){
 
                         //Check if I am in this event
-                        $query2="SELECT COUNT(team) FROM user_team_mapping WHERE username='$username' AND team='$teamid'";
+                        $query2="SELECT COUNT(team) FROM user_team_mapping WHERE username='$username' AND team IN (SELECT id FROM teams WHERE event='$event' AND chapter='$chapter')";
                         $result2 = mysqli_query($link, $query2);
                         if (!$result2){
                           die('Error: ' . mysqli_error($link));
