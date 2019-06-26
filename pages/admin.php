@@ -51,93 +51,93 @@ if(isset($_POST['officers'])){
 
 //change password
 if(isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
-    require('../php/connect.php');
-    
-    
-    $newPassword = $_POST['newPassword'];
-    $confirmPassword = $_POST['confirmPassword'];
+  require('../php/connect.php');
 
-    if($newPassword==$confirmPassword){
-      $query= "SELECT username FROM users WHERE username='$user'";
-      $result = mysqli_query($link, $query);
-      if (!$result){
+
+  $newPassword = $_POST['newPassword'];
+  $confirmPassword = $_POST['confirmPassword'];
+
+  if($newPassword==$confirmPassword){
+    $query= "SELECT username FROM users WHERE username='$user'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    $count = mysqli_num_rows($result);
+    if($count == 1){
+
+      echo $newPassword;
+      $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+      echo $newPassword;
+      $query3 = "UPDATE users SET password='$newPassword' WHERE username='$user'";
+      $result3 = mysqli_query($link, $query3);
+      if (!$result3){
         die('Error: ' . mysqli_error($link));
       }
-      $count = mysqli_num_rows($result);
-      if($count == 1){
-        
-          echo $newPassword;
-          $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-          echo $newPassword;
-          $query3 = "UPDATE users SET password='$newPassword' WHERE username='$user'";
-          $result3 = mysqli_query($link, $query3);
-          if (!$result3){
-            die('Error: ' . mysqli_error($link));
-          }
-        }
-      }
     }
+  }
+}
 
     //Delete A User
 
-    if(isset($_POST['del'])){
-      $u=$_POST['del'];
-      if($_POST['verify'] == 'Yes'){
-        $query="SELECT balance FROM user_balance WHERE user='$u'";
-        $result4=mysqli_query($link,$query);
-        if(!$result4){
-          die('Error: ' . mysqli_error($link));
-        }
-        list($bal)=mysqli_fetch_array($result4);
+if(isset($_POST['del'])){
+  $u=$_POST['del'];
+  if($_POST['verify'] == 'Yes'){
+    $query="SELECT balance FROM user_balance WHERE user='$u'";
+    $result4=mysqli_query($link,$query);
+    if(!$result4){
+      die('Error: ' . mysqli_error($link));
+    }
+    list($bal)=mysqli_fetch_array($result4);
 
 
-        $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$u'";
-        $resultChapter = mysqli_query($link, $query);
-        if(!$resultChapter){
-          die('Error: ' . mysqli_error($link));
-        }
-        list($chapter) = mysqli_fetch_array($resultChapter);
-        
-
-        $reason="User Deleted";
-
-        $query = "INSERT INTO transactions (personto, description, amount, chapter, date) VALUES ('chapter','$reason','$bal','chapter', NOW())";
-
-        $transfer=mysqli_query($link, $query);
-        if(!$transfer){
-          die('Error: ' . mysqli_error($link));
-        }
-
-        $query = "DELETE FROM ranks WHERE username='$u'";
-        $d=mysqli_query($link,$query);
-        if(!$d){
-          die('Error: ' . mysqli_error($link));
-        }
-       $query = "DELETE FROM users WHERE username='$u'";
-        $d=mysqli_query($link,$query);
-        if(!$d){
-          die('Error: ' . mysqli_error($link));
-        }
-        $query = "DELETE FROM user_chapter_mapping WHERE username='$u'";
-        $d=mysqli_query($link,$query);
-        if(!$d){
-          die('Error: ' . mysqli_error($link));
-        }
-        $query = "DELETE FROM user_balance WHERE user='$u'";
-        $d=mysqli_query($link,$query);
-        if(!$d){
-          die('Error: ' . mysqli_error($link));
-        }
-        $query = "DELETE FROM user_team_mapping WHERE username='$u'";
-        $d=mysqli_query($link,$query);
-        if(!$d){
-          die('Error: ' . mysqli_error($link));
-        }
+    $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$u'";
+    $resultChapter = mysqli_query($link, $query);
+    if(!$resultChapter){
+      die('Error: ' . mysqli_error($link));
+    }
+    list($chapter) = mysqli_fetch_array($resultChapter);
 
 
+    $reason="User Deleted";
+
+    $query = "INSERT INTO transactions (personto, description, amount, chapter, date) VALUES ('chapter','$reason','$bal','chapter', NOW())";
+
+    $transfer=mysqli_query($link, $query);
+    if(!$transfer){
+      die('Error: ' . mysqli_error($link));
     }
 
+    $query = "DELETE FROM ranks WHERE username='$u'";
+    $d=mysqli_query($link,$query);
+    if(!$d){
+      die('Error: ' . mysqli_error($link));
     }
+    $query = "DELETE FROM users WHERE username='$u'";
+    $d=mysqli_query($link,$query);
+    if(!$d){
+      die('Error: ' . mysqli_error($link));
+    }
+    $query = "DELETE FROM user_chapter_mapping WHERE username='$u'";
+    $d=mysqli_query($link,$query);
+    if(!$d){
+      die('Error: ' . mysqli_error($link));
+    }
+    $query = "DELETE FROM user_balance WHERE user='$u'";
+    $d=mysqli_query($link,$query);
+    if(!$d){
+      die('Error: ' . mysqli_error($link));
+    }
+    $query = "DELETE FROM user_team_mapping WHERE username='$u'";
+    $d=mysqli_query($link,$query);
+    if(!$d){
+      die('Error: ' . mysqli_error($link));
+    }
+
+
+  }
+
+}
 
 
 ?>
@@ -203,306 +203,293 @@ if(isset($_POST['newPassword']) && isset($_POST['confirmPassword'])){
                   </div>
                 </li>
                 <?php if($rank == "adviser" || $rank == "admin") { ?>
-                <li class="nav-item">
-                  <a class="nav-link" href="../php/admin.php">
-                    Admin
-                  </a>
-                <?php } ?>
-                <li class="nav-item">
-                  <a class="nav-link" href="../php/logout.php">
-                    Logout
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../php/admin.php">
+                      Admin
+                    </a>
+                  <?php } ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../php/logout.php">
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
 
-          <!-- Title -->
-      <div class="container" id="content">
-        <h1>Admin</h1>
-        <small>Manage your chapter</small>
+            <!-- Title -->
+            <div class="container" id="content">
+              <h1>Admin</h1>
+              <small>Manage your chapter</small>
 
-    <!-- Change User Rank -->
-    <center>
-    <div class = "container mt-5 contentcard">
-      <h3 style="border-bottom:2px solid #CF0C0C">Change Member Ranks</h3>
-      <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-        <div class="row">
-          
-          <div class="col-8">
-            <small>Select Member</small>
-            <!--Give each user as an option-->
-            <select id="users" name="users" class="form-control">
-              <?php
+              <!-- Change User Rank -->
+              <center>
+                <div class = "container mt-5 contentcard">
+                  <h3 style="border-bottom:2px solid #CF0C0C">Change Member Ranks</h3>
+                  <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+                    <div class="row">
 
-              require('../php/connect.php');
+                      <div class="col-8">
+                        <small>Select Member</small>
+                        <!--Give each user as an option-->
+                        <select id="users" name="users" class="form-control">
+                          <?php
 
-              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+                          require('../php/connect.php');
 
-              $result = mysqli_query($link, $query);
+                          $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
 
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              } 
+                          $result = mysqli_query($link, $query);
 
-              while(list($user) = mysqli_fetch_array($result)){
-                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
-                $res=mysqli_query($link,$query);
-                if(!$res){
-                  die('Error: ' . mysqli_error($link));
+                          if (!$result){
+                            die('Error: ' . mysqli_error($link));
+                          } 
 
-                }
-                list($first,$last)=mysqli_fetch_array($res);
+                          while(list($user) = mysqli_fetch_array($result)){
+                            $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                            $res=mysqli_query($link,$query);
+                            if(!$res){
+                              die('Error: ' . mysqli_error($link));
 
-                $query = "SELECT rank FROM ranks WHERE username='$user'";
-                $res2=mysqli_query($link,$query);
-                if(!$res2){
-                  die('Error: ' . mysqli_error($link));
-                }
+                            }
+                            list($first,$last)=mysqli_fetch_array($res);
 
-                list($thisrank) = mysqli_fetch_array($res2);
+                            $query = "SELECT rank FROM ranks WHERE username='$user'";
+                            $res2=mysqli_query($link,$query);
+                            if(!$res2){
+                              die('Error: ' . mysqli_error($link));
+                            }
 
-                if($thisrank == 'member'){
-                ?>
+                            list($thisrank) = mysqli_fetch_array($res2);
 
-                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+                            if($thisrank == 'member'){
+                              ?>
 
-                <?php
-                }
-              }
+                              <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
 
-
-              mysqli_close($link);
-
-              ?>
-            </select>
-          </div>
-          <div class="col-4">
-            <small></small><br>
-            <input type="submit" class="btn btn-primary" value="Make Officer">
-          </div>
-        </div>
-
-          
-      </form>
-      <form method="post">
-        <div class="row">
-          <div class="col-8">
-            <small>Select Officer</small>
-            <!--Give each user as an option-->
-            <select id="officers" name="officers" class="form-control">
-              
-            
-              <?php
-
-              require('../php/connect.php');
-
-              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
-
-              $result = mysqli_query($link, $query);
-
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              } 
-
-              while(list($user) = mysqli_fetch_array($result)){
-                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
-                $res=mysqli_query($link,$query);
-                if(!$res){
-                  die('Error: ' . mysqli_error($link));
-
-                }
-                list($first,$last)=mysqli_fetch_array($res);
-
-                $query = "SELECT rank FROM ranks WHERE username='$user'";
-                $res2=mysqli_query($link,$query);
-                if(!$res2){
-                  die('Error: ' . mysqli_error($link));
-                }
-
-                list($thisrank) = mysqli_fetch_array($res2);
-
-                if($thisrank == 'officer'){
-                ?>
-
-                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
-
-                <?php
-                }
-              }
-              mysqli_close($link);
-              ?>
-            </select>
-          </div>
-          <div class="col-4">   
-              <small></small><br>
-              <input type="submit" class="btn btn-primary" value="Make Member">
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <center>
-    <div class = "container mt-5 contentcard">
-      <h3 style="border-bottom:2px solid #CF0C0C">Reset Member Password</h3>
-      <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-        <div class="row">
-
-      <form method="post">
-        <div class="col-8">
-          <div class="col-8">
-
-            <small>Select Member</small>
-            <!--Give each user as an option-->
-            <select id="officers" name="officers" class="form-control">
-                        
-              <?php
-              require('../php/connect.php');
-              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
-              $result = mysqli_query($link, $query);
-
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              } 
-
-              while(list($user) = mysqli_fetch_array($result)){
-                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
-                $res=mysqli_query($link,$query);
-                if(!$res){
-                  die('Error: ' . mysqli_error($link));
-                }
-                list($first,$last)=mysqli_fetch_array($res);              
-                ?>
-                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
-                <?php
-                }
-              mysqli_close($link);
-              ?>   
-          </div>       
-      </form>
-    </div>
-          
-    <form method="post"> 
-    <div class = "row">
-      </div>
-    <div class = "row">
-        <div class="col-sm-8">
-          <p>New Password</p>
-        </div>
-        <div class ="col-sm-8">
-              <input type="password" name="newPassword" maxlength=30  rows="1" required>
-          </div>
-    </div>
-    <div class = "row">
-        <div class="col-sm-8">
-          <p>Confirm Password</p>
-        </div>
-          <div class ="col-sm-8">
-            <input type="password" name="confirmPassword" maxlength=30  rows="1" required>
-          </div>
-    </div>
-    <div class="row">
-      
-    </div>
-    <div class="row">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>   
-      </center>
-
-      <center>
-    <div class = "container mt-5 contentcard">
-      <h3 style="border-bottom:2px solid #CF0C0C">Remove User</h3>
-      <form method="post" enctype="multipart/form-data">
-        <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-        <div class="row">
-
-      <div class="col-8">
-            <small>Select Member</small>
-            <!--Give each user as an option-->
-            <select id="del" name="del" class="form-control">
-              <?php
-
-              require('../php/connect.php');
-
-              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
-
-              $result = mysqli_query($link, $query);
-
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              } 
-
-              while(list($user) = mysqli_fetch_array($result)){
-                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
-                $res=mysqli_query($link,$query);
-                if(!$res){
-                  die('Error: ' . mysqli_error($link));
-
-                }
-                list($first,$last)=mysqli_fetch_array($res);
-
-                $query = "SELECT rank FROM ranks WHERE username='$user'";
-                $res2=mysqli_query($link,$query);
-                if(!$res2){
-                  die('Error: ' . mysqli_error($link));
-                }
-
-                list($thisrank) = mysqli_fetch_array($res2);
-
-                if($user != $username){
-                ?>
-
-                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
-
-                <?php
-                }
-              }
+                              <?php
+                            }
+                          }
 
 
-              mysqli_close($link);
+                          mysqli_close($link);
 
-              ?>
-            </select>
-          </div>
-          <div class="col-4">
-            <small>Verify Deletion</small>
-          <select name="verify" class="form-control">
-            <option>No</option>
-            <option>Yes</option>
-            </select>
-          </div>
-          <div class="col-4">
-            <small></small><br>
-            <input type="submit" class="btn btn-primary" value="Remove User">
-          </div>
-        </div></div>
-  </form>   
-      </center>
+                          ?>
+                        </select>
+                      </div>
+                      <div class="col-4">
+                        <small></small><br>
+                        <input type="submit" class="btn btn-primary" value="Make Officer">
+                      </div>
+                    </div>
 
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="../js/jquery-3.3.1.slim.min.js"></script>
-        <script src="../js/popper.min.js"></script>
-        <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
-        <script src="../js/scripts.js"></script>
-      </body>
-    </form>
-  </div>
 
-      <footer style="position:relative;">
-        <div class="bg-blue color-white py-3">
-          <center>
-            <p>
-              For more information, visit <a href="about.php" style="color:white;">The About Page</a>.
-            </p>
-            <p>
-              Made by Team T1285, 2018-2019, All Rights Reserved
-            </p>
-          </center>
-        </div>
-      </footer>
+                  </form>
+                  <form method="post">
+                    <div class="row">
+                      <div class="col-8">
+                        <small>Select Officer</small>
+                        <!--Give each user as an option-->
+                        <select id="officers" name="officers" class="form-control">
 
-      </html>
+
+                          <?php
+
+                          require('../php/connect.php');
+
+                          $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+
+                          $result = mysqli_query($link, $query);
+
+                          if (!$result){
+                            die('Error: ' . mysqli_error($link));
+                          } 
+
+                          while(list($user) = mysqli_fetch_array($result)){
+                            $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                            $res=mysqli_query($link,$query);
+                            if(!$res){
+                              die('Error: ' . mysqli_error($link));
+
+                            }
+                            list($first,$last)=mysqli_fetch_array($res);
+
+                            $query = "SELECT rank FROM ranks WHERE username='$user'";
+                            $res2=mysqli_query($link,$query);
+                            if(!$res2){
+                              die('Error: ' . mysqli_error($link));
+                            }
+
+                            list($thisrank) = mysqli_fetch_array($res2);
+
+                            if($thisrank == 'officer'){
+                              ?>
+
+                              <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+
+                              <?php
+                            }
+                          }
+                          mysqli_close($link);
+                          ?>
+                        </select>
+                      </div>
+                      <div class="col-4">   
+                        <small></small><br>
+                        <input type="submit" class="btn btn-primary" value="Make Member">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <center>
+                  <div class = "container mt-5 contentcard">
+                    <h3 style="border-bottom:2px solid #CF0C0C">Reset Member Password</h3>
+                    <form method="post">
+                      <div class="row">
+
+                            <div class="col-sm-8">
+
+                                <small>Select Member</small>
+                                <!--Give each user as an option-->
+                                <select id="officers" name="officers" class="form-control">
+
+                                  <?php
+                                  require('../php/connect.php');
+                                  $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+                                  $result = mysqli_query($link, $query);
+
+                                  if (!$result){
+                                    die('Error: ' . mysqli_error($link));
+                                  } 
+
+                                  while(list($user) = mysqli_fetch_array($result)){
+                                    $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                                    $res=mysqli_query($link,$query);
+                                    if(!$res){
+                                      die('Error: ' . mysqli_error($link));
+                                    }
+                                    list($first,$last)=mysqli_fetch_array($res);              
+                                    ?>
+                                    <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+                                    <?php
+                                  }
+                                  mysqli_close($link);
+                                  ?>   
+                                </select>
+
+                            </div>
+                            <div class="col-sm-4">
+                              <small><br></small>
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                      </div>
+                      <div class="row">
+                        <div class ="col-sm-6">
+                          <small>New Password</small>
+                          <input class="form-control" type="password" name="newPassword" maxlength=30  rows="1" required>
+                        </div>
+                        <div class ="col-sm-6">
+                          <small>Confirm Password</small>
+                          <input class="form-control" type="password" name="confirmPassword" maxlength=30  rows="1" required>
+                        </div>
+                      </div>
+                    </form>   
+                  </div>
+                </center>
+
+                        <center>
+                          <div class = "container mt-5 contentcard">
+                            <h3 style="border-bottom:2px solid #CF0C0C">Remove User</h3>
+                            <form method="post" enctype="multipart/form-data">
+                              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+                              <div class="row">
+
+                                <div class="col-8">
+                                  <small>Select Member</small>
+                                  <!--Give each user as an option-->
+                                  <select id="del" name="del" class="form-control">
+                                    <?php
+
+                                    require('../php/connect.php');
+
+                                    $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+
+                                    $result = mysqli_query($link, $query);
+
+                                    if (!$result){
+                                      die('Error: ' . mysqli_error($link));
+                                    } 
+
+                                    while(list($user) = mysqli_fetch_array($result)){
+                                      $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                                      $res=mysqli_query($link,$query);
+                                      if(!$res){
+                                        die('Error: ' . mysqli_error($link));
+
+                                      }
+                                      list($first,$last)=mysqli_fetch_array($res);
+
+                                      $query = "SELECT rank FROM ranks WHERE username='$user'";
+                                      $res2=mysqli_query($link,$query);
+                                      if(!$res2){
+                                        die('Error: ' . mysqli_error($link));
+                                      }
+
+                                      list($thisrank) = mysqli_fetch_array($res2);
+
+                                      if($user != $username){
+                                        ?>
+
+                                        <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+
+                                        <?php
+                                      }
+                                    }
+
+
+                                    mysqli_close($link);
+
+                                    ?>
+                                  </select>
+                                </div>
+                                <div class="col-4">
+                                  <small>Verify Deletion</small>
+                                  <select name="verify" class="form-control">
+                                    <option>No</option>
+                                    <option>Yes</option>
+                                  </select>
+                                </div>
+                                <div class="col-4">
+                                  <small></small><br>
+                                  <input type="submit" class="btn btn-primary" value="Remove User">
+                                </div>
+                              </div></div>
+                            </form>   
+                          </center>
+
+                          <!-- Optional JavaScript -->
+                          <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+                          <script src="../js/jquery-3.3.1.slim.min.js"></script>
+                          <script src="../js/popper.min.js"></script>
+                          <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
+                          <script src="../js/scripts.js"></script>
+                        </body>
+                      </form>
+                    </div>
+
+                    <footer style="position:relative;">
+                      <div class="bg-blue color-white py-3">
+                        <center>
+                          <p>
+                            For more information, visit <a href="about.php" style="color:white;">The About Page</a>.
+                          </p>
+                          <p>
+                            Made by Team T1285, 2018-2019, All Rights Reserved
+                          </p>
+                        </center>
+                      </div>
+                    </footer>
+
+                    </html>
