@@ -42,12 +42,12 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 }
 
 //file deletion
-if(isset($_POST['deleteAnnouncementDate'])){
+if(isset($_POST['deleteAnnouncementID'])){
   //file details
-  $announcementDate = $_POST['deleteAnnouncementDate'];  
+  $announcementID = $_POST['deleteAnnouncementID'];  
   if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
     require('../php/connect.php');
-    $query = "DELETE FROM announcements WHERE date = '$announcementDate'";
+    $query = "DELETE FROM announcements WHERE id = '$announcementID'";
     $result = mysqli_query($link, $query);
     if (!$result){
       die('Error: ' . mysqli_error($link));
@@ -182,7 +182,7 @@ if(isset($_POST['deleteAnnouncementDate'])){
             }
             else{
               while($resultArray = mysqli_fetch_array($result)){
-
+                $id = $resultArray['id'];
                 $title = $resultArray['title'];
                 $content = $resultArray['content'];
                 $username = $resultArray['username'];
@@ -215,7 +215,7 @@ if(isset($_POST['deleteAnnouncementDate'])){
                   <div class="row" style="padding-left: 1rem;">
                     <td>
                       <form method="post" id="deleteFileForm">
-                        <input name="deleteAnnouncementDate" type="hidden" value="<?php echo $date ?>">
+                        <input name="deleteAnnouncementID" type="hidden" value="<?php echo $id ?>">
                         <button class="btn btn-danger btn-sm" type="submit" value="&times";>Delete</button>
                       </form>
                     </td>
