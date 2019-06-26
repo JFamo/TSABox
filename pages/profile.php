@@ -92,26 +92,66 @@ if(isset($_POST['newBio'])){
   }
 }
 if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
-  //file details
-  $fileName = $_FILES['userfile']['name'];
-  $tmpName = $_FILES['userfile']['tmp_name'];
-  $fileSize = $_FILES['userfile']['size'];
-  $fileType = $_FILES['userfile']['type'];
-  //file data manipulation
-  $fp = fopen($tmpName, 'r');
-  $content = fread($fp, filesize($tmpName));
-  $content = addslashes($content);
-  fclose($fp);
-  if(!get_magic_quotes_gpc()){
-    $fileName = addslashes($fileName);
-  }
   require('../php/connect.php');
-  $query = "INSERT INTO profilepictures (name, size, type, content, date, username) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$username')";
-  $result = mysqli_query($link, $query);
-  if (!$result){
+
+  $query1 = "SELECT size FROM profilepictures WHERE username='$username'";
+  $result1 = mysqli_query($link, $query1);
+  if (!$result1){
     die('Error: ' . mysqli_error($link));
   }
-  mysqli_close($link);
+  list($thing1) = mysqli_fetch_array($result1);
+  if($thing1==""){
+
+
+
+    //file details
+    $fileName = $_FILES['userfile']['name'];
+    $tmpName = $_FILES['userfile']['tmp_name'];
+    $fileSize = $_FILES['userfile']['size'];
+    $fileType = $_FILES['userfile']['type'];
+    //file data manipulation
+    $fp = fopen($tmpName, 'r');
+    $content = fread($fp, filesize($tmpName));
+    $content = addslashes($content);
+    fclose($fp);
+    if(!get_magic_quotes_gpc()){
+      $fileName = addslashes($fileName);
+    }
+    require('../php/connect.php');
+    $query = "INSERT INTO profilepictures (name, size, type, content, date, username) VALUES ('$fileName', '$fileSize', '$fileType', '$content', now(), '$username')";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    mysqli_close($link);
+  }else{
+
+    //file details
+    $fileName = $_FILES['userfile']['name'];
+    $tmpName = $_FILES['userfile']['tmp_name'];
+    $fileSize = $_FILES['userfile']['size'];
+    $fileType = $_FILES['userfile']['type'];
+    //file data manipulation
+    $fp = fopen($tmpName, 'r');
+    $content = fread($fp, filesize($tmpName));
+    $content = addslashes($content);
+    fclose($fp);
+    if(!get_magic_quotes_gpc()){
+      $fileName = addslashes($fileName);
+    }
+    require('../php/connect.php');
+    $query = "UPDATE profilepictures SET name='$fileName', size='$fileSize', type='$fileType', content='$content', date=now() WHERE username='$username'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    mysqli_close($link);
+
+
+
+
+
+  }
 }
 
 
@@ -194,7 +234,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
     <div class = "col-sm-4">
       <!-- profile picture -->
       <?php 
-      getimage($username);
+        getimage($username);
       ?>
   
     </div>
