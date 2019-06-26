@@ -163,7 +163,7 @@ if(isset($_POST['select-event'])){
       <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
         <div class="col-sm-12">
           <input class="form-control" id="eventSearch" type="text" placeholder="Search...">
-          <table id="eventTable">
+          <table id="eventTable" class="table table-striped">
             <tr>
               <th>Event</th>
               <th>Team</th>
@@ -225,6 +225,15 @@ if(isset($_POST['select-event'])){
                   for($team = 1; $team <= $teams; $team++){
                     echo "<tr><td>";
 
+                    //Get my team ID
+                    $query2="SELECT id FROM teams WHERE chapter='$chapter' AND event='$event' AND number='$team'";
+                    $result2 = mysqli_query($link, $query2);
+                    if (!$result2){
+                      die('Error: ' . mysqli_error($link));
+                    }
+                    list($teamid) = mysqli_fetch_array($result2);
+
+                    //Get event name
                     $query2="SELECT name FROM events WHERE id='$event'";
                     $result2 = mysqli_query($link, $query2);
                     if (!$result2){
@@ -232,8 +241,21 @@ if(isset($_POST['select-event'])){
                     }
                     list($eventname) = mysqli_fetch_array($result2);
 
-                    echo $eventname . "</td><td>" . $team . "</td>";
-                    echo "</tr>";
+                    echo $eventname . "</td><td>" . $team . "</td><td>";
+
+                    //Get team members
+                    $query2="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$teamid')";
+                    $result2 = mysqli_query($link, $query2);
+                    if (!$result2){
+                      die('Error: ' . mysqli_error($link));
+                    }
+                    while(list($firstname, $lastname) = mysqli_fetch_array($result2)){
+                      echo $firstname . " " . $lastname . "<br>";
+                    }
+
+                    echo "</td><td>" . $min . "</td><td>";
+                    echo "<form method='post'><input type='submit' value='Join' class='btn btn-primary'></form>";
+                    echo "</td></tr>";
                   }
                 }
               }
