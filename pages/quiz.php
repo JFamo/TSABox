@@ -15,18 +15,18 @@ function validate($data){
 
 session_start();
   //Media categories
-  $digital = 1;
-  $display = 1; 
-  $engineering = 1;
-  $presentation = 1;
+  $digital = 0;
+  $display = 0; 
+  $engineering = 0;
+  $presentation = 0;
   //Skill Categories
-  $art = 1;
-  $tech = 1; 
-  $material = 1; 
-  $design = 1;
-  $speaking = 1; 
-  $audiovisual = 1;
-  $research = 1;
+  $art = 0;
+  $tech = 0; 
+  $material = 0; 
+  $design = 0;
+  $speaking = 0; 
+  $audiovisual = 0;
+  $research = 0;
 
   //Assigning the user point values
   if(isset($_POST['question1']) && isset($_POST['question2']))
@@ -79,17 +79,18 @@ session_start();
   $skillTotal = $art + $tech + $material + $design + $speaking + $audiovisual + $research;
 
 
-  //test
+  /*
+  //Test
   echo $digital, $display, $engineering, $presentation, $art, $tech, $material, $design, $speaking, $audiovisual, $research;
+  */
 
   //Media category percentages
   $mediaPercentages = array($digital, $display, $engineering, $presentation);  
   foreach($mediaPercentages as $i => $value)
   {
     if ($mediaTotal == 0) {$mediaPercentages[$i] = 0;}
-    else {$mediaPercentages[$i] = ($mediaPercentages[$i] / $mediaTotal) * 100;}    
+    else {$mediaPercentages[$i] = ($mediaPercentages[$i] / $mediaTotal) * 100;} 
   }
-  print_r($mediaPercentages);
 
 //Skill category percentages
   $skillPercentages = array($art, $tech, $material, $design, $speaking, $audiovisual, $research);
@@ -99,7 +100,7 @@ session_start();
     else {$skillPercentages[$i] = ($skillPercentages[$i] / $skillTotal) * 100;}
   }
 
-//Comparing total difference in percentages from table values to user values
+//Comparing total difference in media percentages from table values to user values
   require('../php/connect.php');
   $query="SELECT event, digital, display, engineering, presentation FROM quizcategories";
   $result = mysqli_query($link, $query);
@@ -107,17 +108,27 @@ session_start();
     die('Error: ' . mysqli_error($link));
   }
 
-  $index = 0;
   while(list($event, $digital, $display, $engineering, $presentation) = mysqli_fetch_array($result)){
-    $compat[$index] = ($digital / $mediaPercentages[0]) + ($display / $mediaPercentages[1]) + ($engineering / $mediaPercentages[2]) + ($presentation / $mediaPercentages[3]);
-    echo "CMPTI" . $compat[$index] . "<br>";
-    echo $digital;
-    $name[$index] = $event;
-    $index++;
-  }
-    print_r($compat);
 
+    $mediaCompat[$event] = abs($digital - $mediaPercentages[0]) + abs($display - $mediaPercentages[1]) + abs($engineering - $mediaPercentages[2]) + abs($presentation - $mediaPercentages[3]);
+  }
+    asort($mediaCompat);
+
+    //Comparing total difference in skill percentages from table values to user values
+  require('../php/connect.php');
+  $query="SELECT event, art, tech, material, design, speaking, audiovisual, research FROM quizcategories";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+  while(list($event, $art, $tech, $material, $design, $speaking, $audiovisual, $research) = mysqli_fetch_array($result)){
+
+    $skillCompat[$event] = abs($art - $skillPercentages[0]) + abs($tech - $skillPercentages[1]) + abs($material - $skillPercentages[2]) + abs($design - $skillPercentages[3]) + abs($speaking - $skillPercentages[4]) + abs($audiovisual - $skillPercentages[5]) + abs($research - $skillPercentages[6]);
+  }
+    asort($skillCompat);
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -185,6 +196,87 @@ session_start();
     </ul>
   </div>
 </nav>
+
+  <?php
+    if(isset($_POST['question22'])){
+      ?>
+      <div class="container" id="content" style="text-align: center;">
+          <h2> Compatibility Results </h2>
+          <small> Ordered from most compatible to least. </small>
+      </div>
+
+
+    <!-- Results -->
+    <div class="container" id="content">
+
+      <div class="row">
+        <div class="col-sm-6" style="text-align: center;">
+          <div class="row justify-content-center">
+            <h3> Media Compatibility Results </h3>
+          </div>
+          <div class="row justify-content-center pb-3">
+            <small> These events fit the type of event you like. </small>
+          </div>
+
+          <?php 
+          $eventcounter = 1;
+          foreach($mediaCompat as $i => $value)
+          {
+            ?>
+            <div class="row justify-content-center">
+              <?php
+              if($eventcounter<7){
+                echo "<span class='text-primary'>" . $i . "</span>";
+              }
+              else if($eventcounter > sizeof($mediaCompat) - 6){
+                echo "<span class='text-danger'>" . $i . "</span>";
+              }
+              else{
+                echo $i;
+              }
+              ?>
+            </div>
+          <?php
+          $eventcounter++;
+          }
+          ?>
+        </div>
+        <div class="col-sm-6" style="text-align: center;">
+          <div class="row justify-content-center">
+            <h3> Skill Compatibility Results </h3>
+          </div>
+          <div class="row justify-content-center pb-3">
+            <small> These events fit the type of skills you have. </small>
+          </div>
+
+          <?php 
+          $eventcounter = 1;
+          foreach($skillCompat as $i => $value)
+          {
+            ?>
+            <div class="row justify-content-center">
+              <?php
+              if($eventcounter<7){
+                echo "<span class='text-primary'>" . $i . "</span>";
+              }
+              else if($eventcounter > sizeof($skillCompat) - 6){
+                echo "<span class='text-danger'>" . $i . "</span>";
+              }
+              else{
+                echo $i;
+              }
+              ?>
+            </div>
+          <?php
+          $eventcounter++;
+          }
+          ?>
+        </div>
+      </div>
+    </div>
+    <hr> </hr>
+  <?php } ?>
+
 
 <!-- Title -->
 <div class="container" id="content">
@@ -906,6 +998,7 @@ session_start();
   </div>
 </form>
 
+  
 
 
     <!-- Optional JavaScript -->
