@@ -17,6 +17,8 @@ function validate($data){
 
 session_start();
 
+if(isset($_SESSION['username'])){
+
 $pwmsg="";
 $rank = $_SESSION['rank'];
 if(isset($_GET['user'])){
@@ -319,7 +321,7 @@ if(isset($_POST['newGrade'])){
     $query = "SELECT name FROM chapters WHERE id=(SELECT chapter FROM user_chapter_mapping WHERE username='$username')";
     $result = mysqli_query($link, $query);
     list($chapter) = mysqli_fetch_array($result);
-    echo $firstname . " " . $lastname . " is in grade " . $grade . " at " . $chapter;
+    echo "<span class='text-primary'>".$firstname . " " . $lastname . "</span> is in grade " . $grade . " at " . $chapter;
     ?>
     </h5>
     <p>
@@ -329,7 +331,7 @@ if(isset($_POST['newGrade'])){
         $result = mysqli_query($link, $query);
         list($bio) = mysqli_fetch_array($result);
         if($bio!=""){
-          echo "Bio: " . $bio;
+          echo $bio;
         }
       ?>
     </p>
@@ -359,7 +361,7 @@ if(isset($_POST['newGrade'])){
   <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
     <div class="col-sm-12"> 
           <div class="contentcard">
-            <h3 style="border-bottom:2px solid #CF0C0C">Upload</h3>
+            <h3 style="border-bottom:2px solid #CF0C0C">Upload Profile Picture</h3>
             <form method="post" enctype="multipart/form-data">
               <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
               <div class="form-control" style="border:0;">
@@ -412,7 +414,7 @@ if(isset($_POST['newGrade'])){
 
         <div class="col-sm-12">
           <div class="form-group">
-            <label for="postTitle"> <h3>New post</h3> </label>
+            <label for="postTitle"> <h3>New Post</h3> </label>
             <textarea class="form-control" name="postTitle" maxlength=100 placeholder="Title (100 char max)" rows="1"></textarea>
           </div>
           <div class="form-group">
@@ -478,7 +480,8 @@ if(isset($_POST['newGrade'])){
   ?>
 
 <?php if($username==$_SESSION['username']){ ?>
-<div class ="container">
+<div class ="container pt-5">
+  <h3 class="band-red">Account Editing</h3>
   <form method="POST">
     <!-- change password -->
     <div class = "row">
@@ -615,4 +618,8 @@ if(isset($_POST['newGrade'])){
 
 </html>
 <?php
+}
+else{
+  echo "Session timed out! <a href='../index.php'>Return to Login</a>";
+}
 ?>

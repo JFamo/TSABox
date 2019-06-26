@@ -16,7 +16,7 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
-$sendmsg = "";
+$messageStatus = "";
 //Inputting form data into database
 if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 
@@ -27,13 +27,20 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
   require('../php/connect.php');
   $query = "INSERT INTO messages (personfrom, personto, content, date, subject) VALUES ('$username', '$to', '$message', NOW(), '$subject')";
   $result = mysqli_query($link,$query);
+  $messageStatus = "fail";
   if (!$result){
     die('Error: ' . mysqli_error($link));
+    $messageStatus = "fail";
   }else{
-  $query = "SELECT firstname, lastname FROM users WHERE username='$to'";
-  $result = mysqli_query($link,$query);
-    list($first, $last) = mysqli_fetch_array($result);
-    $sendmsg = "Message sent to " . $first . " " . $last;
+    $query = "SELECT firstname, lastname FROM users WHERE username='$to'";
+    $result = mysqli_query($link,$query);
+    if(mysqli_num_rows($result) == 0){
+      $messageStatus = "fail";
+    }
+    else{
+      list($first, $last) = mysqli_fetch_array($result);
+      $messageStatus = "sent";
+    }
   }
 }
 
@@ -113,6 +120,11 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 <!-- send messages -->
 
 <div class = "container" id="content">
+  <?php if($messageStatus!=""){ ?>
+  <div class="alert alert-<?php if($messageStatus=='sent'){ echo 'success'; }else{ echo 'danger'; } ?>" role="alert">
+    <?php if($messageStatus=='sent'){ echo 'Successfully sent message to '.$first.' '.$last.'!'; }else{ echo 'Failed to send message!'; } ?>
+  </div>
+<?php } ?>
     <form method="POST">
       
       <div class="row">
@@ -133,22 +145,11 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 
         </div>
     </form>
-    <div class= "row">
-      <?php echo $sendmsg; ?>
-    </div>
   </div>
 
 
-
-
-
-
-
-
-
-
 <!-- View messages -->
-<div class= "container">
+<div class= "container pb-5">
   <div class = "row">
     <h2> Messages</h2>
   </div>

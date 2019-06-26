@@ -97,62 +97,15 @@ if(isset($_POST['search'])){
 
 <!-- THE MEAT -->
 
-<div class = "container" style="padding-bottom: 25px">
+<div class = "container" style="padding-top: 25px">
   <div class = "row">
     <h3>
-      Here you can find other people in TSA
+      Connect With TSA!
       </h3>
   </div>
 </div>
 
 
-<div class="container" style="padding-bottom: 25px;">
-  <div class = "row">
-  	<h5>
-    Here are some of your chapter members
-	</h5>
-  </div>
-  <?php 
-    //display all people in your chapter
-    require('../php/connect.php');
-
-    $query = "SELECT chapter FROM user_chapter_mapping WHERE username = '$username'";
-    $result = mysqli_query($link, $query);
-    if(!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-    list($chapter) = mysqli_fetch_array($result);
-
-    $query = "SELECT username FROM user_chapter_mapping WHERE chapter='$chapter'";
-    $result = mysqli_query($link, $query);
-
-    if(!$result){
-      die('Error: ' . mysqli_error($link));
-    } 
-
-    while(list($chapterMates) = mysqli_fetch_array($result)){
-
-    $query1 = "SELECT username, firstname, lastname FROM users WHERE username='$chapterMates' AND username!='$username'";
-    $result1 = mysqli_query($link, $query1);
-
-    if(!$result1){
-      die('Error: ' . mysqli_error($link));
-    } 
-    list($Username, $firstname, $lastname) = mysqli_fetch_array($result1);
-
-      ?>
-      <div class= "row" >
-        <div class = "col-sm-3" >
-          <a href=<?php echo "profile.php?user=" . $Username; ?>>
-            <?php echo $firstname . " " . $lastname ?>
-          </a>
-        </div>
-      </div>
-      <?php
-    }
-
-  ?>
-</div>
 
 <div class = "container" id="content">
     <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
@@ -163,38 +116,38 @@ if(isset($_POST['search'])){
             <tbody>
             <?php
         		require('../php/connect.php');
-              	$query = "SELECT chapter FROM user_chapter_mapping WHERE username = '$username'";
-		    	$result = mysqli_query($link, $query);
-			    if(!$result){
-			      die('Error: ' . mysqli_error($link));
-			    } 
-			    list($chapter) = mysqli_fetch_array($result);
-			    $query = "SELECT username FROM user_chapter_mapping WHERE chapter !='$chapter'";
-			    $result = mysqli_query($link, $query);
+  			    $query = "SELECT username, firstname, lastname FROM users";
+  			    $result = mysqli_query($link, $query);
 
-			    if(!$result){
-			      die('Error: ' . mysqli_error($link));
-			    } 
-                //Iterate every event at my level
-                while(list($otherPeople) = mysqli_fetch_array($result)){
-                  
-                    $query1 = "SELECT username, firstname, lastname FROM users WHERE username='$otherPeople'";
-				    $result1 = mysqli_query($link, $query1);
+  			    if(!$result){
+  			      die('Error: ' . mysqli_error($link));
+  			    }
+            while(list($user, $first, $last) = mysqli_fetch_array($result)){
+              $query1 = "SELECT name FROM chapters WHERE id IN (SELECT chapter FROM user_chapter_mapping WHERE username='$user')";
+  				    $result1 = mysqli_query($link, $query1);
 
-				    if(!$result1){
-				      die('Error: ' . mysqli_error($link));
-				    } 
-				    list($Username, $firstname, $lastname) = mysqli_fetch_array($result1);
+  				    if(!$result1){
+  				      die('Error: ' . mysqli_error($link));
+  				    } 
+  				    list($chapterName) = mysqli_fetch_array($result1);
 
 				    
 				      ?>
 
             	<tr>
             		<td>
-				          <a href=<?php echo "profile.php?user=" . $Username; ?>>
-				            <?php echo $firstname . " " . $lastname ?>
+                  <!-- First and last name -->
+				          <a href=<?php echo "profile.php?user=" . $user; ?>>
+				            <?php echo $first . " " . $last ?>
 				          </a>
 				      </td>
+              <td>
+                <p>
+                <?php 
+                  echo $chapterName;
+                ?>
+                </p>
+              </td>
 				  </tr>
 				      <?php
                   }
@@ -202,59 +155,6 @@ if(isset($_POST['search'])){
             </tbody>
           </table>
   </div>
-
-
-<!-- people not in your chapter -->
-<!--
-<div class="container" style="padding-bottom: 25px;">
-  <div class = "row">
-  	<h5>
-    Here are some other TSA members
-	</h5>
-  </div>
-  <?php 
-    //display people not in your chapter that match the search
-    require('../php/connect.php');
-
-    $query = "SELECT chapter FROM user_chapter_mapping WHERE username = '$username'";
-    $result = mysqli_query($link, $query);
-    if(!$result){
-      die('Error: ' . mysqli_error($link));
-    } 
-    list($chapter) = mysqli_fetch_array($result);
-    $query = "SELECT username FROM user_chapter_mapping WHERE chapter !='$chapter'";
-    $result = mysqli_query($link, $query);
-
-    if(!$result){
-      die('Error: ' . mysqli_error($link));
-    } 
-
-    while(list($otherPeople) = mysqli_fetch_array($result)){
-    $query1 = "SELECT username, firstname, lastname FROM users WHERE username='$otherPeople'";
-    $result1 = mysqli_query($link, $query1);
-
-    if(!$result1){
-      die('Error: ' . mysqli_error($link));
-    } 
-    list($Username, $firstname, $lastname) = mysqli_fetch_array($result1);
-
-    echo $search . " " . "." . $Username;
-	echo strpos("." . $Username, $search);
-    if($search==""||(strpos(" " . $Username, $search))>=0){
-      ?>
-      <div class= "row" >
-        <div class = "col-sm-3" >
-          <a href=<?php echo "profile.php?user=" . $Username; ?>>
-            <?php echo $firstname . " " . $lastname ?>
-          </a>
-        </div>
-      </div>
-      <?php
-    }
-}
-  ?>
-</div>
--->
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="../js/jquery-3.3.1.slim.min.js"></script>
