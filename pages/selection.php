@@ -164,6 +164,13 @@ if(isset($_POST['select-event'])){
         <div class="col-sm-12">
           <input class="form-control" id="eventSearch" type="text" placeholder="Search...">
           <table id="eventTable">
+            <tr>
+              <th>Event</th>
+              <th>Team</th>
+              <th>Members</th>
+              <th>Min</th>
+              <th></th>
+            </tr>
             <?php
 
               require('../php/connect.php');
@@ -216,7 +223,17 @@ if(isset($_POST['select-event'])){
                   $teams = $teams - $countFullTeams;
 
                   for($team = 1; $team <= $teams; $team++){
-                    echo $event . " : " . $team . "<br>";
+                    echo "<tr><td>";
+
+                    $query2="SELECT name FROM events WHERE id='$event'";
+                    $result2 = mysqli_query($link, $query2);
+                    if (!$result2){
+                      die('Error: ' . mysqli_error($link));
+                    }
+                    list($eventname) = mysqli_fetch_array($result2);
+
+                    echo $eventname . "</td><td>" . $team . "</td>";
+                    echo "</tr>";
                   }
                 }
               }
