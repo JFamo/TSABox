@@ -15,18 +15,18 @@ function validate($data){
 
 session_start();
   //Media categories
-  $digital = 0;
-  $display = 0; 
-  $engineering = 0;
-  $presentation = 0;
+  $digital = 1;
+  $display = 1; 
+  $engineering = 1;
+  $presentation = 1;
   //Skill Categories
-  $art = 0;
-  $tech = 0; 
-  $material = 0; 
-  $design = 0;
-  $speaking = 0; 
-  $audiovisual = 0;
-  $research = 0;
+  $art = 1;
+  $tech = 1; 
+  $material = 1; 
+  $design = 1;
+  $speaking = 1; 
+  $audiovisual = 1;
+  $research = 1;
 
   //Assigning the user point values
   if(isset($_POST['question1']) && isset($_POST['question2']))
@@ -77,6 +77,45 @@ session_start();
 
   $mediaTotal = $digital + $display + $engineering + $presentation;
   $skillTotal = $art + $tech + $material + $design + $speaking + $audiovisual + $research;
+
+
+  //test
+  echo $digital, $display, $engineering, $presentation, $art, $tech, $material, $design, $speaking, $audiovisual, $research;
+
+  //Media category percentages
+  $mediaPercentages = array($digital, $display, $engineering, $presentation);  
+  foreach($mediaPercentages as $i => $value)
+  {
+    if ($mediaTotal == 0) {$mediaPercentages[$i] = 0;}
+    else {$mediaPercentages[$i] = ($mediaPercentages[$i] / $mediaTotal) * 100;}    
+  }
+  print_r($mediaPercentages);
+
+//Skill category percentages
+  $skillPercentages = array($art, $tech, $material, $design, $speaking, $audiovisual, $research);
+  foreach($skillPercentages as $i => $value)
+  {
+    if ($skillTotal == 0) {$skillPercentages[$i] = 0;}
+    else {$skillPercentages[$i] = ($skillPercentages[$i] / $skillTotal) * 100;}
+  }
+
+//Comparing total difference in percentages from table values to user values
+  require('../php/connect.php');
+  $query="SELECT event, digital, display, engineering, presentation FROM quizcategories";
+  $result = mysqli_query($link, $query);
+  if (!$result){
+    die('Error: ' . mysqli_error($link));
+  }
+
+  $index = 0;
+  while(list($event, $digital, $display, $engineering, $presentation) = mysqli_fetch_array($result)){
+    $compat[$index] = ($digital / $mediaPercentages[0]) + ($display / $mediaPercentages[1]) + ($engineering / $mediaPercentages[2]) + ($presentation / $mediaPercentages[3]);
+    echo "CMPTI" . $compat[$index] . "<br>";
+    echo $digital;
+    $name[$index] = $event;
+    $index++;
+  }
+    print_r($compat);
 
 ?>
 
@@ -171,7 +210,7 @@ session_start();
             <label class="form-check-label" for="q1agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question1" id="q1neutral" value="2">
+            <input class="form-check-input" type="radio" name="question1" id="q1neutral" value="2" required>
             <label class="form-check-label" for="q1neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -203,7 +242,7 @@ session_start();
             <label class="form-check-label" for="q2agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question2" id="q2neutral" value="2">
+            <input class="form-check-input" type="radio" name="question2" id="q2neutral" value="2" required>
             <label class="form-check-label" for="q2neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -235,7 +274,7 @@ session_start();
             <label class="form-check-label" for="q3agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question3" id="q3neutral" value="2">
+            <input class="form-check-input" type="radio" name="question3" id="q3neutral" value="2" required>
             <label class="form-check-label" for="q3neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -267,7 +306,7 @@ session_start();
             <label class="form-check-label" for="q4agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question4" id="q4neutral" value="2">
+            <input class="form-check-input" type="radio" name="question4" id="q4neutral" value="2" required>
             <label class="form-check-label" for="q4neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -299,7 +338,7 @@ session_start();
             <label class="form-check-label" for="q5agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question5" id="q5neutral" value="2">
+            <input class="form-check-input" type="radio" name="question5" id="q5neutral" value="2" required>
             <label class="form-check-label" for="q5neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -331,7 +370,7 @@ session_start();
             <label class="form-check-label" for="q6agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question6" id="q6neutral" value="2">
+            <input class="form-check-input" type="radio" name="question6" id="q6neutral" value="2" required>
             <label class="form-check-label" for="q6neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -363,7 +402,7 @@ session_start();
             <label class="form-check-label" for="q7agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question7" id="q7neutral" value="2">
+            <input class="form-check-input" type="radio" name="question7" id="q7neutral" value="2" required>
             <label class="form-check-label" for="q7neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -395,7 +434,7 @@ session_start();
             <label class="form-check-label" for="q8agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question8" id="q8neutral" value="2">
+            <input class="form-check-input" type="radio" name="question8" id="q8neutral" value="2" required>
             <label class="form-check-label" for="q8neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -427,7 +466,7 @@ session_start();
             <label class="form-check-label" for="q9agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question9" id="q9neutral" value="2">
+            <input class="form-check-input" type="radio" name="question9" id="q9neutral" value="2" required>
             <label class="form-check-label" for="q9neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -459,7 +498,7 @@ session_start();
             <label class="form-check-label" for="q10agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question10" id="q10neutral" value="2">
+            <input class="form-check-input" type="radio" name="question10" id="q10neutral" value="2" required>
             <label class="form-check-label" for="q10neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -491,7 +530,7 @@ session_start();
             <label class="form-check-label" for="q11agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question11" id="q11neutral" value="2">
+            <input class="form-check-input" type="radio" name="question11" id="q11neutral" value="2" required>
             <label class="form-check-label" for="q11neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -523,7 +562,7 @@ session_start();
             <label class="form-check-label" for="q12agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question12" id="q12neutral" value="2">
+            <input class="form-check-input" type="radio" name="question12" id="q12neutral" value="2" required>
             <label class="form-check-label" for="q12neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -555,7 +594,7 @@ session_start();
             <label class="form-check-label" for="q13agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question13" id="q13neutral" value="2">
+            <input class="form-check-input" type="radio" name="question13" id="q13neutral" value="2" required>
             <label class="form-check-label" for="q13neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -587,7 +626,7 @@ session_start();
             <label class="form-check-label" for="q14agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question14" id="q14neutral" value="2">
+            <input class="form-check-input" type="radio" name="question14" id="q14neutral" value="2" required>
             <label class="form-check-label" for="q14neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -619,7 +658,7 @@ session_start();
             <label class="form-check-label" for="q15agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question15" id="q15neutral" value="2">
+            <input class="form-check-input" type="radio" name="question15" id="q15neutral" value="2" required>
             <label class="form-check-label" for="q15neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -651,7 +690,7 @@ session_start();
             <label class="form-check-label" for="q16agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question16" id="q16neutral" value="2">
+            <input class="form-check-input" type="radio" name="question16" id="q16neutral" value="2" required>
             <label class="form-check-label" for="q16neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -683,7 +722,7 @@ session_start();
             <label class="form-check-label" for="q17agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question17" id="q17neutral" value="2">
+            <input class="form-check-input" type="radio" name="question17" id="q17neutral" value="2" required>
             <label class="form-check-label" for="q17neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -715,7 +754,7 @@ session_start();
             <label class="form-check-label" for="q18agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question18" id="q18neutral" value="2">
+            <input class="form-check-input" type="radio" name="question18" id="q18neutral" value="2" required>
             <label class="form-check-label" for="q18neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -747,7 +786,7 @@ session_start();
             <label class="form-check-label" for="q19agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question19" id="q19neutral" value="2">
+            <input class="form-check-input" type="radio" name="question19" id="q19neutral" value="2" required>
             <label class="form-check-label" for="q19neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -779,7 +818,7 @@ session_start();
             <label class="form-check-label" for="q20agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question20" id="q20neutral" value="2">
+            <input class="form-check-input" type="radio" name="question20" id="q20neutral" value="2" required>
             <label class="form-check-label" for="q20neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -811,7 +850,7 @@ session_start();
             <label class="form-check-label" for="q21agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question21" id="q21neutral" value="2">
+            <input class="form-check-input" type="radio" name="question21" id="q21neutral" value="2" required>
             <label class="form-check-label" for="q21neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -843,7 +882,7 @@ session_start();
             <label class="form-check-label" for="q22agree">Agree</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="question22" id="q22neutral" value="2">
+            <input class="form-check-input" type="radio" name="question22" id="q22neutral" value="2" required>
             <label class="form-check-label" for="q22neutral">Neutral</label>
           </div>
           <div class="form-check form-check-inline">
@@ -868,44 +907,6 @@ session_start();
 </form>
 
 
-<?php //test 
-echo $digital, $display, $engineering, $presentation, $art, $tech, $material, $design, $speaking, $audiovisual, $research; ?>
-
-<?php 
-//Media category percentages
-  $mediaPercentages = array($digital, $display, $engineering, $presentation);  
-  foreach($mediaPercentages as $i => $value)
-  {
-    $mediaPercentages[$i] = ($mediaPercentages[$i] / $mediaTotal) * 100; 
-  }
-  print_r($mediaPercentages);
-
-//Skill category percentages
-  $skillPercentages = array($art, $tech, $material, $design, $speaking, $audiovisual, $research);
-  foreach($skillPercentages as $i => $value)
-  {
-    $skillPercentages[$i] = ($skillPercentages[$i] / $skillTotal) * 100;
-  }
-
-//Comparing total difference in percentages from table values to user values
-  require('../php/connect.php');
-  $query="SELECT event, digital, display, engineering, presentation FROM quizcategories";
-  $result = mysqli_query($link, $query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-
-  $index = 0;
-  while(list($event, $digital, $display, $engineering, $presentation) = mysqli_fetch_array($result)){
-    $compat[$index] = (($digital - $mediaPercentages[0]) + ($display - $mediaPercentages[1]) + ($engineering - $mediaPercentages[2]) + ($presentation - $mediaPercentages[3]));
-    echo $digital;
-    $name[$index] = $event;
-    $index++;
-  }
-    print_r($compat);
-
-
-?>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
