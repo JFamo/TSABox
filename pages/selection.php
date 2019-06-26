@@ -202,6 +202,7 @@ if(isset($_POST['join-event'])){
 
       <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
         <div class="col-sm-12">
+          <h3 style="border-bottom:2px solid #CF0C0C">Available Events</h3>
           <input class="form-control" id="eventSearch" type="text" placeholder="Search...">
           <table id="eventTable" class="table table-striped">
           <thead>
