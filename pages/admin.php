@@ -127,24 +127,22 @@ if(isset($_POST['officers'])){
           </nav>
 
           <!-- Title -->
-          <div class="container" id="content">
-    <h1>Admin</h1>
-    <small>Manage your chapter</small>
+      <div class="container" id="content">
+        <h1>Admin</h1>
+        <small>Manage your chapter</small>
 
-    <!-- Make User Officer -->
+    <!-- Change User Rank -->
     <center>
     <div class = "container mt-5 contentcard">
       <h3 style="border-bottom:2px solid #CF0C0C">Change Member Ranks</h3>
       <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-        <div class="form-row">
+        <div class="row">
           
-          <div class="col-4">
-            <small>Member</small>
+          <div class="col-8">
+            <small>Select Member</small>
             <!--Give each user as an option-->
             <select id="users" name="users" class="form-control">
-              
-            
               <?php
 
               require('../php/connect.php');
@@ -189,7 +187,6 @@ if(isset($_POST['officers'])){
               ?>
             </select>
           </div>
-          <div class="form-row">
           <div class="col-4">
             <small></small><br>
             <input type="submit" class="btn btn-primary" value="Make Officer">
@@ -198,10 +195,10 @@ if(isset($_POST['officers'])){
 
           
       </form>
-      <form class="form-control">
+      <form method="post">
         <div class="row">
-          <div class="col-4">
-            <small>Officer</small>
+          <div class="col-8">
+            <small>Select Officer</small>
             <!--Give each user as an option-->
             <select id="officers" name="officers" class="form-control">
               
@@ -250,19 +247,54 @@ if(isset($_POST['officers'])){
               ?>
             </select>
           </div>
-          
-        </div>
-        <div class="col-4">
-          
-            <small></small><br>
-            <input type="submit" class="btn btn-primary" value="Make Member">
+          <div class="col-4">   
+              <small></small><br>
+              <input type="submit" class="btn btn-primary" value="Make Member">
           </div>
         </div>
       </form>
     </div>
 
-    
-          </div>
+    <center>
+    <div class = "container mt-5 contentcard">
+      <h3 style="border-bottom:2px solid #CF0C0C">Reset Member Password</h3>
+      <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+        <div class="row">
+
+      <form method="post">
+        <div class="col-8">
+          <div class="col-8">
+
+            <small>Select Member</small>
+            <!--Give each user as an option-->
+            <select id="officers" name="officers" class="form-control">
+                        
+              <?php
+              require('../php/connect.php');
+              $query="SELECT username FROM user_chapter_mapping WHERE chapter=$chapter ORDER BY username ASC";
+              $result = mysqli_query($link, $query);
+
+              if (!$result){
+                die('Error: ' . mysqli_error($link));
+              } 
+
+              while(list($user) = mysqli_fetch_array($result)){
+                $query = "SELECT firstname,lastname FROM users WHERE username='$user'";
+                $res=mysqli_query($link,$query);
+                if(!$res){
+                  die('Error: ' . mysqli_error($link));
+                }
+                list($first,$last)=mysqli_fetch_array($res);              
+                ?>
+                <option value="<?php echo $user; ?>"><?php echo $first . ' ' . $last; ?></option>
+                <?php
+                }
+              mysqli_close($link);
+              ?>   
+          </div>       
+      </form>
+    </div>
           
         
       </center>
@@ -274,6 +306,8 @@ if(isset($_POST['officers'])){
         <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
         <script src="../js/scripts.js"></script>
       </body>
+    </form>
+  </div>
 
       <footer <?php if($rank == "officer" || $rank == "admin" || $rank == "adviser"){ ?>style="position:relative;"<?php } ?>>
         <div class="bg-blue color-white py-3">
