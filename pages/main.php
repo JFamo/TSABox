@@ -35,6 +35,18 @@ if(isset($_POST['select-event'])){
   mysqli_close($link);
 }
 
+
+//Acquiring user's full name 
+require('../php/connect.php');
+$query="SELECT firstname, lastname FROM users WHERE username='$username'";
+$result = mysqli_query($link, $query);
+if (!$result){
+  die('Error: ' . mysqli_error($link));
+}
+list($first, $last) = mysqli_fetch_array($result);
+$name = $first . " " . $last;
+
+
 ?>
 
 <!doctype html>
@@ -122,6 +134,7 @@ if(isset($_POST['select-event'])){
       </div>
       <div class="row ">
         <div class="col-sm-6">
+          <!-- My Events card -->
           <div class="contentcard mt-3">
               <h3 class="band-blue" align="left">My Events</h3>
                 <?php
@@ -158,6 +171,7 @@ if(isset($_POST['select-event'])){
                   ?>
                   <a href='selection.php'>Event Selection</a>
             </div>
+            <!-- My Balance card -->
           <div class="contentcard mt-5">   
             <h3 class="band-red"  align="left">My Balance</h3>
             <h2 align="left"> $<?php
@@ -177,6 +191,61 @@ if(isset($_POST['select-event'])){
             ?>
             </h2>
           </div>
+        </div>
+
+        <!-- Recent Announcements card -->
+        <div class="col-sm-6">
+          
+          <div class="contentcard mt-3">
+            <h3 class="band-grey" align="left">Recent Announcements</h3>
+            <!-- Retrieving announcements from database -->
+            <?php
+            require('../php/connect.php');
+
+            $query="SELECT * FROM announcements WHERE username IN (SELECT username FROM user_chapter_mapping WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username')) ORDER BY date DESC LIMIT 3";
+            $result = mysqli_query($link, $query);
+            if (!$result){
+              die('Error: ' . mysqli_error($link));
+            }
+
+            if(mysqli_num_rows($result) == 0){
+              ?>
+              <div class="container" id="content">
+                <?php echo "There are no announcements! <br>"; ?>
+              </div>
+              <?php
+            }
+            else{
+              while($resultArray = mysqli_fetch_array($result)){
+                $id = $resultArray['id'];
+                $title = $resultArray['title'];
+                $content = $resultArray['content'];
+                $username = $resultArray['username'];
+                $date = $resultArray['date'];
+                ?>              
+            
+            <!-- Displaying announcements -->
+            <div class="d-flex" style="padding-top: .5rem; text-align: left;"> 
+              <h2> <?php
+                echo $title;
+                ?> </h2>
+            </div>
+            <div class="d-flex" style="text-align: left;">
+              <?php
+              echo $content;
+              ?>
+            </div>
+            <div class="d-flex" style="padding-top: 0.5rem; text-align: left;"> 
+              <small> <?php
+                echo " - " . $name . " on " . $date;
+                ?> </small>
+            </div>
+            <?php 
+          }
+        } ?>        
+
+          </div>
+        
         </div>
       </div>
     </div>
