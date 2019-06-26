@@ -120,7 +120,7 @@ if(isset($_POST['search'])){
     $result = mysqli_query($link, $query);
     if(!$result){
       die('Error: ' . mysqli_error($link));
-    } 
+    }
     list($chapter) = mysqli_fetch_array($result);
 
     $query = "SELECT username FROM user_chapter_mapping WHERE chapter='$chapter'";
@@ -155,22 +155,60 @@ if(isset($_POST['search'])){
 </div>
 
 <div class = "container" id="content">
-    <form method="POST">
-      <div class="row" style="padding-top:1rem; padding-bottom: 1rem;">
+    <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
         <div class="col-sm-12">
-          <div class="form-group">
-            <label for="searchbar"> <h3>Search for Users</h3> </label>
-            <textarea class="form-control" name="search" maxlength=100 placeholder="Username" rows="1"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
+          <h3 style="border-bottom:2px solid #CF0C0C">Other Users</h3>
+          <input class="form-control" id="userSearch" type="text" placeholder="Search...">
+          <table id="userTable" class="table table-striped">
+          <thead>
+            </thead>
+            <tbody>
+            <?php
+        		require('../php/connect.php');
+              	$query = "SELECT chapter FROM user_chapter_mapping WHERE username = '$username'";
+		    	$result = mysqli_query($link, $query);
+			    if(!$result){
+			      die('Error: ' . mysqli_error($link));
+			    } 
+			    list($chapter) = mysqli_fetch_array($result);
+			    $query = "SELECT username FROM user_chapter_mapping WHERE chapter !='$chapter'";
+			    $result = mysqli_query($link, $query);
 
+			    if(!$result){
+			      die('Error: ' . mysqli_error($link));
+			    } 
+                //Iterate every event at my level
+                while(list($otherPeople) = mysqli_fetch_array($result)){
+                  
+                    $query1 = "SELECT username, firstname, lastname FROM users WHERE username='$otherPeople'";
+				    $result1 = mysqli_query($link, $query1);
+
+				    if(!$result1){
+				      die('Error: ' . mysqli_error($link));
+				    } 
+				    list($Username, $firstname, $lastname) = mysqli_fetch_array($result1);
+
+				    
+				      ?>
+				      <div class= "row" >
+				        <div class = "col-sm-3" >
+				          <a href=<?php echo "profile.php?user=" . $Username; ?>>
+				            <?php echo $firstname . " " . $lastname ?>
+				          </a>
+				        </div>
+				      </div>
+				      <?php
+                  }
+            ?>
+            </tbody>
+          </table>
         </div>
-    </form>
+      </div>
   </div>
 
-<!-- people not in your chapter -->
 
+<!-- people not in your chapter -->
+<!--
 <div class="container" style="padding-bottom: 25px;">
   <div class = "row">
   	<h5>
@@ -217,16 +255,27 @@ if(isset($_POST['search'])){
       <?php
     }
 }
-
   ?>
 </div>
-
+-->
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="../js/jquery-3.3.1.slim.min.js"></script>
   <script src="../js/popper.min.js"></script>
   <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
   <script src="../js/scripts.js"></script>
+
+  <script>
+    $(document).ready(function(){
+      $("#userSearch").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#userTable > tbody > tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+  </script>
+
 
   </body>
 
@@ -244,5 +293,3 @@ if(isset($_POST['search'])){
   </footer>
 
 </html>
-<?php
-?>
