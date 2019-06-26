@@ -73,15 +73,15 @@ if(isset($_POST['newBio'])){
   if (!$result){
       die('Error: ' . mysqli_error($link));
   }
-  list($bio) = mysqli_fetch_array($result);
-  if($bio==""){
+  $bio = mysqli_num_rows($result);
+  if($bio==0){
       $query1 = "INSERT INTO `bio` (`username`, `content`) VALUES ('$username', '$newBio')";
       $result2 = mysqli_query($link, $query1);
 
       if (!$result2){
       die('Error: ' . mysqli_error($link));
       }
-  }else{
+  }else if($bio==1){
     $query2 = "UPDATE bio SET content='$newBio' WHERE username='$username'";
 
     $result2 = mysqli_query($link, $query2);
@@ -316,7 +316,9 @@ if(isset($_POST['newFirstName']) && isset($_POST['newLastName'])){
         $query = "SELECT content FROM bio WHERE username='$username'";
         $result = mysqli_query($link, $query);
         list($bio) = mysqli_fetch_array($result);
-        echo "Bio: " . $bio;
+        if($bio!=""){
+          echo "Bio: " . $bio;
+        }
       ?>
     </p>
   </div>
@@ -378,7 +380,7 @@ if(isset($_POST['newFirstName']) && isset($_POST['newLastName'])){
         <div class="col-sm-12">
           <div class="form-group">
             <label for="bio"> <h3>Change Bio</h3> </label>
-            <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1" required></textarea>
+            <textarea class="form-control" name="newBio" maxlength=200 placeholder="New Bio (200 char max)" rows="1"></textarea>
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>
         </div>
