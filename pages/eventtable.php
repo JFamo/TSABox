@@ -16,7 +16,6 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
-$maxevents = false; //Use this to track if we have 6 and hide join buttons. This is setin the current events div
 
 require('../php/connect.php');
 
@@ -26,60 +25,6 @@ if (!$result){
   die('Error: ' . mysqli_error($link));
 }
 list($chapter) = mysqli_fetch_array($result);
-
-//Go to event page for a certain team
-if(isset($_POST['select-event'])){
-
-  $selectevent = addslashes($_POST['select-event']);
-  $selectevent = validate($selectevent);
-
-  require('../php/connect.php');
-  $query = "SELECT id FROM teams WHERE event='$selectevent' AND id IN (SELECT team FROM user_team_mapping WHERE username='$username')";
-  $result = mysqli_query($link,$query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-  list($teamid) = mysqli_fetch_array($result);
-  $_SESSION['team'] = $teamid;
-  header('Location: event.php');
-  mysqli_close($link);
-}
-
-//Join teams
-if(isset($_POST['join-event'])){
-
-  $joinevent = validate($_POST['join-event']);
-  $joinnumber = validate($_POST['join-number']);
-
-  require('../php/connect.php');
-  $query = "SELECT id FROM teams WHERE event='$joinevent' AND number='$joinnumber' AND chapter='$chapter'";
-  $result = mysqli_query($link,$query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-  //If this team does not exist, create it first
-  if(mysqli_num_rows($result) == 0){
-    $query = "INSERT INTO teams (chapter,event,number) VALUES ('$chapter', '$joinevent', '$joinnumber')";
-    $result = mysqli_query($link,$query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-    $teamid = mysqli_insert_id($link);
-  }
-  else{
-    list($teamid) = mysqli_fetch_array($result);
-  }
-
-  //Actually join the team
-  $query = "INSERT INTO user_team_mapping (username,team) VALUES ('$username', '$teamid')";
-    $result = mysqli_query($link,$query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-
-  mysqli_close($link);
-
-}
 
 ?>
 
@@ -151,72 +96,12 @@ if(isset($_POST['join-event'])){
 </nav>
 
     <div class="container" id="content">
-      <h1>Event Selection</h1>
-      <small>Sign up for and drop events</small>
+      <h1>Event Grid View</h1>
+      <small>See your chapter's events and teams</small><br>
+      <a href="selection.php">Back to Event Selection</a>
 
       <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
         <div class="col-sm-12">
-
-          <div class="contentcard">
-            <h3 style="border-bottom:2px solid #CF0C0C">My Current Events</h3>
-            <br>
-            <div class="row">
-            <?php
-
-              require('../php/connect.php');
-
-              $query="SELECT name, id FROM events WHERE id IN (SELECT event FROM teams WHERE id IN (SELECT team FROM user_team_mapping WHERE username='$username'))";
-              $result = mysqli_query($link, $query);
-              if (!$result){
-                die('Error: ' . mysqli_error($link));
-              }
-
-              if(mysqli_num_rows($result) == 0){
-                echo "You are not in any events!";
-              }
-              else{
-                $eventnumber = 1;
-                while($resultArray = mysqli_fetch_array($result)){
-
-                  $eventname = $resultArray['name'];
-                  $eventid = $resultArray['id'];
-                  echo "<div class='col-sm-4'>";
-                  echo "<h5><form method='POST'><input type='hidden' name='select-event' value='" . $eventid . "'><input class='nobtn' type='submit' value='" . $eventname . "'></form></h5></div>";
-
-                  if($eventnumber == 3){
-                    echo "</div><br><div class='row'>";
-                  }
-
-                $eventnumber += 1;
-                }
-                if($eventnumber == 7){
-                  $maxevents = true;
-                }
-              }
-            ?>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
-        <div class="col-sm-12">
-
-          <div class="contentcard">
-            <h3 style="border-bottom:2px solid #CF0C0C">Grid View</h3>
-            <br>
-            <p><span class="text-primary">Grid View</span> is helpful for completing registration in iServices or viewing the state of all teams. The Available Events section below will display only the events you can join, while this will show every team for every event.</p>
-            <a href="eventtable.php" class="btn btn-primary">Access Grid View</a>
-          </div>
-
-        </div>
-      </div>
-
-      <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
-        <div class="col-sm-12">
-          <h3 style="border-bottom:2px solid #CF0C0C">Available Events</h3>
-          <input class="form-control" id="eventSearch" type="text" placeholder="Search...">
           <table id="eventTable" class="table table-striped">
           <thead>
             <tr>
@@ -333,17 +218,7 @@ if(isset($_POST['join-event'])){
             ?>
             </tbody>
           </table>
-          <script src="../js/jquery-3.3.1.slim.min.js"></script>
-          <script>
-            $(document).ready(function(){
-              $("#eventSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#eventTable > tbody > tr").filter(function() {
-                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-              });
-            });
-          </script>
+         
         </div>
       </div>
 
@@ -351,7 +226,7 @@ if(isset($_POST['join-event'])){
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    
+     <script src="../js/jquery-3.3.1.slim.min.js"></script>
     <script src="../js/popper.min.js"></script>
     <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
     <script src="../js/scripts.js"></script>
