@@ -164,6 +164,7 @@ if(isset($_POST['select-event'])){
         <div class="col-sm-12">
           <input class="form-control" id="eventSearch" type="text" placeholder="Search...">
           <table id="eventTable" class="table table-striped">
+          <thead>
             <tr>
               <th>Event</th>
               <th>Team</th>
@@ -171,6 +172,8 @@ if(isset($_POST['select-event'])){
               <th>Min</th>
               <th></th>
             </tr>
+            </thead>
+            <tbody>
             <?php
 
               require('../php/connect.php');
@@ -260,12 +263,14 @@ if(isset($_POST['select-event'])){
                 }
               }
             ?>
+            </tbody>
           </table>
+          <script src="../js/jquery-3.3.1.slim.min.js"></script>
           <script>
             $(document).ready(function(){
               $("#eventSearch").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
-                $("#eventTable tr").filter(function() {
+                $("#eventTable > tbody > tr").filter(function() {
                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
               });
@@ -278,7 +283,7 @@ if(isset($_POST['select-event'])){
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    
     <script src="../js/popper.min.js"></script>
     <script src="../bootstrap-4.1.0/js/bootstrap.min.js"></script>
     <script src="../js/scripts.js"></script>
