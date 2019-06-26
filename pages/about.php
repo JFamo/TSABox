@@ -32,12 +32,12 @@ session_start();
   </head>
   <body style="background-image:url(../images/bg-logos.png); background-size:170px 140px;">
     <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="main.php">
           <div class="row">
             <div class="col nopadding">
                 <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
             </div>
-        <a class="navbar-brand" href="#">TSABox</a>
+        <a class="navbar-brand" href="main.php">TSABox</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>

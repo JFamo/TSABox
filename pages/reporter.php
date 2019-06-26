@@ -72,7 +72,7 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
                 <a class="dropdown-item" href="vice.php">Vice President</a>
                 <a class="dropdown-item" href="secretary.php">Secretary</a>
                 <a class="dropdown-item" href="treasurer.php">Treasurer</a>
-                <a class="dropdown-item" href="reporter.php">Reporter</a>
+                <a class="dropdown-item active" href="reporter.php">Reporter</a>
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
               <li class="nav-item dropdown">

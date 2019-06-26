@@ -85,7 +85,7 @@ if(isset($_POST['deleteFileID'])){
             <div class="col nopadding">
                 <img src="../images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
             </div>
-  <a class="navbar-brand" href="#">TSABox</a>
+  <a class="navbar-brand" href="main.php">TSABox</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -98,7 +98,7 @@ if(isset($_POST['deleteFileID'])){
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="president.php">President</a>
           <a class="dropdown-item" href="vice.php">Vice President</a>
-          <a class="dropdown-item" href="secretary.php">Secretary</a>
+          <a class="dropdown-item active" href="secretary.php">Secretary</a>
           <a class="dropdown-item" href="treasurer.php">Treasurer</a>
           <a class="dropdown-item" href="reporter.php">Reporter</a>
           <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>

@@ -111,7 +111,7 @@ if(isset($_POST['deleteFileID'])){
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="myevents.php">My Events</a>
-          <a class="dropdown-item" href="rules.php">Rules</a>
+          <a class="dropdown-item active" href="rules.php">Rules</a>
           <a class="dropdown-item" href="selection.php">Event Selection</a>
           <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
         </div>
