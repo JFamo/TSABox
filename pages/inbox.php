@@ -16,7 +16,7 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
-
+$sendmsg = "";
 //Inputting form data into database
 if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 
@@ -25,10 +25,15 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
   $message = validate($_POST['message']);
   $to = validate($_POST['to']);
   require('../php/connect.php');
-   $query = "INSERT INTO messages (personfrom, personto, content, date, subject) VALUES ('$username', '$to', '$message', NOW(), '$subject')";
+  $query = "INSERT INTO messages (personfrom, personto, content, date, subject) VALUES ('$username', '$to', '$message', NOW(), '$subject')";
   $result = mysqli_query($link,$query);
   if (!$result){
     die('Error: ' . mysqli_error($link));
+  }else{
+  $query = "SELECT firstname, lastname FROM users WHERE username='$to'";
+  $result = mysqli_query($link,$query);
+    list($first, $last) = mysqli_fetch_array($result);
+    $sendmsg = "Message sent to " . $first . " " . $last;
   }
 }
 
@@ -128,6 +133,9 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 
         </div>
     </form>
+    <div class= "row">
+      <?php echo $sendmsg; ?>
+    </div>
   </div>
 
 
