@@ -302,7 +302,7 @@ if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
               <div class="form-control" style="border:0;">
                 <div class="row py-3">
                   <div class="col-sm-6">
-                    <input style="font-size:16px;" name="userfile" type="file" id="userfile">
+                    <input style="font-size:16px;" name="userfile" type="file" id="userfile" accept="image/png, image/jpeg">
                   </div>
                 </div>
                 <div class="row">

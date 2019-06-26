@@ -139,21 +139,20 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
     while(list($chapterMates) = mysqli_fetch_array($result)){
 
-    $query1 = "SELECT firstname, lastname FROM users WHERE username='$chapterMates' AND username!='$username'";
+    $query1 = "SELECT username, firstname, lastname FROM users WHERE username='$chapterMates' AND username!='$username'";
     $result1 = mysqli_query($link, $query1);
 
     if(!$result1){
       die('Error: ' . mysqli_error($link));
     } 
-    list($firstname, $lastname) = mysqli_fetch_array($result1);
+    list($Username, $firstname, $lastname) = mysqli_fetch_array($result1);
 
       ?>
       <div class= "row" >
-        <div class = "col-sm-3">
-          <?php echo $firstname . " " . $lastname ?>
-        </div>
-        <div class = "col-sm-3">
-
+        <div class = "col-sm-3" >
+          <a href=<?php echo "profile.php?user=" . $Username; ?>>
+            <?php echo $firstname . " " . $lastname ?>
+          </a>
         </div>
       </div>
       <?php

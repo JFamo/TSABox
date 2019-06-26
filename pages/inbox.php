@@ -142,11 +142,11 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
 <!-- View messages -->
 <div class= "container">
   <div class = "row">
-    <h2> Messages </h2>
+    <h2> Messages</h2>
   </div>
   <?php
       require('../php/connect.php');
-      $query = "SELECT personfrom, content, date, subject FROM messages WHERE personto='$username'";
+      $query = "SELECT * FROM messages WHERE personto='$username' ORDER BY date DESC";
       $result = mysqli_query($link, $query);
       if (!$result){
         die('Error: ' . mysqli_error($link));
@@ -158,22 +158,19 @@ if(isset($_POST['subject']) && isset($_POST['message']) && isset($_POST['to'])){
         </div>
       <?php 
       }else{
-        echo mysqli_num_rows($result);
-      while(list($personfrom, $message, $date, $subject) = mysqli_fetch_array($result)){
+      while(list($personfrom, $personto, $message, $date, $subject) = mysqli_fetch_array($result)){
       ?>
   <div class = "row">
     <div class = "col-sm-3">
       From: <?php 
-      require('../php/connect.php');
 
-      $query = "SELECT firstname, lastname FROM users WHERE username='$personfrom'";
-      $result = mysqli_query($link, $query);
-      if (!$result){
+      $query1 = "SELECT firstname, lastname FROM users WHERE username='$personfrom'";
+      $result1 = mysqli_query($link, $query1);
+      if (!$result1){
         die('Error: ' . mysqli_error($link));
       }
-      list($firstname, $lastname) = mysqli_fetch_array($result);
-
-      echo $firstname . " " . $lastname ?>
+      list($firstname, $lastname) = mysqli_fetch_array($result1);
+      echo $firstname . " " . $lastname?>
     </div>
     <div class = "col-sm-2">
       <?php echo $subject; ?>
