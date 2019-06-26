@@ -215,7 +215,7 @@ if(isset($_POST['select-event'])){
                   //Finally calculate number of available teams by subtracting filled teams from limit
                   $teams = $teams - $countFullTeams;
 
-                  for($team = 0; $team < $teams; $team++){
+                  for($team = 1; $team <= $teams; $team++){
                     echo $event . " : " . $team . "<br>";
                   }
                 }
