@@ -73,8 +73,8 @@ session_start();
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="profile.php">My Profile</a>
-                    <a class="dropdown-item" href="chapter.php">My Chapter</a>
-                    <a class="dropdown-item" href="social.php">Find Friends</a>
+		          	<a class="dropdown-item" href="social.php">Find Friends</a>          
+		          	<a class="dropdown-item" href="inbox.php">My Inbox</a>
                   </div>
                 </li>
                 <?php if($rank == "adviser" || $rank == "admin") { ?>
