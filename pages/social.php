@@ -116,7 +116,7 @@ if(isset($_POST['search'])){
             <tbody>
             <?php
         		require('../php/connect.php');
-  			    $query = "SELECT username, firstname, lastname FROM users";
+  			    $query = "SELECT username, firstname, lastname FROM users WHERE username!='$username'";
   			    $result = mysqli_query($link, $query);
 
   			    if(!$result){
