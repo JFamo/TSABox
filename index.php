@@ -55,14 +55,14 @@ if(isset($_POST['login-username']) and isset($_POST['login-password'])){
   }
   $count = mysqli_num_rows($result);
   if($count == 1){
-    $query2 = "SELECT password, firstname, lastname FROM users WHERE username='$username'";
+    $query2 = "SELECT username, password, firstname, lastname FROM users WHERE username='$username'";
     $result2 = mysqli_query($link, $query2);
     if (!$result2){
       die('Error: ' . mysqli_error($link));
     }
-    list($passwordValue, $firstnameValue, $lastnameValue) = mysqli_fetch_array($result2);
+    list($usernameValue, $passwordValue, $firstnameValue, $lastnameValue) = mysqli_fetch_array($result2);
     if(password_verify($password, $passwordValue)){
-      $_SESSION['username'] = $username;
+      $_SESSION['username'] = $usernameValue;
       $_SESSION['firstname'] = $firstnameValue;
       $_SESSION['lastname'] = $lastnameValue;
 
@@ -91,6 +91,7 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
   $firstname = $_POST['register-firstname'];
   $lastname = $_POST['register-lastname'];
   $orgcode = $_POST['register-code'];
+  $grade = $_POST['register-grade'];
 
   $username = validate($username);
   $password = validate($password);
@@ -117,7 +118,7 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
 
     if($orgwithcodecount == 1){
       //User Creation
-      $query2 = "INSERT INTO users (username, password, firstname, lastname) VALUES ('$username', '$password', '$firstname', '$lastname')";
+      $query2 = "INSERT INTO users (username, password, firstname, lastname, grade) VALUES ('$username', '$password', '$firstname', '$lastname', '$grade')";
       $result2 = mysqli_query($link, $query2);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
@@ -130,6 +131,12 @@ if(isset($_POST['register-username']) and isset($_POST['register-password']) and
       }
       //Set Rank
       $query2 = "INSERT INTO ranks (username, rank) VALUES ('$username', 'member')";
+      $result2 = mysqli_query($link, $query2);
+      if (!$result2){
+        die('Error: ' . mysqli_error($link));
+      }
+      //Set Hold
+      $query2 = "INSERT INTO holds (username, status) VALUES ('$username', 'hold')";
       $result2 = mysqli_query($link, $query2);
       if (!$result2){
         die('Error: ' . mysqli_error($link));
@@ -159,20 +166,19 @@ if(isset($_SESSION['username'])){
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap-4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i|Ubuntu:400,400i,700,700i&display=swap" rel="stylesheet">
     <title>TSABox</title>
   </head>
   <body>
     <nav class="header bg-blue navbar navbar-expand-lg navbar-dark" style="min-height:95px; z-index: 1000;">
         <a class="navbar-brand" href="index.html">
           <div class="row">
-            <div class="col nopadding">
+            <div class="col">
                 <img src="images/logo.png" class="d-inline-block verticalCenter" alt="" style="height:2.5rem;">
             </div>
-            <div class="col nopadding">
-                <p>TSABOX</p>
+            <div class="col">
+                <p style="margin-bottom: 0;">TSABOX</p>
             </div>
           </div>
         </a>
@@ -185,7 +191,29 @@ if(isset($_SESSION['username'])){
       </div>
     </nav>
 
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">Login</button>
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-12">
+          <center>
+          <h2>Manage your chapter<br><span class="text-primary">Effectively</span> and <span class="text-primary">Successfully</span> with</h2>
+          <br>
+          <h1>TSA Box</h1>
+          <br>
+          <h6 style="text-decoration: underline;;">A comprehensive suite of chapter management tools</h6></center>
+        </div>
+      </div>
+      <div class="row pt-5">
+        <div class="col-12">
+          <center>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">Login</button>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">Register</button>
+            <br><br>
+            <?php echo "<b class='text-danger'>".$fmsg."</b>"; ?>
+          </center>
+        </div>
+      </div>
+    </div>
+    
     <div class="modal fade" id="loginModal" role="dialog">
       <div class="modal-dialog">
       <div class="modal-content">
@@ -212,10 +240,6 @@ if(isset($_SESSION['username'])){
       </div>
     </div>
 
-  <br>
-  <?php echo $fmsg; ?>
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">Register</button>
     <div class="modal fade" id="registerModal" role="dialog">
       <div class="modal-dialog">
       <div class="modal-content">
@@ -246,6 +270,20 @@ if(isset($_SESSION['username'])){
                 </div>
               </div>
               <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="register-grade">Grade</label>
+                  <select class="form-control" id="register-grade" name="register-grade">
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
                 <div class="form-group col-md-12">
                   <label for="register-code">Chapter Code</label>
                   <input type="text" class="form-control" id="register-code" name="register-code" placeholder="Code">
@@ -260,9 +298,9 @@ if(isset($_SESSION['username'])){
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="bootstrap-4.1.0/js/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
   </body>
 
@@ -272,9 +310,6 @@ if(isset($_SESSION['username'])){
   <footer>
     <div class="bg-blue color-white py-3">
         <center>
-        <p>
-          For more information, visit <a href="pages/about.html" style="color:white;">The About Page</a>.
-        </p>
         <p>
           Made by Team T1285, 2018-2019, All Rights Reserved
         </p>

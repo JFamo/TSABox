@@ -15,56 +15,6 @@ function validate($data){
 
 session_start();
 
-$username = $_SESSION['username'];
-$rank = $_SESSION['rank'];
-
-if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
-  //file details
-  $fileName = $_FILES['userfile']['name'];
-  $tmpName = $_FILES['userfile']['tmp_name'];
-  $fileSize = $_FILES['userfile']['size'];
-  $fileType = $_FILES['userfile']['type'];
-  //file data manipulation
-  $fp = fopen($tmpName, 'r');
-  $content = fread($fp, filesize($tmpName));
-  $content = addslashes($content);
-  fclose($fp);
-  if(!get_magic_quotes_gpc()){
-    $fileName = addslashes($fileName);
-  }
-  require('../php/connect.php');
-  $query = "SELECT chapter FROM user_chapter_mapping WHERE username='$username'";
-  $result = mysqli_query($link, $query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-  list($chapter) = mysqli_fetch_array($result);
-  $query = "INSERT INTO rules (name, size, type, content, chapter) VALUES ('$fileName', '$fileSize', '$fileType', '$content', '$chapter')";
-  $result = mysqli_query($link, $query);
-  if (!$result){
-    die('Error: ' . mysqli_error($link));
-  }
-  
-  mysqli_close($link);
-}
-//file deletion
-if(isset($_POST['deleteFileID'])){
-  //file details
-  $fileid = $_POST['deleteFileID'];
-  $filename = $_POST['deleteFileName'];
-  if($rank == "admin" || $rank == "adviser"){
-    require('../php/connect.php');
-    $query = "DELETE FROM rules WHERE id = '$fileid'";
-    $result = mysqli_query($link, $query);
-    if (!$result){
-      die('Error: ' . mysqli_error($link));
-    }
-    mysqli_close($link);
-  }
-  else{
-  }
-}
-
 ?>
 
 <!doctype html>
@@ -80,8 +30,8 @@ if(isset($_POST['deleteFileID'])){
 
     <title>TSABox</title>
   </head>
-  <body>
-  <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
+  <body style="background-image:url(../images/bg-logos.png); background-size:170px 140px;">
+   <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
     <a class="navbar-brand" href="main.php">
       <div class="row">
         <div class="col nopadding">
@@ -112,7 +62,7 @@ if(isset($_POST['deleteFileID'])){
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <a class="dropdown-item" href="myevents.php">My Events</a>
-                  <a class="dropdown-item active" href="rules.php">Rules</a>
+                  <a class="dropdown-item" href="rules.php">Rules</a>
                   <a class="dropdown-item" href="selection.php">Event Selection</a>
                   <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
                 </div>
@@ -123,8 +73,8 @@ if(isset($_POST['deleteFileID'])){
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="profile.php">My Profile</a>
-          <a class="dropdown-item" href="social.php">Find Friends</a>          
-          <a class="dropdown-item" href="inbox.php">My Inbox</a>
+		          	<a class="dropdown-item" href="social.php">Find Friends</a>          
+		          	<a class="dropdown-item" href="inbox.php">My Inbox</a>
                   </div>
                 </li>
                 <?php if($rank == "adviser" || $rank == "admin") { ?>
@@ -143,67 +93,28 @@ if(isset($_POST['deleteFileID'])){
             </div>
           </nav>
 
- <div class="container" id="content">
-  <h1>Rules</h1>
-  <small>Download national TSA event rules</small>
-
-  <div class="row" style="padding-top:1rem; padding-bottom:1rem;">
-    <div class="col-sm-12"> 
-        <?php if($rank == "admin" || $rank == "adviser"){ ?>
-            <form method="post" enctype="multipart/form-data">
-              <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-              <div class="form-control">
-                <div class="col-12">
-                  <input style="font-size:16px;" name="userfile" type="file" id="userfile">
-                </div>
-                <div class="col-12">
-                <input name="uploadFile" type="submit" class="btn btn-primary" id="uploadFile" value="Upload">
-                </div>
-              </div>
-            </form>
-        <?php } ?>
-        <br>
-          <table class="minutesTable">
-
-          <?php
-          require('../php/connect.php');
-          $query="SELECT id, name, size FROM rules WHERE chapter IN (SELECT chapter FROM user_chapter_mapping WHERE username='$username') ORDER BY name ASC";
-          $result = mysqli_query($link, $query);
-          if (!$result){
-            die('Error: ' . mysqli_error($link));
-          }
-            while(list($id, $name, $size) = mysqli_fetch_array($result)){
-                  ?>
-                <tr>
-                  <td><a class="text-primary" href="../php/download_rules.php?id=<?php echo "".$id ?>" style="float:left;"><?php echo "".$name ?></a></td>
-                      <td><p style="float:left;"><?php echo round(($size / 1024) , 2) ?>KB</p></td>
-                  <?php 
-                    if($rank == "admin" || $rank == "adviser"){
-                  ?>
-                  <td>
-                    <form method="post" id="deleteFileForm">
-                      <input name="deleteFileID" type="hidden" value="<?php echo $id ?>">
-                      <input name="deleteFileName" type="hidden" value="<?php echo $name ?>">
-                      <input style="padding:0 0 0 0;" type="submit" class="close btn btn-link" value="&times";>
-                    </form>
-                  </td>
-                  <?php
-                    }
-                  ?>
-                </tr>
-                <?php
-                
-              }
-            
-              
-          mysqli_close($link);
-          ?>
-
-          </table>  
+    <div class="container px-5" id="content">
+      <div class="row">
+        <h1>About
+        </h1>
+      </div>
+      <div class="row ">
+        <div class="col-12">
+          <div class="contentcard mt-3">
+              <p><span class="text-primary">TSA Box</span> is the original work of Team T1285, created for the 2019 national Technology Student Association conference in National Harbor, MD. It was built using HTML, CSS, JavaScript, PHP, and MySQL on a WAMP stack.</p>
+              <p>The following open-source libraries were used, and are documented with the project's portfolio. All material is Public Attribution 3.0 Share-Alike, Royalty-Free, Creative Commons 0, or better.</p>
+              <p><a href="https://getbootstrap.com/docs/4.0/getting-started/introduction/">Bootstrap</a>
+              <br>
+              <a href="https://www.chartjs.org/">Chart.js</a>
+              <br>
+              <a href="https://popper.js.org/">Popper.js</a>
+              <br>
+              <a href="https://jquery.com/">jQuery</a>
+              </p>
+            </div>
         </div>
-</div>
-</div>
-
+      </div>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../js/jquery-3.3.1.slim.min.js"></script>
@@ -212,12 +123,9 @@ if(isset($_POST['deleteFileID'])){
     <script src="../js/scripts.js"></script>
   </body>
 
-  <footer style="position:relative;">
+  <footer>
     <div class="bg-blue color-white py-3">
         <center>
-        <p>
-          For more information, visit <a href="about.php" style="color:white;">The About Page</a>.
-        </p>
         <p>
           Made by Team T1285, 2018-2019, All Rights Reserved
         </p>

@@ -98,6 +98,27 @@ if(isset($_POST['task-complete'])){
 
 }
 
+//Handler to drop this event
+if(isset($_POST['drop-event'])){
+
+  $verify = $_POST['verify'];
+  if($verify == 'yes'){
+
+    require('../php/connect.php');
+
+    $sql = "DELETE FROM user_team_mapping WHERE username='$username' AND team='$team'";
+    if (!mysqli_query($link, $sql)){
+      die('Error: ' . mysqli_error($link));
+    }
+
+    mysqli_close($link);
+    $_SESSION['team'] = -1;
+    header('Location: myevents.php');
+
+  }
+
+}
+
 if(isset($_POST['uploadFile']) && $_FILES['userfile']['size'] > 0){
 
   //file details
@@ -172,7 +193,7 @@ if(isset($_POST['deleteFileID'])){
   <title>TSABox</title>
 </head>
 <body>
-  <nav class="header bg-blue navbar navbar-expand-lg navbar-dark" style="min-height:95px; z-index: 1000;">
+  <nav class="header bg-blue navbar navbar-expand-sm navbar-dark" style="min-height:95px; z-index: 1000;">
     <a class="navbar-brand" href="main.php">
       <div class="row">
         <div class="col nopadding">
@@ -183,7 +204,7 @@ if(isset($_POST['deleteFileID'])){
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav"> 
+          <ul class="navbar-nav">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 OfficerBox
@@ -196,6 +217,7 @@ if(isset($_POST['deleteFileID'])){
                 <a class="dropdown-item" href="reporter.php">Reporter</a>
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
+            </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   EventBox
@@ -206,16 +228,24 @@ if(isset($_POST['deleteFileID'])){
                   <a class="dropdown-item" href="selection.php">Event Selection</a>
                   <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
                 </div>
+              </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     SocialBox
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="profile.php">My Profile</a>
-                    <a class="dropdown-item" href="chapter.php">My Chapter</a>
-                    <a class="dropdown-item" href="social.php">Find Friends</a>
+                    <a class="dropdown-item" href="social.php">Find Friends</a>          
+                    <a class="dropdown-item" href="inbox.php">My Inbox</a>
                   </div>
                 </li>
+                <?php if($rank == "adviser" || $rank == "admin") { ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../pages/admin.php">
+                      Admin
+                    </a>
+                  </li>
+                  <?php } ?>
                 <li class="nav-item">
                   <a class="nav-link" href="../php/logout.php">
                     Logout
@@ -587,6 +617,27 @@ if(isset($_POST['deleteFileID'])){
                 mysqli_close($link);
                 ?>
 
+              </div>
+            </div>
+
+            <div class="row pt-5">
+              <div class="col-sm-12">
+                <h3 class="band-red">Drop Event</h3>
+                <form class="form-control" method="post">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <small>Are you sure?</small>
+                      <select class="form-control" name="verify">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-6">
+                      <small><br></small>
+                      <input type="submit" class="btn btn-danger" value="Drop" name="drop-event">
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
 

@@ -14,8 +14,18 @@ function validate($data){
 }
 
 session_start();
-
 $username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
+
+//Grabing full name
+require('../php/connect.php');
+$query="SELECT firstname, lastname FROM users WHERE username='$username'";
+$result = mysqli_query($link, $query);
+if (!$result){
+  die('Error: ' . mysqli_error($link));
+}
+list($first, $last) = mysqli_fetch_array($result);
+$name = $first . " " . $last;
 
 //Inputting form data into database
 if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
@@ -32,6 +42,22 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
   }
 }
 
+//file deletion
+if(isset($_POST['deleteAnnouncementID'])){
+  //file details
+  $announcementID = $_POST['deleteAnnouncementID'];  
+  if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
+    require('../php/connect.php');
+    $query = "DELETE FROM announcements WHERE id = '$announcementID'";
+    $result = mysqli_query($link, $query);
+    if (!$result){
+      die('Error: ' . mysqli_error($link));
+    }
+    mysqli_close($link);
+  }
+  else{
+  }
+}
 
 ?>
 
@@ -72,9 +98,10 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
                 <a class="dropdown-item" href="vice.php">Vice President</a>
                 <a class="dropdown-item" href="secretary.php">Secretary</a>
                 <a class="dropdown-item" href="treasurer.php">Treasurer</a>
-                <a class="dropdown-item" href="reporter.php">Reporter</a>
+                <a class="dropdown-item active" href="reporter.php">Reporter</a>
                 <a class="dropdown-item" href="parliamentarian.php">Parliamentarian</a>
               </div>
+            </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   EventBox
@@ -85,16 +112,24 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
                   <a class="dropdown-item" href="selection.php">Event Selection</a>
                   <a class="dropdown-item" href="quiz.php">Interest Quiz</a>
                 </div>
+              </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     SocialBox
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="profile.php">My Profile</a>
-                    <a class="dropdown-item" href="chapter.php">My Chapter</a>
-                    <a class="dropdown-item" href="social.php">Find Friends</a>
+          <a class="dropdown-item" href="social.php">Find Friends</a>          
+          <a class="dropdown-item" href="inbox.php">My Inbox</a>
                   </div>
                 </li>
+                <?php if($rank == "adviser" || $rank == "admin") { ?>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../pages/admin.php">
+                      Admin
+                    </a>
+                  </li>
+                  <?php } ?>
                 <li class="nav-item">
                   <a class="nav-link" href="../php/logout.php">
                     Logout
@@ -112,7 +147,7 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
 
 
           <?php
-  //Check if user is legible to post announcements
+          //Check if user is legible to post announcements
           if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){
             ?>  
             <!-- Reporter reporting new announcement -->
@@ -157,21 +192,22 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
             }
             else{
               while($resultArray = mysqli_fetch_array($result)){
-
+                $id = $resultArray['id'];
                 $title = $resultArray['title'];
                 $content = $resultArray['content'];
                 $username = $resultArray['username'];
                 $date = $resultArray['date'];
                 ?>
 
+
                 <!-- Displaying retrieved announcements-->
                 <div class="container" id="content">
                   <div class="row" style="padding-top: 1rem; padding-bottom: 1rem; overflow: auto;">
                     <div class="col-sm-12">              
-                      <div class="d-flex"> 
-                        <h2> <?php
-                          echo $title;
-                          ?> </h2>
+                        <div class="d-flex"> 
+                          <h2> <?php
+                            echo $title;
+                            ?> </h2>
                         </div>
                         <div class="d-flex">
                           <?php
@@ -180,12 +216,24 @@ if(isset($_POST['announcementTitle']) && isset($_POST['announcementText'])){
                         </div>
                         <div class="d-flex" style="padding-top: 0.5rem;"> 
                           <small> <?php
-                            echo " - " . $username . " on " . $date;
+                            echo " - " . $name . " on " . $date;
                             ?> </small>
-                          </div>               
-                        </div>
-                      </div>
+                        </div> 
                     </div>
+                  </div>
+                  <!-- Announcement deletion button -->
+                  <?php if($_SESSION['rank'] == "officer" || $_SESSION['rank'] == "admin" || $_SESSION['rank'] == "adviser"){ ?>
+                  <div class="row" style="padding-left: 1rem;">
+                    <td>
+                      <form method="post" id="deleteFileForm">
+                        <input name="deleteAnnouncementID" type="hidden" value="<?php echo $id ?>">
+                        <button class="btn btn-danger btn-sm" type="submit" value="&times";>Delete</button>
+                      </form>
+                    </td>
+                  </div>
+                <?php } ?>
+
+                </div>
 
                     <?php
                   }
