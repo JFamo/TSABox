@@ -16,6 +16,7 @@ function validate($data){
 session_start();
 
 $username = $_SESSION['username'];
+$rank = $_SESSION['rank'];
 
 //get permission settings
 require('../php/connect.php');
@@ -41,7 +42,6 @@ if(isset($_POST['scoreValue'])){
   mysqli_close($link);
 }
 //clear scores
-  $rank = "admin";
 
   
 if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
@@ -227,7 +227,6 @@ if(isset($_POST['clearScores']) && ($rank == "admin" || $rank == "adviser")){
               ?>
             </ul>
           <?php 
-          $rank = "admin";
           if($rank == "admin" || $rank == "adviser") { ?>
             <br>
             <form method="post">
