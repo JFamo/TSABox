@@ -216,7 +216,7 @@ if(isset($_POST['join-event'])){
           <div class="contentcard">
             <h3 style="border-bottom:2px solid #CF0C0C">Grid View</h3>
             <br>
-            <p><span class="text-primary">Grid View</span> is helpful for completing registration in iServices or viewing the state of all teams. The Available Events section below will display only the events you can join, while this will show every team for every event.</p>
+            <p><b>Grid View</b> is helpful for completing registration in iServices or viewing the state of all teams. The Available Events section below will display only the events you can join, while this will show every team for every event.</p>
             <a href="eventtable.php" class="btn btn-primary">Access Grid View</a>
           </div>
 

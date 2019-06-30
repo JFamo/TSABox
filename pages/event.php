@@ -280,7 +280,7 @@ if(isset($_POST['deleteFileID'])){
 
                 require('../php/connect.php');
 
-                $query="SELECT firstname, lastname FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$team')";
+                $query="SELECT firstname, lastname, username FROM users WHERE username IN (SELECT username FROM user_team_mapping WHERE team='$team')";
                 $result = mysqli_query($link, $query);
                 if (!$result){
                   die('Error: ' . mysqli_error($link));
@@ -290,8 +290,10 @@ if(isset($_POST['deleteFileID'])){
 
                   $firstname = $resultArray['firstname'];
                   $lastname = $resultArray['lastname'];
+                  $thisuser = $resultArray['username'];
 
-                  echo "<p>". $firstname . " " . $lastname . "</p>";
+                  echo "<a href='profile.php?user=" . $thisuser . "'>" . $firstname . " " . $lastname . "</a><br>";
+
                 }
                 ?>
               </div>
