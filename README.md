@@ -1,7 +1,7 @@
 # TSABox
 
 ## About
-TSABox is an improvement of the ChapterSweet project, found here https://github.com/Megastardaboss/chaptersweet.
+TSABox is an improvement of the ChapterSweet project, found here https://github.com/JFamo/chaptersweet.
 It is a comprehensive suite of web-based tools to facilitate the operation of Technology Student Association chapters.
 It is comprised of three areas with different utilities.
 
